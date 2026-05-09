@@ -17,6 +17,7 @@ from agents.context import TripContext
 from agents.critic import Critic
 from agents.planner import Planner, _pick_anchors, _synthesize_fallback_route
 from agents.profiler import Profiler
+from agents.rationale import build_rationale_for_anchors, build_rationale_for_day
 from agents.tools import (
     batch_get_poi_details,
     check_business_hours,
@@ -124,6 +125,10 @@ async def plan_stream(
                         {"name": a[0], "lat": a[1], "lng": a[2]} for a in anchors
                     ],
                 },
+            )
+            yield format_event(
+                "planner.rationale",
+                build_rationale_for_anchors(intent, anchors),
             )
 
             all_categories = {
@@ -262,6 +267,15 @@ async def plan_stream(
                             for s in d.stops
                         ],
                     },
+                )
+                yield format_event(
+                    "planner.rationale",
+                    build_rationale_for_day(
+                        intent,
+                        d.day_index,
+                        d,
+                        anchors[d.day_index][0] if d.day_index < len(anchors) else "",
+                    ),
                 )
 
             route = RouteDraft(days=days_out, summary=llm_data.get("summary", ""))
