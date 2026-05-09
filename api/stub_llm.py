@@ -14,10 +14,24 @@ from typing import Awaitable, Callable
 
 _CITY_PAT = re.compile(r"(深圳|上海|西安)")
 _DAYS_PAT = re.compile(r"(\d+)\s*天")
+_CN_NUM = {
+    "一": 1,
+    "二": 2,
+    "两": 2,
+    "三": 3,
+    "四": 4,
+    "五": 5,
+    "六": 6,
+    "七": 7,
+    "八": 8,
+    "九": 9,
+    "十": 10,
+}
+_DAYS_PAT_CN = re.compile(r"([一二两三四五六七八九十])\s*天")
 _TRAVELER_PATS = [
     (re.compile(r"(情侣|男朋友|女朋友|对象)"), "情侣"),
-    (re.compile(r"(家庭|带孩子|亲子|一家人)"), "家庭亲子"),
-    (re.compile(r"(爸妈|长辈|银发)"), "银发"),
+    (re.compile(r"(家庭|带孩子|带小孩|带娃|亲子|一家人|全家)"), "家庭亲子"),
+    (re.compile(r"(爸妈|长辈|银发|爷爷|奶奶|外公|外婆)"), "银发"),
     (re.compile(r"(独行|一个人|独自)"), "独行"),
     (re.compile(r"(出差|商务)"), "商务"),
     (re.compile(r"(朋友|闺蜜|一群)"), "朋友团"),
@@ -38,7 +52,11 @@ async def stub_profiler_llm(system: str, user: str) -> str:
     city = city_match.group(1) if city_match else None
 
     days_match = _DAYS_PAT.search(user)
-    days = int(days_match.group(1)) if days_match else None
+    if days_match:
+        days = int(days_match.group(1))
+    else:
+        cn_match = _DAYS_PAT_CN.search(user)
+        days = _CN_NUM[cn_match.group(1)] if cn_match else None
 
     traveler_type = None
     for pat, label in _TRAVELER_PATS:

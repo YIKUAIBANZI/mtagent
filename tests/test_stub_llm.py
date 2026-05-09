@@ -29,6 +29,24 @@ async def test_stub_profiler_llm_handles_missing_fields():
 
 
 @pytest.mark.asyncio
+async def test_stub_profiler_llm_recognizes_chinese_numerals():
+    """Chinese numerals like 三天/五天/十天 must parse as days."""
+    from api.stub_llm import stub_profiler_llm
+
+    cases = [
+        ("西安三天带长辈", "西安", 3),
+        ("朋友团两天上海", "上海", 2),
+        ("一家人五天西安", "西安", 5),
+        ("深圳十天", "深圳", 10),
+    ]
+    for text, city, days in cases:
+        raw = await stub_profiler_llm("s", text)
+        data = json.loads(raw)
+        assert data["city"] == city, f"{text!r}: city {data['city']} != {city}"
+        assert data["days"] == days, f"{text!r}: days {data['days']} != {days}"
+
+
+@pytest.mark.asyncio
 async def test_stub_planner_llm_returns_empty_days():
     from api.stub_llm import stub_planner_llm
 
