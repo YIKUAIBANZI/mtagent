@@ -243,7 +243,6 @@
           $("compose-status").classList.remove("stage-pulse");
           $("timeline-summary").textContent = data.summary || "";
           $("timeline-section").classList.remove("hidden");
-          setTimeout(() => $("reveal-section").classList.add("hidden"), 800);
           break;
         case "trip.complete":
           $("status-text").textContent = `done · ${data.duration_ms}ms`;
