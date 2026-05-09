@@ -199,3 +199,45 @@ def test_day_empty_stops_uses_fallback():
     assert out["day_index"] == 2
     assert "暂无" in out["text"]
     assert "Day 3" in out["text"]
+
+
+def test_day_rationale_with_transit_summary_includes_numbers():
+    intent = _intent(traveler_type="家庭亲子", days=2)
+    day = _day(
+        [
+            _stop("钟楼", "上午景点", 9, 12),
+            _stop("回民街", "午饭", 12, 14),
+            _stop("大悦城", "下午", 14, 17),
+        ]
+    )
+    transit_summary = {"total_min": 92, "main_mode": "transit", "saved_yuan": 80}
+    out = build_rationale_for_day(
+        intent, 0, day, "钟楼", transit_summary=transit_summary
+    )
+
+    text = out["text"]
+    assert "Day 1" in text
+    assert "92" in text
+    assert "地铁" in text
+
+
+def test_day_rationale_without_transit_summary_unchanged():
+    intent = _intent(traveler_type="情侣")
+    day = _day([_stop("外滩", "上午景点", 9, 12)])
+    out = build_rationale_for_day(intent, 0, day, "外滩")
+    assert "Day 1" in out["text"]
+    assert "通勤" not in out["text"]
+
+
+def test_day_rationale_with_estimated_summary_marks_uncertainty():
+    intent = _intent(traveler_type="情侣")
+    day = _day([_stop("外滩", "上午景点", 9, 12)])
+    transit_summary = {
+        "total_min": 35,
+        "main_mode": "drive",
+        "estimated": True,
+    }
+    out = build_rationale_for_day(
+        intent, 0, day, "外滩", transit_summary=transit_summary
+    )
+    assert "估算" in out["text"] or "约" in out["text"]
