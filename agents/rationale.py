@@ -7,7 +7,16 @@ add LLM polish on top.
 
 from __future__ import annotations
 
+
 from dianping.schemas import DayPlan, ParsedIntent
+
+
+_MODE_CN = {
+    "drive": "打车",
+    "walk": "步行",
+    "transit": "地铁",
+    "bicycle": "骑行",
+}
 
 
 _TRAVELER_PHRASES = {
@@ -144,8 +153,14 @@ def build_rationale_for_day(
     day_index: int,
     day_plan: DayPlan,
     anchor_name: str,
+    transit_summary: Optional[dict] = None,
 ) -> dict:
-    """Compose-stage rationale per spec §5.1 (one per day)."""
+    """Compose-stage rationale per spec §5.1 (one per day).
+
+    `transit_summary` (optional): {total_min, main_mode, saved_yuan?, estimated?}
+    appends a tail like '（92 分钟通勤，地铁为主，比打车省 ¥80）' after the
+    rhythm sentence. v2 — backward compatible, None preserves v1.5 wording.
+    """
     if not day_plan.stops:
         return {
             "stage": "compose",
@@ -171,6 +186,22 @@ def build_rationale_for_day(
         f"stops={len(day_plan.stops)}",
         f"traveler_type={intent.traveler_type or ''}",
     ]
+
+    if transit_summary:
+        estimated = bool(transit_summary.get("estimated"))
+        prefix = "约 " if estimated else ""
+        mode_cn = _MODE_CN.get(transit_summary.get("main_mode", ""), "")
+        bits = [f"{prefix}{transit_summary['total_min']} 分钟通勤"]
+        if mode_cn:
+            bits.append(f"{mode_cn}为主")
+        if transit_summary.get("saved_yuan"):
+            bits.append(f"比打车省 ¥{transit_summary['saved_yuan']}")
+        suffix = "，估算）" if estimated else "）"
+        text += "（" + "，".join(bits) + suffix
+        factors.append(
+            f"transit={transit_summary.get('main_mode', '')},{transit_summary.get('total_min', '')}min"
+        )
+
     return {
         "stage": "compose",
         "day_index": day_index,

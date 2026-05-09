@@ -20,6 +20,7 @@ def sse_app_client(tmp_path_factory):
     to an in-process TestClient(mock_app)."""
     os.environ.pop("DASHSCOPE_API_KEY", None)
     os.environ["MTAGENT_TRIPS_DIR"] = str(tmp_path_factory.mktemp("trips"))
+    os.environ["MTAGENT_AMAP_DISABLED"] = "1"  # tests use haversine fallback
 
     from api import deps
     from api.main import app

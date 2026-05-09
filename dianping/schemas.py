@@ -242,12 +242,27 @@ class TimeSlot(BaseModel):
     end: time
 
 
+TransitMode = Literal["drive", "walk", "transit", "bicycle"]
+TransitSource = Literal["amap", "estimated"]
+
+
+class TransitInfo(BaseModel):
+    """Per-mode transit details for one stop pair."""
+
+    mode: TransitMode
+    minutes: int
+    distance_km: float
+    price_yuan: Optional[float] = None
+    source: TransitSource
+
+
 class Stop(BaseModel):
     poi: POI
     slot: TimeSlot
     arrival_time: time
     leave_time: time
     transport_to_next_minutes: int = 30
+    transport_options: Optional[dict[str, TransitInfo]] = None
 
 
 class DayPlan(BaseModel):
