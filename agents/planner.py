@@ -389,5 +389,6 @@ async def _default_qwen_call(system: str, user: str) -> str:
         response_format={"type": "json_object"},
         temperature=0.3,
         max_tokens=4000,
+        extra_body={"enable_thinking": False},
     )
     return resp.choices[0].message.content or "{}"
