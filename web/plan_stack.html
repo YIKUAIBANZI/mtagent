@@ -100,6 +100,7 @@
     const SLOT_ICON = { "上午景点": "🌅", "午饭": "🍜", "下午": "☕", "下午茶": "🧁", "晚饭": "🍽️", "夜场": "🌙" };
 
     let pendingExtra = null;
+    const pendingDayRationales = new Map();
 
     $("generate-btn").addEventListener("click", () => {
       const text = $("free-text").value.trim();
@@ -114,6 +115,9 @@
       $("timeline-days").innerHTML = "";
       $("understood-chips").innerHTML = "";
       $("candidate-cards").innerHTML = "";
+      pendingDayRationales.clear();
+      const oldAnchorLine = document.getElementById("anchor-rationale-line");
+      if (oldAnchorLine) oldAnchorLine.remove();
       $("error-toast").classList.add("hidden");
       $("generate-btn").disabled = true;
       $("status-text").textContent = "连接中...";
@@ -223,6 +227,14 @@
         case "planner.compose_start":
           $("compose-status").textContent = "◐ 正在编排路线...";
           break;
+        case "planner.rationale":
+          if (data.stage === "anchors") {
+            renderAnchorRationale(data.text);
+          } else if (data.stage === "compose") {
+            pendingDayRationales.set(data.day_index, data.text);
+            upsertDayRationale(data.day_index, data.text);
+          }
+          break;
         case "planner.day_done":
           renderDay(data);
           break;
@@ -266,6 +278,35 @@
         <div>${stops}</div>
       `;
       $("timeline-days").appendChild(el);
+      const pending = pendingDayRationales.get(day.day_index);
+      if (pending) upsertDayRationale(day.day_index, pending);
+    }
+
+    function renderAnchorRationale(text) {
+      const stage = document.getElementById("stage-candidates");
+      if (!stage) return;
+      let line = document.getElementById("anchor-rationale-line");
+      if (!line) {
+        line = document.createElement("div");
+        line.id = "anchor-rationale-line";
+        line.className = "text-stone-500 text-sm italic mt-2";
+        stage.appendChild(line);
+      }
+      line.textContent = `💭 ${text}`;
+    }
+
+    function upsertDayRationale(dayIndex, text) {
+      const card = document.querySelector(`[data-day="${dayIndex}"]`);
+      if (!card) return;
+      let line = card.querySelector(".day-rationale-line");
+      if (!line) {
+        line = document.createElement("div");
+        line.className = "day-rationale-line text-stone-500 text-sm italic mb-3";
+        const heading = card.querySelector("h3");
+        if (heading) heading.insertAdjacentElement("afterend", line);
+        else card.prepend(line);
+      }
+      line.textContent = `💭 ${text}`;
     }
 
     function showClarifying(missingFields) {
