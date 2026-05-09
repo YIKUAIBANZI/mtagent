@@ -113,3 +113,64 @@ async def test_bicycling_parses_amap_response():
     assert info.minutes == 18
     assert info.distance_km == pytest.approx(4.0, abs=0.01)
     assert info.source == "amap"
+
+
+@pytest.mark.asyncio
+async def test_get_transit_options_returns_all_4_modes():
+    """All 4 modes returned via single call."""
+
+    def handler(request):
+        path = request.url.path
+        if "driving" in path:
+            return httpx.Response(
+                200,
+                json={
+                    "status": "1",
+                    "route": {
+                        "paths": [
+                            {"duration": "480", "distance": "4200", "taxi_cost": "15"}
+                        ]
+                    },
+                },
+            )
+        if "walking" in path:
+            return httpx.Response(
+                200,
+                json={
+                    "status": "1",
+                    "route": {"paths": [{"duration": "1680", "distance": "2100"}]},
+                },
+            )
+        if "transit/integrated" in path:
+            return httpx.Response(
+                200,
+                json={
+                    "status": "1",
+                    "route": {
+                        "transits": [
+                            {"duration": "720", "distance": "4000", "cost": "4"}
+                        ]
+                    },
+                },
+            )
+        if "bicycling" in path:
+            return httpx.Response(
+                200,
+                json={
+                    "errcode": 0,
+                    "data": {"paths": [{"duration": "1080", "distance": "4000"}]},
+                },
+            )
+        return httpx.Response(404, json={})
+
+    c = _make_client(handler)
+    options, recommended = await c.get_transit_options(
+        (108.94, 34.26),
+        (108.96, 34.22),
+        city="西安",
+        traveler_type="家庭亲子",
+    )
+    assert set(options.keys()) == {"drive", "walk", "transit", "bicycle"}
+    assert options["drive"].minutes == 8
+    assert options["transit"].price_yuan == 4
+    assert recommended == "drive"

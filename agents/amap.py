@@ -6,11 +6,24 @@ haversine fallback when amap fails or is disabled by env.
 
 from __future__ import annotations
 
+import asyncio
+import math
 import os
+from typing import Optional
 
 import httpx
 
 from dianping.schemas import TransitInfo
+
+
+_RECOMMENDED_MODE = {
+    "情侣": "transit",
+    "家庭亲子": "drive",
+    "银发": "drive",
+    "独行": "walk",
+    "商务": "drive",
+    "朋友团": "transit",
+}
 
 
 class AmapClient:
@@ -151,3 +164,85 @@ class AmapClient:
         if minutes <= 30:
             return 1.5
         return 1.5 + 0.5 * ((minutes - 30 + 9) // 10)
+
+    @staticmethod
+    def _haversine_km(o: tuple[float, float], d: tuple[float, float]) -> float:
+        """great-circle distance in km, lng-lat input."""
+        lng1, lat1 = math.radians(o[0]), math.radians(o[1])
+        lng2, lat2 = math.radians(d[0]), math.radians(d[1])
+        dl = lng2 - lng1
+        dp = lat2 - lat1
+        a = (
+            math.sin(dp / 2) ** 2
+            + math.cos(lat1) * math.cos(lat2) * math.sin(dl / 2) ** 2
+        )
+        return 6371 * 2 * math.asin(math.sqrt(a))
+
+    _SPEED_KMH = {"drive": 30, "walk": 5, "transit": 20, "bicycle": 15}
+
+    def _haversine_one(
+        self,
+        mode: str,
+        o: tuple[float, float],
+        d: tuple[float, float],
+    ) -> TransitInfo:
+        km = self._haversine_km(o, d) * 1.4  # detour factor
+        speed = self._SPEED_KMH.get(mode, 20)
+        minutes = max(1, int(km / speed * 60))
+        if mode == "drive":
+            price: Optional[float] = 11 + 2.4 * max(0.0, km - 3)
+        elif mode == "transit":
+            price = 2.0 if km < 6 else 4.0 if km < 15 else 6.0
+        elif mode == "bicycle":
+            price = self._estimate_bicycle_price(minutes)
+        else:
+            price = None
+        return TransitInfo(
+            mode=mode,
+            minutes=minutes,
+            distance_km=round(km, 2),
+            price_yuan=round(price, 2) if price is not None else None,
+            source="estimated",
+        )
+
+    def _haversine_all(
+        self,
+        o: tuple[float, float],
+        d: tuple[float, float],
+    ) -> dict[str, TransitInfo]:
+        return {
+            m: self._haversine_one(m, o, d)
+            for m in ["drive", "walk", "transit", "bicycle"]
+        }
+
+    async def get_transit_options(
+        self,
+        origin: tuple[float, float],
+        dest: tuple[float, float],
+        city: str = "",
+        traveler_type: Optional[str] = None,
+    ) -> tuple[dict[str, TransitInfo], str]:
+        """Concurrent 4-mode fetch. Returns (options, recommended_mode).
+
+        Falls back to haversine estimates per-mode on exception, or all
+        modes if MTAGENT_AMAP_DISABLED is set.
+        """
+        if self.disabled:
+            options = self._haversine_all(origin, dest)
+        else:
+            results = await asyncio.gather(
+                self._driving(origin, dest),
+                self._walking(origin, dest),
+                self._transit(origin, dest, city=city),
+                self._bicycling(origin, dest),
+                return_exceptions=True,
+            )
+            modes = ["drive", "walk", "transit", "bicycle"]
+            options = {}
+            for mode, r in zip(modes, results):
+                if isinstance(r, Exception):
+                    options[mode] = self._haversine_one(mode, origin, dest)
+                else:
+                    options[mode] = r
+        recommended = _RECOMMENDED_MODE.get(traveler_type or "", "transit")
+        return options, recommended
