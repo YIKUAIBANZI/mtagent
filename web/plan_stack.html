@@ -101,6 +101,10 @@
 
     let pendingExtra = null;
     const pendingDayRationales = new Map();
+    const transitSelections = new Map();  // key: `${dayIdx}_${segIdx}` -> mode
+    const transitData = new Map();        // key: `${dayIdx}_${segIdx}` -> seg
+    const MODE_ICON = { drive: "🚗", walk: "🚶", transit: "🚇", bicycle: "🚲" };
+    const MODE_NAME = { drive: "打车", walk: "步行", transit: "地铁", bicycle: "骑行" };
 
     $("generate-btn").addEventListener("click", () => {
       const text = $("free-text").value.trim();
@@ -116,6 +120,8 @@
       $("understood-chips").innerHTML = "";
       $("candidate-cards").innerHTML = "";
       pendingDayRationales.clear();
+      transitSelections.clear();
+      transitData.clear();
       const oldAnchorLine = document.getElementById("anchor-rationale-line");
       if (oldAnchorLine) oldAnchorLine.remove();
       $("error-toast").classList.add("hidden");
@@ -238,6 +244,9 @@
         case "planner.day_done":
           renderDay(data);
           break;
+        case "transit.updated":
+          handleTransitUpdated(data);
+          break;
         case "planner.done":
           $("compose-status").textContent = "✓ 编排完成";
           $("compose-status").classList.remove("stage-pulse");
@@ -306,6 +315,86 @@
         else card.prepend(line);
       }
       line.textContent = `💭 ${text}`;
+    }
+
+    function handleTransitUpdated(data) {
+      const dayIdx = data.day_index;
+      data.segments.forEach((seg) => {
+        const key = `${dayIdx}_${seg.from_index}`;
+        transitData.set(key, seg);
+        if (!transitSelections.has(key)) {
+          transitSelections.set(key, seg.recommended);
+        }
+      });
+      renderTransitForDay(dayIdx);
+      updateDayRationaleWithTransit(dayIdx);
+    }
+
+    function renderTransitForDay(dayIdx) {
+      const card = document.querySelector(`[data-day="${dayIdx}"]`);
+      if (!card) return;
+      const stopRows = card.querySelectorAll(".flex.gap-4.py-3");
+      stopRows.forEach((row, i) => {
+        if (i >= stopRows.length - 1) return;
+        const key = `${dayIdx}_${i}`;
+        const seg = transitData.get(key);
+        if (!seg) return;
+        let chipRow = row.nextElementSibling;
+        if (!chipRow || !chipRow.classList.contains("transit-chips")) {
+          chipRow = document.createElement("div");
+          chipRow.className = "transit-chips flex gap-2 ml-20 mb-2 text-xs";
+          row.insertAdjacentElement("afterend", chipRow);
+        }
+        chipRow.innerHTML = "";
+        ["drive", "transit", "walk", "bicycle"].forEach((mode) => {
+          const opt = seg.options[mode];
+          if (!opt) return;
+          const selected = transitSelections.get(key) === mode;
+          const estimated = opt.source === "estimated";
+          const chip = document.createElement("button");
+          chip.className = `px-2 py-1 rounded-full border ${
+            selected
+              ? "bg-amber-200 border-amber-400 font-medium"
+              : "bg-white border-stone-200 hover:bg-stone-50"
+          } ${estimated ? "border-dashed" : ""}`;
+          chip.dataset.key = key;
+          chip.dataset.mode = mode;
+          const priceStr = opt.price_yuan != null ? ` ¥${Math.round(opt.price_yuan)}` : "";
+          chip.innerHTML = `${MODE_ICON[mode]} ${opt.minutes}min${priceStr}${estimated ? " ⚠" : ""}`;
+          chip.addEventListener("click", () => {
+            transitSelections.set(key, mode);
+            renderTransitForDay(dayIdx);
+            updateDayRationaleWithTransit(dayIdx);
+          });
+          chipRow.appendChild(chip);
+        });
+      });
+    }
+
+    function updateDayRationaleWithTransit(dayIdx) {
+      let total = 0;
+      const mainModeCount = {};
+      let totalPrice = 0;
+      let hasEstimated = false;
+      for (let i = 0; ; i++) {
+        const key = `${dayIdx}_${i}`;
+        const seg = transitData.get(key);
+        if (!seg) break;
+        const mode = transitSelections.get(key);
+        const opt = seg.options[mode];
+        if (!opt) continue;
+        total += opt.minutes;
+        mainModeCount[mode] = (mainModeCount[mode] || 0) + 1;
+        if (opt.price_yuan) totalPrice += opt.price_yuan;
+        if (opt.source === "estimated") hasEstimated = true;
+      }
+      if (total === 0) return;
+      const mainMode = Object.entries(mainModeCount).sort((a, b) => b[1] - a[1])[0][0];
+      const baseLine = pendingDayRationales.get(dayIdx) || "";
+      const tail = `（当前 ${MODE_NAME[mainMode]}为主，全程 ${total} 分钟${
+        totalPrice ? `，¥${Math.round(totalPrice)}` : ""
+      }${hasEstimated ? "，估算" : ""}）`;
+      upsertDayRationale(dayIdx, baseLine + tail);
     }
 
     function showClarifying(missingFields) {
