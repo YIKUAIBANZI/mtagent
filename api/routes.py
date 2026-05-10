@@ -54,6 +54,12 @@ async def plan_stream(
     async def event_stream() -> AsyncIterator[str]:
         ctx = TripContext.create(user_input=UserInput(free_text=body.free_text))
         start_time = time.time()
+        t0 = time.perf_counter()
+        phases: dict[str, float] = {}
+
+        def _stamp(name: str) -> None:
+            phases[name] = round(time.perf_counter() - t0, 3)
+
         yield format_event("trip.started", {"trip_id": ctx.trip_id})
 
         # ----- Profiler -----
@@ -62,6 +68,7 @@ async def plan_stream(
 
             profiler = Profiler(llm_call=resolve_profiler_llm())
             profiler_out = await profiler.run(ctx)
+            _stamp("profiler_done")
 
             yield format_event(
                 "profiler.understood",
@@ -159,8 +166,11 @@ async def plan_stream(
                     continue
                 all_ids.update(rec.openshopid for rec in r)
 
+            _stamp("search_done")
+
             details = await batch_get_poi_details(client, list(all_ids))
             pois = list(details.values())
+            _stamp("batch_get_done")
             yield format_event(
                 "planner.candidates_loaded",
                 {
@@ -190,6 +200,7 @@ async def plan_stream(
                 for c in filtered_clusters
             ]
             ctx.candidate_pois = [p for c in ranked_clusters for p in c]
+            _stamp("cluster_done")
             yield format_event(
                 "planner.clusters_ready",
                 {"per_day_count": [len(c) for c in ranked_clusters]},
@@ -201,6 +212,7 @@ async def plan_stream(
                 intent, templates, anchors, ranked_clusters
             )
             raw_llm = await planner.llm_call(planner._system_prompt, payload)
+            _stamp("compose_llm_done")
             try:
                 llm_data = json.loads(raw_llm)
             except json.JSONDecodeError:
@@ -295,6 +307,7 @@ async def plan_stream(
                     )
             finally:
                 await amap._client.aclose()
+            _stamp("amap_done")
 
             route = RouteDraft(days=days_out, summary=llm_data.get("summary", ""))
             ctx.draft_route = route
@@ -323,6 +336,7 @@ async def plan_stream(
             yield format_event("critic.start", {})
             critic = Critic()
             patches = await critic.run(ctx)
+            _stamp("critic_done")
             yield format_event("critic.done", {"patches_count": len(patches)})
         except Exception as exc:
             yield format_event(
@@ -336,6 +350,7 @@ async def plan_stream(
                 "trip_id": ctx.trip_id,
                 "duration_ms": int((time.time() - start_time) * 1000),
                 "status": "ok",
+                "phases": phases,
             },
         )
 
