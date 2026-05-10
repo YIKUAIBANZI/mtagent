@@ -102,8 +102,87 @@
   <div id="status-banner"></div>
 
   <script>
-    // JS in Task 5+
-    document.getElementById('trip-title').textContent = '骨架就位, JS 待加入';
+    'use strict';
+
+    // ============= Globals =============
+    let map = null;            // AMap.Map instance
+    let driving = null;        // AMap.Driving plugin instance
+    let tripData = null;       // GET /api/plan/{trip_id} response
+    const markersByDay = [];   // markersByDay[i] = [marker1, marker2, ...]
+    const polylinesByDay = []; // polylinesByDay[i] = AMap.Polyline
+    const DAY_COLORS = ['#FF6B35', '#3D8BFD', '#10B981', '#A855F7', '#F59E0B'];
+
+    // ============= Bootstrap =============
+    async function bootstrap() {
+      try {
+        const tripId = new URLSearchParams(location.search).get('trip_id');
+        if (!tripId) {
+          showError('缺少 trip_id 参数. 请从生成页跳转过来.');
+          return;
+        }
+
+        // 1. fetch public config
+        const cfgResp = await fetch('/api/config');
+        if (!cfgResp.ok) throw new Error('config endpoint failed');
+        const cfg = await cfgResp.json();
+        if (!cfg.amap_web_js_key) {
+          showError('地图服务未配置 (AMAP_WEB_JS_KEY 缺失). 请联系管理员.');
+          return;
+        }
+
+        // 2. dynamic load JSAPI
+        await loadAmapJsApi(cfg.amap_web_js_key);
+
+        // 3. fetch trip
+        const tripResp = await fetch(`/api/plan/${tripId}`);
+        if (!tripResp.ok) {
+          showError(`trip 不存在或已过期 (HTTP ${tripResp.status})`);
+          return;
+        }
+        tripData = await tripResp.json();
+
+        // 4. init map
+        map = new AMap.Map('map-container', {
+          mapStyle: 'amap://styles/light',
+          zoom: 12,
+          viewMode: '2D',
+        });
+        await new Promise(resolve => {
+          AMap.plugin(['AMap.Driving'], () => {
+            driving = new AMap.Driving({ map, hideMarkers: true, autoFitView: false });
+            resolve();
+          });
+        });
+
+        // 5. handoff to render (Tasks 7-12 will fill this)
+        document.getElementById('trip-title').textContent = '加载完成 — render 待加入';
+        document.getElementById('trip-subtitle').textContent = `trip_id=${tripId}`;
+        console.log('tripData', tripData);
+
+      } catch (err) {
+        console.error(err);
+        showError('地图加载失败: ' + err.message);
+      }
+    }
+
+    function loadAmapJsApi(key) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = `https://webapi.amap.com/maps?v=1.4.15&key=${key}`;
+        script.onload = resolve;
+        script.onerror = () => reject(new Error('JSAPI 加载失败 (网络/CDN)'));
+        document.head.appendChild(script);
+      });
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('status-banner');
+      el.textContent = msg;
+      el.classList.add('show');
+    }
+
+    // ============= Run =============
+    bootstrap();
   </script>
 </body>
 </html>
