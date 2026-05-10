@@ -1,4 +1,4 @@
-"""/map view 集成测试 — endpoint + schema persistence."""
+"""/map view 集成测试 — 后端 endpoint (config/map) + (后续 task 加 schema 持久化)."""
 
 import pytest
 from fastapi.testclient import TestClient
@@ -6,16 +6,17 @@ from fastapi.testclient import TestClient
 
 @pytest.fixture(scope="module")
 def app_client():
-    # NOTE: Built-in `monkeypatch` is function-scoped, but we want module scope so
-    # TestClient lifespan fires once. Use pytest.MonkeyPatch() manually with
-    # explicit teardown to set AMAP_WEB_JS_KEY for this test module.
-    mp = pytest.MonkeyPatch()
-    mp.setenv("AMAP_WEB_JS_KEY", "test_web_js_key_xyz")
-    from api.main import app
+    """Module-scoped FastAPI TestClient with AMAP_WEB_JS_KEY set.
 
-    with TestClient(app) as c:
-        yield c
-    mp.undo()
+    Uses MonkeyPatch.context() (exception-safe) instead of the function-scoped
+    `monkeypatch` fixture, so we can keep module scope and only fire lifespan once.
+    """
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setenv("AMAP_WEB_JS_KEY", "test_web_js_key_xyz")
+        from api.main import app
+
+        with TestClient(app) as c:
+            yield c
 
 
 def test_public_config_returns_amap_web_js_key(app_client):
