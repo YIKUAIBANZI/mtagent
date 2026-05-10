@@ -72,6 +72,18 @@ async def health():
     }
 
 
+@app.get("/api/config")
+async def get_public_config():
+    """Public config exposed to frontend (non-sensitive only).
+
+    AMAP_WEB_JS_KEY is required for client-side JSAPI; it's restricted
+    to whitelisted referrers in the Amap console as the security boundary.
+    """
+    return {
+        "amap_web_js_key": os.environ.get("AMAP_WEB_JS_KEY", ""),
+    }
+
+
 @app.get("/", include_in_schema=False)
 async def root():
     page = WEB_DIR / "plan_stack.html"
