@@ -157,6 +157,8 @@
         // 5. render
         renderHeader(tripData);
         renderDayList(tripData);
+        renderAllMarkers(tripData);
+        fitMapToAllMarkers();
 
       } catch (err) {
         console.error(err);
@@ -206,6 +208,38 @@
       return String(s).replace(/[&<>"']/g, c => (
         { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
       ));
+    }
+
+    // ============= Map: markers =============
+    function renderAllMarkers(trip) {
+      const days = trip.draft_route?.days || [];
+      days.forEach((day, dayIndex) => {
+        markersByDay[dayIndex] = [];
+        (day.stops || []).forEach((stop, stopIndex) => {
+          const lng = stop.poi?.longitude;
+          const lat = stop.poi?.latitude;
+          if (typeof lng !== 'number' || typeof lat !== 'number') {
+            console.warn(`day ${dayIndex} stop ${stopIndex} missing coords, skip`);
+            return;
+          }
+          const color = DAY_COLORS[dayIndex] || '#d6d3d1';
+          const marker = new AMap.Marker({
+            position: [lng, lat],
+            offset: new AMap.Pixel(-14, -28),
+            content: `<div class="marker" style="background:${color}">${stopIndex + 1}</div>`,
+            title: stop.poi.name,
+          });
+          marker.setMap(map);
+          markersByDay[dayIndex].push(marker);
+        });
+      });
+    }
+
+    function fitMapToAllMarkers() {
+      const all = markersByDay.flat();
+      if (all.length > 0) {
+        map.setFitView(all, false, [60, 60, 60, 380]);  // 左 padding 380 留浮窗
+      }
     }
 
     function loadAmapJsApi(key) {
