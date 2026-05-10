@@ -26,3 +26,11 @@ def test_public_config_returns_amap_web_js_key(app_client):
     data = resp.json()
     assert "amap_web_js_key" in data
     assert data["amap_web_js_key"] == "test_web_js_key_xyz"
+
+
+def test_map_view_returns_html(app_client):
+    """GET /map returns the map.html static file."""
+    resp = app_client.get("/map")
+    assert resp.status_code == 200
+    assert "text/html" in resp.headers["content-type"]
+    assert "<html" in resp.text.lower()

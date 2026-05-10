@@ -92,6 +92,12 @@ async def root():
     return FileResponse(page)
 
 
+@app.get("/map")
+async def map_view():
+    """Map view page — left floating panel + full-screen Amap JSAPI."""
+    return FileResponse(WEB_DIR / "map.html")
+
+
 from api import routes  # noqa: E402
 
 app.include_router(routes.router)
