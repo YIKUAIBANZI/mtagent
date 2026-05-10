@@ -154,15 +154,58 @@
           });
         });
 
-        // 5. handoff to render (Tasks 7-12 will fill this)
-        document.getElementById('trip-title').textContent = '加载完成 — render 待加入';
-        document.getElementById('trip-subtitle').textContent = `trip_id=${tripId}`;
-        console.log('tripData', tripData);
+        // 5. render
+        renderHeader(tripData);
+        renderDayList(tripData);
 
       } catch (err) {
         console.error(err);
         showError('地图加载失败: ' + err.message);
       }
+    }
+
+    // ============= Panel rendering =============
+    function renderHeader(trip) {
+      const intent = trip.intent || {};
+      const days = trip.draft_route?.days || [];
+      document.getElementById('trip-title').textContent =
+        `${intent.city || '未知'} · ${days.length} 天行程`;
+      document.getElementById('trip-subtitle').textContent =
+        `${intent.traveler_type || ''} · ${intent.budget_level || ''}`;
+    }
+
+    function renderDayList(trip) {
+      const days = trip.draft_route?.days || [];
+      const list = document.getElementById('day-list');
+      list.innerHTML = '';
+      days.forEach((day, i) => {
+        const li = document.createElement('li');
+        li.className = 'day-card fade-in';   // 直接加 fade-in (Task 12 改成流式)
+        li.style.setProperty('--day-color', DAY_COLORS[i] || '#d6d3d1');
+        li.dataset.dayIndex = i;
+
+        const title = document.createElement('div');
+        title.className = 'day-card-title';
+        title.textContent = `Day ${i + 1} · ${day.anchor_district || ''}`;
+        li.appendChild(title);
+
+        (day.stops || []).forEach(stop => {
+          const row = document.createElement('div');
+          row.className = 'stop-row';
+          row.innerHTML = `
+            <span class="stop-time">${stop.arrival_time || ''}</span>
+            <span class="stop-name">${escapeHtml(stop.poi?.name || '未命名')}</span>
+          `;
+          li.appendChild(row);
+        });
+        list.appendChild(li);
+      });
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => (
+        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+      ));
     }
 
     function loadAmapJsApi(key) {
