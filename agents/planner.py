@@ -32,6 +32,7 @@ from agents.tools import (
     filter_by_intent_constraints,
     generate_day_template,
     rank_by_traveler_type,
+    route_by_persona,
     search_pois,
 )
 from dianping.client import DianpingClient
@@ -158,6 +159,13 @@ class Planner:
 
         details = await batch_get_poi_details(self.client, list(all_ids))
         pois = list(details.values())
+
+        # 4.5 v2.5 Persona routing: shrink POI pool by traveler_type + modifiers.
+        # top_n scales with days because Planner clusters by k=days then filters
+        # business_hour + intent — each day needs ≥ 3 stops post-filter.
+        pois = route_by_persona(
+            pois, intent, min_size=8, top_n=max(20, intent.days * 15)
+        )
 
         # 5. Cluster (forces no-cross-district per day)
         clusters = cluster_anchor_orbit(pois, k=intent.days, max_radius_km=5.0)

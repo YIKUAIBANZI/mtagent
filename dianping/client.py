@@ -112,14 +112,25 @@ class DianpingClient:
 
     async def get_single_poi(self, openshopid: str) -> POI:
         data = await self._post("/router/poi/getsinglepoi", {"openshopid": openshopid})
-        return POI(**data["data"])
+        poi = POI(**data["data"])
+        if poi.city:
+            self._attach_labels([poi], city=poi.city)
+        return poi
 
     async def batch_get_poi(self, ids: list[str]) -> dict[str, POI]:
         data = await self._post(
             "/router/poi/batchgetpoi",
             {"multiopenshopid": ",".join(ids)},
         )
-        return {k: POI(**v) for k, v in data["data"].items()}
+        pois = {k: POI(**v) for k, v in data["data"].items()}
+        # Group by city (typically all from one city, but be defensive)
+        by_city: dict[str, list[POI]] = {}
+        for poi in pois.values():
+            if poi.city:
+                by_city.setdefault(poi.city, []).append(poi)
+        for city, city_pois in by_city.items():
+            self._attach_labels(city_pois, city=city)
+        return pois
 
     async def close(self) -> None:
         await self._client.aclose()
