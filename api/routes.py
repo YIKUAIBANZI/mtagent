@@ -301,6 +301,8 @@ async def plan_stream(
                 ]
                 for coro in asyncio.as_completed(transit_tasks):
                     day_index, segments = await coro
+                    # 持久化到 days_out: /map 页面通过 GET /api/plan/{id} 拿
+                    days_out[day_index].transit_segments = segments
                     yield format_event(
                         "transit.updated",
                         {"day_index": day_index, "segments": segments},

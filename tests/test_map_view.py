@@ -34,3 +34,38 @@ def test_map_view_returns_html(app_client):
     assert resp.status_code == 200
     assert "text/html" in resp.headers["content-type"]
     assert "<html" in resp.text.lower()
+
+
+def test_trip_persistence_includes_transit_segments(sse_app_client):
+    """SSE 完成后 GET /api/plan/{trip_id} 应含 transit_segments per day."""
+    # 跑一次 trip
+    resp = sse_app_client.post(
+        "/api/plan/stream",
+        json={"free_text": "深圳两天情侣，预算精致"},
+    )
+    assert resp.status_code == 200
+    # 提取 trip_id
+    body = resp.text
+    trip_id = None
+    for line in body.split("\n"):
+        if line.startswith("data:") and "trip_id" in line and "duration_ms" in line:
+            import json
+
+            data = json.loads(line[5:].strip())
+            trip_id = data["trip_id"]
+            break
+    assert trip_id is not None, "no trip_id in SSE complete event"
+
+    # 拿持久化 trip
+    resp2 = sse_app_client.get(f"/api/plan/{trip_id}")
+    assert resp2.status_code == 200
+    trip = resp2.json()
+    days = trip["draft_route"]["days"]
+    assert len(days) >= 2
+    for day in days:
+        assert "transit_segments" in day, (
+            f"day {day['day_index']} missing transit_segments"
+        )
+        # 至少 stops_count - 1 段 (≥1 if ≥2 stops)
+        if len(day["stops"]) >= 2:
+            assert len(day["transit_segments"]) >= 1

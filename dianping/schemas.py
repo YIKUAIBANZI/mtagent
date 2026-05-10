@@ -281,6 +281,9 @@ class DayPlan(BaseModel):
     day_index: int
     anchor_district: str = ""
     stops: list[Stop] = Field(default_factory=list)
+    transit_segments: list[dict] = Field(default_factory=list)
+    # 每段形如: {"from_index": 0, "to_index": 1,
+    #           "options": {mode: TransitInfo dict}, "recommended": "transit"}
 
 
 class RouteDraft(BaseModel):
