@@ -19,6 +19,33 @@ _PROMPT_PATH = Path(__file__).parent / "prompts" / "profiler.md"
 REQUIRED_FIELDS = ("city", "days", "traveler_type")
 
 
+KEYWORD_RULES: dict[ModifierName, tuple[str, ...]] = {
+    "重文化": ("博物馆", "历史", "文化", "古迹", "陕博", "碑林"),
+    "重美食": ("美食", "吃", "小吃", "网红店", "陕菜", "凉皮", "肉夹馍"),
+    "怕排队": ("不想排队", "省时间", "怕等", "工作日"),
+}
+
+ALL_MODIFIERS: tuple[ModifierName, ...] = ("轻量体力", "重文化", "重美食", "怕排队")
+
+
+def _apply_modifier_defaults(intent: ParsedIntent, user_text: str) -> None:
+    """Fill intent.modifiers from traveler_type defaults + keyword scan.
+
+    Mutates intent in place. Always populates all 4 modifier keys with bools.
+    """
+    text = (user_text or "").lower()
+    # Default by traveler_type (only generates 轻量体力 default)
+    if intent.traveler_type in ("银发", "家庭亲子"):
+        intent.modifiers.setdefault("轻量体力", True)
+    # Keyword scan (any-of)
+    for mod, keywords in KEYWORD_RULES.items():
+        if any(w.lower() in text for w in keywords):
+            intent.modifiers[mod] = True
+    # Backfill missing modifiers with False (explicit, never missing)
+    for m in ALL_MODIFIERS:
+        intent.modifiers.setdefault(m, False)
+
+
 class Profiler:
     """Profiler agent. v0 minimal — single LLM call, no clarifying loop."""
 
@@ -71,6 +98,7 @@ class Profiler:
             )
             ready = True
 
+        _apply_modifier_defaults(understood, ctx.user_input.free_text)
         ctx.intent = understood
         ctx.log_event(
             "Profiler",
