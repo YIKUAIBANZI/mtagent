@@ -121,3 +121,67 @@ def test_default_stub_path_triggers_fallback_per_day(sse_app_client):
         )
         for stop in e["data"]["stops"]:
             assert "longitude" in stop and "latitude" in stop
+
+
+# ===== Task 7: Real-LLM fallback + day_partial timing =====
+
+
+def test_real_llm_failure_emits_day_done_fallback_then_day_done(
+    monkeypatch, sse_app_client
+):
+    """When the stream LLM raises, compose_one_day wraps in PlannerLLMError,
+    routes.py catches, emits day_done_fallback then standard day_done.
+    Monkeypatch stub_planner_llm_stream to raise (covers same code path as
+    real dashscope failure since both go through compose_one_day's stream_fn)."""
+    import api.stub_llm as stub_llm
+
+    async def _broken_stream(system, user):
+        if False:
+            yield ""
+        raise RuntimeError("simulated dashscope 500")
+
+    monkeypatch.setattr(stub_llm, "stub_planner_llm_stream", _broken_stream)
+
+    with sse_app_client.stream(
+        "POST",
+        "/api/plan/stream",
+        json={"free_text": "情侣 3 天深圳"},
+    ) as resp:
+        body = b"".join(resp.iter_bytes())
+    events = parse_sse_stream(body)
+
+    fallback_events = [e for e in events if e["event"] == "planner.day_done_fallback"]
+    day_done = [e for e in events if e["event"] == "planner.day_done"]
+
+    assert len(fallback_events) == 3
+    assert len(day_done) == 3
+    for e in day_done:
+        for stop in e["data"]["stops"]:
+            assert "longitude" in stop
+            assert "latitude" in stop
+
+
+def test_day_partial_events_emit_during_compose(monkeypatch, sse_app_client):
+    """Verify day_partial events arrive when char-stream yields names progressively."""
+    import api.stub_llm as stub_llm
+
+    async def _slow_stream(system, user):
+        yield '{"stops":[{"name":"测试 A","poi_openshopid":"'
+        yield 'UNKNOWN_ID_1","slot_name":"上午景点"},{"name":"测试 B","'
+        yield 'poi_openshopid":"UNKNOWN_ID_2","slot_name":"午饭"}]}'
+
+    monkeypatch.setattr(stub_llm, "stub_planner_llm_stream", _slow_stream)
+
+    with sse_app_client.stream(
+        "POST",
+        "/api/plan/stream",
+        json={"free_text": "情侣 3 天深圳"},
+    ) as resp:
+        body = b"".join(resp.iter_bytes())
+    events = parse_sse_stream(body)
+
+    partial_events = [e for e in events if e["event"] == "planner.day_partial"]
+    assert partial_events, "expected at least one day_partial event"
+    assert any(p["data"]["names"] for p in partial_events)
+    all_names = [n for p in partial_events for n in p["data"]["names"]]
+    assert "测试 A" in all_names or "测试 B" in all_names
