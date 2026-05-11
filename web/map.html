@@ -159,6 +159,7 @@
         renderDayList(tripData);
         renderAllMarkers(tripData);
         fitMapToAllMarkers();
+        await renderAllPolylines(tripData);
 
       } catch (err) {
         console.error(err);
@@ -240,6 +241,52 @@
       if (all.length > 0) {
         map.setFitView(all, false, [60, 60, 60, 380]);  // 左 padding 380 留浮窗
       }
+    }
+
+    // ============= Map: polylines =============
+    async function renderAllPolylines(trip) {
+      const days = trip.draft_route?.days || [];
+      // 串行画 (3 天 = 3 次 Driving.search, ~1-2s 总计, 可接受)
+      for (let i = 0; i < days.length; i++) {
+        await drawDayPolyline(days[i], i);
+      }
+    }
+
+    function drawDayPolyline(day, dayIndex) {
+      const stops = day.stops || [];
+      if (stops.length < 2) return Promise.resolve();
+      const stopCoords = stops
+        .filter(s => typeof s.poi?.longitude === 'number')
+        .map(s => [s.poi.longitude, s.poi.latitude]);
+      if (stopCoords.length < 2) return Promise.resolve();
+
+      const origin = stopCoords[0];
+      const destination = stopCoords[stopCoords.length - 1];
+      const waypoints = stopCoords.slice(1, -1).map(p => ({ location: p }));
+      const color = DAY_COLORS[dayIndex] || '#d6d3d1';
+
+      return new Promise((resolve) => {
+        driving.search(origin, destination, { waypoints }, (status, result) => {
+          let pathLngLat;
+          if (status === 'complete' && result.routes?.[0]) {
+            const route = result.routes[0];
+            pathLngLat = route.steps.flatMap(s => s.path).map(p => [p.lng, p.lat]);
+          } else {
+            console.warn(`Driving.search day ${dayIndex} failed (${status}), fallback straight line`);
+            pathLngLat = stopCoords;
+          }
+          const line = new AMap.Polyline({
+            path: pathLngLat,
+            strokeColor: color,
+            strokeWeight: 5,
+            strokeOpacity: 0.85,
+            showDir: true,
+          });
+          line.setMap(map);
+          polylinesByDay[dayIndex] = line;
+          resolve();
+        });
+      });
     }
 
     function loadAmapJsApi(key) {
