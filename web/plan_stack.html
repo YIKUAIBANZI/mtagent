@@ -29,6 +29,24 @@
       from { opacity: 0; transform: translateY(16px); }
       to   { opacity: 1; transform: translateY(0); }
     }
+    .map-cta {
+      display: block;
+      margin: 0 auto 24px;
+      width: fit-content;
+      padding: 10px 20px;
+      background: #d2691e;
+      color: #fff !important;
+      text-decoration: none;
+      border-radius: 24px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(210, 105, 30, 0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .map-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(210, 105, 30, 0.4);
+    }
   </style>
 </head>
 <body class="min-h-screen">
@@ -255,6 +273,17 @@
           break;
         case "trip.complete":
           $("status-text").textContent = `done · ${data.duration_ms}ms`;
+          if (data.trip_id) {
+            const mapBtn = document.createElement("a");
+            mapBtn.href = `/map?trip_id=${data.trip_id}`;
+            mapBtn.target = "_blank";
+            mapBtn.textContent = "🗺️ 在地图上看完整路线";
+            mapBtn.className = "map-cta";
+            const timeline = $("timeline-section");
+            if (timeline && !timeline.querySelector(".map-cta")) {
+              timeline.prepend(mapBtn);
+            }
+          }
           break;
         case "error":
           showError(`${data.phase}: ${data.message}`);
