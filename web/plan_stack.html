@@ -791,12 +791,13 @@ function renderDayPartial(data) {
 
 const pendingMarkerStops = [];
 
-// 等到拿完整 trip JSON 后, 用 lat/lng 真把 markers 落上
+// trip.complete 收尾: 兜底 markers (day_done 已画过,这里仅 fallback 缺失的) + fit view
+// v1.6: 不再这里重画 polyline — day_done 阶段已经 enqueue 过, fitMapToAllMarkers 重画
+//       会 double-fire AMap.Driving requests, 撞 CUQPS_HAS_EXCEEDED_THE_LIMIT
 async function fitMapToAllMarkers() {
   if (!currentTripId || !map) return;
   const trip = await fetch(`/api/plan/${currentTripId}`).then(r => r.json()).catch(() => null);
   if (!trip?.draft_route) return;
-  // 把每个 day 的每个 stop 的 marker 真的画上 (用 lat/lng)
   trip.draft_route.days.forEach((day, dayIndex) => {
     markersByDay[dayIndex] = markersByDay[dayIndex] || [];
     const color = DAY_COLORS[dayIndex] || '#ff3e00';
@@ -816,11 +817,7 @@ async function fitMapToAllMarkers() {
       markersByDay[dayIndex][stopIndex] = marker;
     });
   });
-  // polylines per-segment per-mode
-  for (let i = 0; i < trip.draft_route.days.length; i++) {
-    await drawDayPolyline(trip.draft_route.days[i], i);
-  }
-  // fit view
+  // fit view (polyline 已在 day_done 阶段 enqueue 完毕)
   const all = markersByDay.flat().filter(Boolean);
   if (all.length > 0) map.setFitView(all, false, [60, 60, 60, 420]);
 }
