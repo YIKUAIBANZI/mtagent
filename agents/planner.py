@@ -88,6 +88,15 @@ def _pick_anchors(
     return chosen
 
 
+class PlannerLLMError(Exception):
+    """Single-day LLM call failed. Carries day_idx so caller can fallback per-day."""
+
+    def __init__(self, day_idx: int, original: Exception):
+        self.day_idx = day_idx
+        self.original = original
+        super().__init__(f"day {day_idx} LLM failed: {original!r}")
+
+
 class Planner:
     def __init__(
         self,
@@ -259,6 +268,104 @@ class Planner:
         ctx.log_event("Planner", "done", {"day_count": len(route.days)})
         ctx.save()
         return route
+
+    async def compose_one_day(
+        self,
+        day_idx: int,
+        intent: ParsedIntent,
+        template: DayTemplate,
+        anchor: tuple[str, float, float],
+        day_cluster_pois: list[POI],
+        amap,
+        on_partial: Optional[Callable[[int, list[str]], Awaitable[None]]] = None,
+    ) -> tuple[int, DayPlan, list[dict]]:
+        """Single-day LLM compose with char-level streaming and on_partial callback.
+
+        Returns (day_idx, DayPlan, transit_segments_list).
+        On any failure raises PlannerLLMError(day_idx, original).
+        Caller (routes.py) catches PlannerLLMError and falls back to
+        _synthesize_fallback_route + _compute_day_transits.
+        """
+        from api.routes import _compute_day_transits  # local: avoid circular import
+
+        payload = self._build_one_day_payload(
+            day_idx=day_idx,
+            intent=intent,
+            template=template,
+            anchor=anchor,
+            day_cluster_pois=day_cluster_pois,
+        )
+
+        # Late-bind: use injected llm_call_stream if provided, else module-level
+        # _default_qwen_stream (monkeypatchable in tests).
+        stream_fn = (
+            self.llm_call_stream
+            if self.llm_call_stream is not None
+            else _default_qwen_stream
+        )
+
+        buf = ""
+        last_names: list[str] = []
+        try:
+            async for chunk in stream_fn(self._system_prompt, payload):
+                buf += chunk
+                if on_partial is not None:
+                    names = _parse_partial_stops(buf)
+                    if len(names) > len(last_names):
+                        last_names = names
+                        await on_partial(day_idx, list(names))
+
+            try:
+                llm_data = json.loads(buf)
+            except json.JSONDecodeError as exc:
+                raise PlannerLLMError(day_idx, exc) from exc
+        except PlannerLLMError:
+            raise
+        except Exception as exc:
+            raise PlannerLLMError(day_idx, exc) from exc
+
+        poi_index = {p.openshopid: p for p in day_cluster_pois}
+        stops: list[Stop] = []
+        for s in llm_data.get("stops") or []:
+            pid = s.get("poi_openshopid")
+            poi = poi_index.get(pid)
+            if poi is None:
+                continue
+            slot_name = s.get("slot_name", template.slots[0].name)
+            slot_def = next(
+                (slot for slot in template.slots if slot.name == slot_name),
+                template.slots[0],
+            )
+            stops.append(
+                Stop(
+                    poi=poi,
+                    slot=TimeSlot(
+                        name=slot_name, start=slot_def.start, end=slot_def.end
+                    ),
+                    arrival_time=_parse_time(s.get("arrival_time"), slot_def.start),
+                    leave_time=_parse_time(s.get("leave_time"), slot_def.end),
+                    transport_to_next_minutes=int(
+                        s.get("transport_to_next_minutes", 30)
+                    ),
+                )
+            )
+
+        # Empty-stops outcome (e.g., stub_planner_llm_stream yields '{"stops":[]}')
+        # → raise so caller fallback synthesizes from candidate POIs.
+        if not stops and day_cluster_pois:
+            raise PlannerLLMError(
+                day_idx,
+                ValueError("LLM returned 0 stops despite non-empty candidates"),
+            )
+
+        day_plan = DayPlan(
+            day_index=day_idx,
+            anchor_district=anchor[0],
+            stops=stops,
+        )
+
+        _, segments = await _compute_day_transits(day_plan, intent, amap)
+        return day_idx, day_plan, segments
 
     def _build_one_day_payload(
         self,

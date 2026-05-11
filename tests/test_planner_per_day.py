@@ -4,7 +4,13 @@ import json
 
 import pytest
 
-from agents.planner import Planner, _default_qwen_stream, _parse_partial_stops
+from agents.amap import AmapClient
+from agents.planner import (
+    Planner,
+    PlannerLLMError,
+    _default_qwen_stream,
+    _parse_partial_stops,
+)
 from agents.tools import default_pace_for_traveler, generate_day_template
 from dianping.client import DianpingClient
 from dianping.schemas import POI, ParsedIntent, ReviewTag
@@ -192,3 +198,170 @@ async def test_default_qwen_stream_yields_string_chunks(monkeypatch):
         chunks.append(chunk)
 
     assert "".join(chunks) == '{"stops":[{"name":"A"}]}'
+
+
+# ===== Task 4: compose_one_day + PlannerLLMError tests =====
+
+
+@pytest.mark.asyncio
+async def test_compose_one_day_returns_day_plan_with_coords(monkeypatch):
+    """Happy path: stream returns valid JSON with stops referencing cluster POIs."""
+    p = _planner()
+    intent = _make_intent()
+    pace = default_pace_for_traveler(intent.traveler_type)
+    templates = generate_day_template(
+        days=3, traveler_type=intent.traveler_type, pace=pace
+    )
+    anchor = ("钟楼", 34.26, 108.94)
+    cluster = [
+        _make_poi("钟楼景区", "id_a", ["景点"]),
+        _make_poi("回民街", "id_b", ["美食"]),
+    ]
+
+    async def _fake_stream(system, user):
+        for c in [
+            '{"stops":[',
+            '{"poi_openshopid":"id_a","slot_name":"',
+            '上午景点"}]}',
+        ]:
+            yield c
+
+    async def _fake_transit(day_plan, intent_arg, amap):
+        return (day_plan.day_index, [{"from_index": 0, "to_index": 1, "options": {}}])
+
+    monkeypatch.setattr("agents.planner._default_qwen_stream", _fake_stream)
+    monkeypatch.setattr("api.routes._compute_day_transits", _fake_transit)
+
+    amap = AmapClient(key="")
+    try:
+        day_idx, day_plan, segs = await p.compose_one_day(
+            day_idx=0,
+            intent=intent,
+            template=templates[0],
+            anchor=anchor,
+            day_cluster_pois=cluster,
+            amap=amap,
+        )
+    finally:
+        await amap._client.aclose()
+
+    assert day_idx == 0
+    assert len(day_plan.stops) == 1
+    assert day_plan.stops[0].poi.longitude == 108.94
+    assert day_plan.stops[0].poi.latitude == 34.26
+    assert isinstance(segs, list)
+
+
+@pytest.mark.asyncio
+async def test_compose_one_day_emits_on_partial_with_names(monkeypatch):
+    p = _planner()
+    intent = _make_intent()
+    pace = default_pace_for_traveler(intent.traveler_type)
+    templates = generate_day_template(
+        days=3, traveler_type=intent.traveler_type, pace=pace
+    )
+    anchor = ("钟楼", 34.26, 108.94)
+    cluster = [_make_poi("钟楼景区", "id_a", ["景点"])]
+
+    async def _fake_stream(system, user):
+        yield '{"stops":[{"name":"钟楼景区","poi_openshopid":"id_a","'
+        yield 'slot_name":"上午景点"}]}'
+
+    async def _fake_transit(day_plan, intent_arg, amap):
+        return (day_plan.day_index, [])
+
+    monkeypatch.setattr("agents.planner._default_qwen_stream", _fake_stream)
+    monkeypatch.setattr("api.routes._compute_day_transits", _fake_transit)
+
+    partial_calls: list[tuple[int, list[str]]] = []
+
+    async def _on_partial(day_idx, names):
+        partial_calls.append((day_idx, list(names)))
+
+    amap = AmapClient(key="")
+    try:
+        await p.compose_one_day(
+            day_idx=1,
+            intent=intent,
+            template=templates[1],
+            anchor=anchor,
+            day_cluster_pois=cluster,
+            amap=amap,
+            on_partial=_on_partial,
+        )
+    finally:
+        await amap._client.aclose()
+
+    assert partial_calls
+    assert partial_calls[0] == (1, ["钟楼景区"])
+
+
+@pytest.mark.asyncio
+async def test_compose_one_day_raises_planner_llm_error_on_invalid_json(monkeypatch):
+    p = _planner()
+    intent = _make_intent()
+    pace = default_pace_for_traveler(intent.traveler_type)
+    templates = generate_day_template(
+        days=3, traveler_type=intent.traveler_type, pace=pace
+    )
+    anchor = ("钟楼", 34.26, 108.94)
+    cluster = [_make_poi("钟楼", "id_a", ["景点"])]
+
+    async def _fake_stream(system, user):
+        yield "not a valid json at all"
+
+    monkeypatch.setattr("agents.planner._default_qwen_stream", _fake_stream)
+
+    amap = AmapClient(key="")
+    try:
+        with pytest.raises(PlannerLLMError) as exc_info:
+            await p.compose_one_day(
+                day_idx=0,
+                intent=intent,
+                template=templates[0],
+                anchor=anchor,
+                day_cluster_pois=cluster,
+                amap=amap,
+            )
+    finally:
+        await amap._client.aclose()
+
+    assert exc_info.value.day_idx == 0
+
+
+@pytest.mark.asyncio
+async def test_compose_one_day_raises_planner_llm_error_on_stream_exception(
+    monkeypatch,
+):
+    p = _planner()
+    intent = _make_intent()
+    pace = default_pace_for_traveler(intent.traveler_type)
+    templates = generate_day_template(
+        days=3, traveler_type=intent.traveler_type, pace=pace
+    )
+    anchor = ("钟楼", 34.26, 108.94)
+    cluster = [_make_poi("钟楼", "id_a", ["景点"])]
+
+    async def _fake_stream(system, user):
+        if False:
+            yield ""
+        raise RuntimeError("dashscope 500")
+
+    monkeypatch.setattr("agents.planner._default_qwen_stream", _fake_stream)
+
+    amap = AmapClient(key="")
+    try:
+        with pytest.raises(PlannerLLMError) as exc_info:
+            await p.compose_one_day(
+                day_idx=2,
+                intent=intent,
+                template=templates[2],
+                anchor=anchor,
+                day_cluster_pois=cluster,
+                amap=amap,
+            )
+    finally:
+        await amap._client.aclose()
+
+    assert exc_info.value.day_idx == 2
+    assert "dashscope 500" in str(exc_info.value)
