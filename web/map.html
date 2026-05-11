@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>路线地图 — mtagent</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; font-family: -apple-system, "PingFang SC", sans-serif; }
+
+    /* 全屏地图容器 */
+    #map-container { position: absolute; inset: 0; z-index: 0; background: #f5f1eb; }
+
+    /* 左浮窗 */
+    #floating-panel {
+      position: absolute; top: 16px; left: 16px; z-index: 10;
+      width: 360px; max-height: calc(100vh - 32px);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      padding: 20px;
+      overflow-y: auto;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+
+    /* 浮窗 header */
+    #panel-header h1 { font-size: 18px; font-weight: 600; color: #1c1917; margin-bottom: 4px; }
+    #panel-header .subtitle { font-size: 12px; color: #78716c; }
+
+    /* totals + day filter chip 横排 */
+    .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border-radius: 16px;
+      font-size: 12px; font-weight: 500;
+      background: #fafaf9; border: 1px solid #e7e5e4; color: #57534e;
+      cursor: pointer; user-select: none;
+      transition: all 0.2s;
+    }
+    .chip.active { color: #fff; border-color: transparent; }
+    .chip-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    /* 状态行 (plan_stack 风格的极简渐进文本) */
+    .status-line {
+      display: flex; gap: 8px; align-items: baseline;
+      list-style: none;
+      font-size: 13px; color: #78716c; line-height: 1.6;
+      padding: 2px 0;
+      opacity: 0; transform: translateY(4px);
+      transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+    }
+    .status-line.fade-in { opacity: 1; transform: translateY(0); }
+    .status-line .icon { flex-shrink: 0; width: 14px; color: #a8a29e; }
+    .status-line.emphasis { color: #44403c; font-weight: 500; }
+    .status-line.rationale { color: #57534e; padding: 4px 0; }
+
+    /* day cards */
+    #day-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .day-card {
+      border-left: 4px solid var(--day-color, #d6d3d1);
+      background: #fff; border-radius: 8px; padding: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      opacity: 0; transform: translateY(8px);
+      transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+    }
+    .day-card.fade-in { opacity: 1; transform: translateY(0); }
+    .day-card-title { font-size: 13px; font-weight: 600; color: #1c1917; margin-bottom: 8px; }
+    .stop-row { display: flex; gap: 8px; padding: 6px 0; font-size: 12px; color: #44403c; }
+    .stop-time { width: 44px; color: #78716c; flex-shrink: 0; }
+    .stop-name { flex: 1; }
+
+    /* marker (内容由 JS 注入) */
+    .marker {
+      width: 28px; height: 28px; border-radius: 50%;
+      color: #fff; font-weight: 600; font-size: 13px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      border: 2px solid #fff;
+    }
+
+    /* fallback / error */
+    #status-banner {
+      position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+      z-index: 20; background: #fef2f2; color: #991b1b;
+      padding: 10px 16px; border-radius: 8px; font-size: 13px;
+      display: none;
+    }
+    #status-banner.show { display: block; }
+
+    #back-link {
+      position: absolute; bottom: 16px; left: 16px; z-index: 10;
+      color: #57534e; font-size: 12px; text-decoration: none;
+      background: rgba(255, 255, 255, 0.9); padding: 8px 12px; border-radius: 8px;
+    }
+    #back-link:hover { color: #1c1917; }
+  </style>
+</head>
+<body>
+  <div id="map-container"></div>
+
+  <aside id="floating-panel">
+    <header id="panel-header">
+      <h1 id="trip-title">加载中...</h1>
+      <div class="subtitle" id="trip-subtitle"></div>
+    </header>
+
+    <div class="chip-row" id="totals-row"></div>
+    <div class="chip-row" id="day-filter"></div>
+
+    <ol id="day-list"></ol>
+  </aside>
+
+  <a id="back-link" href="/">← 返回生成页</a>
+
+  <div id="status-banner"></div>
+
+  <script>
+    'use strict';
+
+    // ============= Globals =============
+    let map = null;            // AMap.Map instance
+    let tripData = null;       // GET /api/plan/{trip_id} response
+    const SVC = {};            // SVC[mode] = AMap.{Driving|Walking|Riding} instance
+    const markersByDay = [];   // markersByDay[i] = [marker1, marker2, ...]
+    const polylinesByDay = []; // polylinesByDay[i] = [polyline1, polyline2, ...] per segment
+    const DAY_COLORS = ['#FF6B35', '#3D8BFD', '#10B981', '#A855F7', '#F59E0B'];
+
+    // ============= Bootstrap =============
+    async function bootstrap() {
+      try {
+        const tripId = new URLSearchParams(location.search).get('trip_id');
+        if (!tripId) {
+          showError('缺少 trip_id 参数. 请从生成页跳转过来.');
+          return;
+        }
+
+        // 1. fetch public config
+        const cfgResp = await fetch('/api/config');
+        if (!cfgResp.ok) throw new Error('config endpoint failed');
+        const cfg = await cfgResp.json();
+        if (!cfg.amap_web_js_key) {
+          showError('地图服务未配置 (AMAP_WEB_JS_KEY 缺失). 请联系管理员.');
+          return;
+        }
+
+        // 2. dynamic load JSAPI
+        await loadAmapJsApi(cfg.amap_web_js_key);
+
+        // 3. fetch trip
+        const tripResp = await fetch(`/api/plan/${tripId}`);
+        if (!tripResp.ok) {
+          showError(`trip 不存在或已过期 (HTTP ${tripResp.status})`);
+          return;
+        }
+        tripData = await tripResp.json();
+
+        // 3.5 guard: trip 没生成 route (e.g. profiler 进入 awaiting_clarification)
+        const days = tripData?.draft_route?.days || [];
+        if (!tripData?.draft_route || days.length === 0) {
+          showError('这个 trip 没生成完整路线 (可能 query 太模糊, profiler 还在等你补信息). 请回生成页继续对话.');
+          document.getElementById('trip-title').textContent = '路线未生成';
+          document.getElementById('trip-subtitle').textContent =
+            tripData?.intent?.city
+              ? `${tripData.intent.city} · ${tripData.intent.days || '?'} 天 (待补全)`
+              : '需求未理解';
+          return;
+        }
+
+        // 4. init map
+        map = new AMap.Map('map-container', {
+          mapStyle: 'amap://styles/macaron',
+          zoom: 12,
+          viewMode: '2D',
+        });
+        await new Promise(resolve => {
+          // 4 个 plugin: Driving 驾车, Walking 步行, Riding 骑行 (共享给 bicycle)
+          // transit (公交) 走 Walking 兜底 — 公交 polyline 含步行+乘车段, 复杂度对 hackathon 不值
+          AMap.plugin(['AMap.Driving', 'AMap.Walking', 'AMap.Riding'], () => {
+            const opts = { map, hideMarkers: true, autoFitView: false };
+            SVC.drive = new AMap.Driving(opts);
+            SVC.walk = new AMap.Walking(opts);
+            SVC.bicycle = new AMap.Riding(opts);
+            SVC.transit = SVC.walk;   // 兜底
+            resolve();
+          });
+        });
+
+        // 5. render
+        renderHeader(tripData);
+        renderTotals(tripData.draft_route?.days || []);
+        await renderTripStreaming(tripData);
+        renderDayFilter(tripData);
+
+      } catch (err) {
+        console.error(err);
+        showError('地图加载失败: ' + err.message);
+      }
+    }
+
+    // ============= Panel rendering =============
+    function renderHeader(trip) {
+      const intent = trip.intent || {};
+      const days = trip.draft_route?.days || [];
+      document.getElementById('trip-title').textContent =
+        `${intent.city || '未知'} · ${days.length} 天行程`;
+      document.getElementById('trip-subtitle').textContent =
+        `${intent.traveler_type || ''} · ${intent.budget_level || ''}`;
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => (
+        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+      ));
+    }
+
+    // ============= Streaming render (plan_stack 极简状态行风格) =============
+    async function renderTripStreaming(trip) {
+      const days = trip.draft_route?.days || [];
+      const list = document.getElementById('day-list');
+      list.innerHTML = '';
+      const city = trip.intent?.city || '这座城市';
+
+      // 0. ✓ 已理解
+      await statusLine(list, '✓', `已理解 — ${city} · ${days.length} 天`);
+      await sleep(250);
+
+      // 1. ✓ 总览
+      const totals = computeTotals(days);
+      const totalsTxt = (totals.km > 0)
+        ? `路线已生成，全程 ${totals.km.toFixed(1)} km · ${(totals.min / 60).toFixed(1)} h`
+        : `路线已生成`;
+      await statusLine(list, '✓', totalsTxt, 'emphasis');
+      await sleep(350);
+
+      // 2. 每天: 状态行 → day card → markers → polyline
+      for (let i = 0; i < days.length; i++) {
+        const district = days[i].anchor_district || '';
+        const stopCount = (days[i].stops || []).length;
+        await statusLine(list, '📍', `Day ${i + 1} · ${district} · ${stopCount} 站`, 'emphasis');
+        await sleep(120);
+
+        const card = buildDayCard(days[i], i);
+        list.appendChild(card);
+        requestAnimationFrame(() => card.classList.add('fade-in'));
+        await sleep(120);
+
+        markersByDay[i] = [];
+        await dropDayMarkers(days[i], i);
+        await drawDayPolyline(days[i], i);
+
+        await sleep(300);
+      }
+
+      // 3. ✨ 收尾
+      await statusLine(list, '✨', '行程画好了，出发吧');
+
+      fitMapToAllMarkers();
+    }
+
+    async function statusLine(parent, icon, text, extraClass = '') {
+      const li = document.createElement('li');
+      li.className = 'status-line' + (extraClass ? ' ' + extraClass : '');
+      li.innerHTML = `<span class="icon"></span><span class="text"></span>`;
+      li.querySelector('.icon').textContent = icon;
+      li.querySelector('.text').textContent = text;
+      parent.appendChild(li);
+      requestAnimationFrame(() => li.classList.add('fade-in'));
+      await sleep(80);
+      return li;
+    }
+
+    function buildDayCard(day, dayIndex) {
+      const li = document.createElement('li');
+      li.className = 'day-card';   // 不立即加 fade-in (在调用方 RAF 后加)
+      li.style.setProperty('--day-color', DAY_COLORS[dayIndex] || '#d6d3d1');
+      li.dataset.dayIndex = dayIndex;
+
+      const title = document.createElement('div');
+      title.className = 'day-card-title';
+      title.textContent = `Day ${dayIndex + 1} · ${day.anchor_district || ''}`;
+      li.appendChild(title);
+
+      (day.stops || []).forEach(stop => {
+        const row = document.createElement('div');
+        row.className = 'stop-row';
+        row.innerHTML = `
+          <span class="stop-time">${stop.arrival_time || ''}</span>
+          <span class="stop-name">${escapeHtml(stop.poi?.name || '未命名')}</span>
+        `;
+        li.appendChild(row);
+      });
+      return li;
+    }
+
+    function dropDayMarkers(day, dayIndex) {
+      return new Promise(resolve => {
+        const stops = day.stops || [];
+        if (stops.length === 0) return resolve();
+        let dropped = 0;
+        stops.forEach((stop, stopIndex) => {
+          setTimeout(() => {
+            const lng = stop.poi?.longitude;
+            const lat = stop.poi?.latitude;
+            if (typeof lng === 'number' && typeof lat === 'number') {
+              const color = DAY_COLORS[dayIndex] || '#d6d3d1';
+              const marker = new AMap.Marker({
+                position: [lng, lat],
+                offset: new AMap.Pixel(-14, -28),
+                content: `<div class="marker" style="background:${color}">${stopIndex + 1}</div>`,
+                title: stop.poi.name,
+                animation: 'AMAP_ANIMATION_DROP',
+              });
+              marker.setMap(map);
+              markersByDay[dayIndex].push(marker);
+            }
+            dropped++;
+            if (dropped === stops.length) resolve();
+          }, stopIndex * 200);
+        });
+      });
+    }
+
+    function fitMapToAllMarkers() {
+      const all = markersByDay.flat();
+      if (all.length > 0) {
+        map.setFitView(all, false, [60, 60, 60, 380]);
+      }
+    }
+
+    function sleep(ms) {
+      return new Promise(r => setTimeout(r, ms));
+    }
+
+    // ============= Map: polylines (per-segment, per-mode) =============
+    async function drawDayPolyline(day, dayIndex) {
+      const stops = day.stops || [];
+      const segments = day.transit_segments || [];
+      const color = DAY_COLORS[dayIndex] || '#d6d3d1';
+      polylinesByDay[dayIndex] = polylinesByDay[dayIndex] || [];
+
+      // 没 transit_segments 时回退: 整天画一条 walking polyline (旧行为兼容)
+      if (segments.length === 0 && stops.length >= 2) {
+        const coords = stops
+          .filter(s => typeof s.poi?.longitude === 'number')
+          .map(s => [s.poi.longitude, s.poi.latitude]);
+        if (coords.length >= 2) {
+          for (let i = 0; i < coords.length - 1; i++) {
+            await drawSegment(coords[i], coords[i + 1], 'walk', dayIndex, color);
+          }
+        }
+        return;
+      }
+
+      // 有 segments: 逐段按 recommended mode 画
+      for (const seg of segments) {
+        const fromStop = stops[seg.from_index];
+        const toStop = stops[seg.to_index];
+        if (!fromStop?.poi || !toStop?.poi) continue;
+        const o = [fromStop.poi.longitude, fromStop.poi.latitude];
+        const d = [toStop.poi.longitude, toStop.poi.latitude];
+        if (typeof o[0] !== 'number' || typeof d[0] !== 'number') continue;
+        await drawSegment(o, d, seg.recommended || 'walk', dayIndex, color);
+      }
+    }
+
+    function drawSegment(origin, destination, mode, dayIndex, color) {
+      const svc = SVC[mode] || SVC.walk;
+      // v1.4.15 callback signature: (status, result)
+      // Driving.search 是 4-arg (origin, destination, opts, cb)
+      // Walking/Riding.search 是 3-arg (origin, destination, cb)
+      return new Promise(resolve => {
+        const handler = (status, result) => {
+          let pathLngLat;
+          if (status === 'complete' && result?.routes?.[0]?.steps) {
+            pathLngLat = result.routes[0].steps.flatMap(s => s.path).map(p => [p.lng, p.lat]);
+          } else {
+            console.warn(`${mode}.search day ${dayIndex} failed (${status}), fallback straight line`);
+            pathLngLat = [origin, destination];
+          }
+          const isDashed = mode === 'walk' || mode === 'bicycle' || mode === 'transit';
+          const line = new AMap.Polyline({
+            path: pathLngLat,
+            strokeColor: color,
+            strokeWeight: 5,
+            strokeOpacity: 0.85,
+            strokeStyle: isDashed ? 'dashed' : 'solid',
+            showDir: true,
+          });
+          line.setMap(map);
+          polylinesByDay[dayIndex].push(line);
+          resolve();
+        };
+        if (mode === 'drive') {
+          svc.search(origin, destination, {}, handler);
+        } else {
+          svc.search(origin, destination, handler);
+        }
+      });
+    }
+
+    // ============= Totals chip =============
+    function computeTotals(days) {
+      let totalKm = 0, totalMin = 0;
+      for (const day of days) {
+        for (const seg of (day.transit_segments || [])) {
+          const rec = seg.options?.[seg.recommended];
+          if (!rec) continue;
+          totalKm += rec.distance_km || 0;
+          totalMin += rec.minutes || 0;
+        }
+      }
+      return { km: totalKm, min: totalMin };
+    }
+
+    function renderTotals(days) {
+      const { km, min } = computeTotals(days);
+      const row = document.getElementById('totals-row');
+      row.innerHTML = '';
+      if (days.length === 0) return;
+      const label = (km > 0 || min > 0)
+        ? `${km.toFixed(1)} km · 全程`
+        : '— 距离数据未计算';
+      const labelTime = (min > 0)
+        ? `${(min / 60).toFixed(1)} h · 在途`
+        : '— 时长数据未计算';
+      const c1 = document.createElement('div');
+      c1.className = 'chip';
+      c1.style.background = '#1c1917';
+      c1.style.color = '#fff';
+      c1.style.borderColor = 'transparent';
+      c1.textContent = label;
+      const c2 = c1.cloneNode(true);
+      c2.textContent = labelTime;
+      row.appendChild(c1);
+      row.appendChild(c2);
+    }
+
+    // ============= Day filter =============
+    const dayVisibility = [];   // dayVisibility[i] = bool
+
+    function renderDayFilter(trip) {
+      const days = trip.draft_route?.days || [];
+      const filter = document.getElementById('day-filter');
+      filter.innerHTML = '';
+      days.forEach((_, i) => {
+        dayVisibility[i] = true;
+        const chip = document.createElement('div');
+        chip.className = 'chip active';
+        chip.dataset.dayIndex = i;
+        const color = DAY_COLORS[i] || '#d6d3d1';
+        chip.style.background = color;
+        chip.style.color = '#fff';
+        chip.style.borderColor = 'transparent';
+        chip.innerHTML = `<span class="chip-dot" style="background:#fff"></span>Day ${i + 1}`;
+        chip.onclick = () => toggleDay(i, chip);
+        filter.appendChild(chip);
+      });
+    }
+
+    function toggleDay(i, chip) {
+      const visible = !dayVisibility[i];
+      dayVisibility[i] = visible;
+
+      (markersByDay[i] || []).forEach(m => visible ? m.setMap(map) : m.setMap(null));
+      (polylinesByDay[i] || []).forEach(line => line.setMap(visible ? map : null));
+
+      const color = DAY_COLORS[i] || '#d6d3d1';
+      chip.classList.toggle('active', visible);
+      if (visible) {
+        chip.style.background = color;
+        chip.style.color = '#fff';
+        chip.style.borderColor = 'transparent';
+      } else {
+        chip.style.background = '#fafaf9';
+        chip.style.color = '#a8a29e';
+        chip.style.borderColor = '#e7e5e4';
+      }
+
+      const card = document.querySelector(`.day-card[data-day-index="${i}"]`);
+      if (card) card.style.opacity = visible ? '1' : '0.35';
+
+      const visibleDays = (tripData.draft_route?.days || []).filter((_, idx) => dayVisibility[idx]);
+      renderTotals(visibleDays);
+    }
+
+    function loadAmapJsApi(key) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = `https://webapi.amap.com/maps?v=1.4.15&key=${key}`;
+        script.onload = resolve;
+        script.onerror = () => reject(new Error('JSAPI 加载失败 (网络/CDN)'));
+        document.head.appendChild(script);
+      });
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('status-banner');
+      el.textContent = msg;
+      el.classList.add('show');
+    }
+
+    // ============= Run =============
+    bootstrap();
+  </script>
+</body>
+</html>

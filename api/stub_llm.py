@@ -106,6 +106,15 @@ async def stub_planner_llm(system: str, user: str) -> str:
     )
 
 
+async def stub_planner_llm_stream(system: str, user: str):
+    """Stream variant of stub_planner_llm — yields one chunk with empty stops.
+
+    compose_one_day's empty-stops detection raises PlannerLLMError → routes.py
+    fallback path takes over (_synthesize_fallback_route + transit compute).
+    """
+    yield json.dumps({"stops": []}, ensure_ascii=False)
+
+
 def resolve_profiler_llm() -> Callable[[str, str], Awaitable[str]]:
     """Return real qwen call if DASHSCOPE_API_KEY is set, else stub."""
     if os.environ.get("DASHSCOPE_API_KEY"):
@@ -122,3 +131,12 @@ def resolve_planner_llm() -> Callable[[str, str], Awaitable[str]]:
 
         return _default_qwen_call
     return stub_planner_llm
+
+
+def resolve_planner_llm_stream():
+    """Return real qwen stream if DASHSCOPE_API_KEY is set, else stub stream."""
+    if os.environ.get("DASHSCOPE_API_KEY"):
+        from agents.planner import _default_qwen_stream
+
+        return _default_qwen_stream
+    return stub_planner_llm_stream

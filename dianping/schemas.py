@@ -182,6 +182,9 @@ class POI(BaseModel):
     min_stay_minutes: Optional[int] = None
     max_stay_minutes: Optional[int] = None
 
+    # --- v2.5 persona routing ---
+    persona_labels: Optional["PersonaLabels"] = None
+
 
 # =============== Search result item ===============
 
@@ -208,6 +211,14 @@ TravelerType = Literal["情侣", "家庭亲子", "银发", "独行", "商务", "
 BudgetLevel = Literal["性价比", "适中", "精致"]
 PaceLevel = Literal["暴走", "适中", "佛系"]
 SlotName = Literal["上午景点", "午饭", "下午", "下午茶", "晚饭", "夜场"]
+ModifierName = Literal["轻量体力", "重文化", "重美食", "怕排队"]
+
+
+class PersonaLabels(BaseModel):
+    """v2.5: Per-POI labels for persona routing."""
+
+    traveler_types: list[TravelerType] = Field(default_factory=list)
+    modifiers: dict[ModifierName, bool] = Field(default_factory=dict)
 
 
 class UserInput(BaseModel):
@@ -225,6 +236,7 @@ class ParsedIntent(BaseModel):
     must_visit: list[str] = Field(default_factory=list)
     avoid: list[str] = Field(default_factory=list)
     start_date: Optional[date] = None
+    modifiers: dict[ModifierName, bool] = Field(default_factory=dict)
 
 
 class ProfilerOutput(BaseModel):
@@ -269,6 +281,9 @@ class DayPlan(BaseModel):
     day_index: int
     anchor_district: str = ""
     stops: list[Stop] = Field(default_factory=list)
+    transit_segments: list[dict] = Field(default_factory=list)
+    # 每段形如: {"from_index": 0, "to_index": 1,
+    #           "options": {mode: TransitInfo dict}, "recommended": "transit"}
 
 
 class RouteDraft(BaseModel):

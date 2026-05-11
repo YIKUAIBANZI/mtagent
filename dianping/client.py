@@ -4,14 +4,16 @@ Default points to local mock_server; switch to real API by setting
 MTAGENT_DIANPING_BASE_URL=https://poiopen.dianping.com env var (one-line switch).
 """
 
+import json
 import os
 import time
+from pathlib import Path
 from typing import Optional
 
 import httpx
 
 from .auth import sign
-from .schemas import POI, SearchRecord
+from .schemas import POI, PersonaLabels, SearchRecord
 
 
 class DianpingAPIError(Exception):
@@ -36,6 +38,23 @@ class DianpingClient:
         self.secret = secret or os.environ.get("DIANPING_SECRET", "demo-secret")
         self.session = session or os.environ.get("DIANPING_SESSION", "demo-session")
         self._client = httpx.AsyncClient(timeout=timeout)
+        self._labels_cache: dict[str, dict[str, dict]] = self._load_labels()
+
+    @staticmethod
+    def _load_labels() -> dict[str, dict[str, dict]]:
+        """Load data/poi_labels.json. Empty dict if file missing (graceful degrade)."""
+        path = Path("data/poi_labels.json")
+        if not path.exists():
+            return {}
+        return json.loads(path.read_text(encoding="utf-8"))
+
+    def _attach_labels(self, pois: list[POI], city: str) -> None:
+        """Inject persona_labels into each POI matching openshopid (in-place)."""
+        city_labels = self._labels_cache.get(city, {})
+        for poi in pois:
+            label_dict = city_labels.get(poi.openshopid)
+            if label_dict:
+                poi.persona_labels = PersonaLabels(**label_dict)
 
     async def _post(self, path: str, biz_params: Optional[dict] = None) -> dict:
         biz = biz_params or {}
@@ -93,14 +112,25 @@ class DianpingClient:
 
     async def get_single_poi(self, openshopid: str) -> POI:
         data = await self._post("/router/poi/getsinglepoi", {"openshopid": openshopid})
-        return POI(**data["data"])
+        poi = POI(**data["data"])
+        if poi.city:
+            self._attach_labels([poi], city=poi.city)
+        return poi
 
     async def batch_get_poi(self, ids: list[str]) -> dict[str, POI]:
         data = await self._post(
             "/router/poi/batchgetpoi",
             {"multiopenshopid": ",".join(ids)},
         )
-        return {k: POI(**v) for k, v in data["data"].items()}
+        pois = {k: POI(**v) for k, v in data["data"].items()}
+        # Group by city (typically all from one city, but be defensive)
+        by_city: dict[str, list[POI]] = {}
+        for poi in pois.values():
+            if poi.city:
+                by_city.setdefault(poi.city, []).append(poi)
+        for city, city_pois in by_city.items():
+            self._attach_labels(city_pois, city=city)
+        return pois
 
     async def close(self) -> None:
         await self._client.aclose()

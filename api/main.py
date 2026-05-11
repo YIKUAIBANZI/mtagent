@@ -72,12 +72,33 @@ async def health():
     }
 
 
+@app.get("/api/config")
+async def get_public_config():
+    """Public config exposed to frontend (non-sensitive only).
+
+    - AMAP_WEB_JS_KEY: JSAPI 加载用 key
+    - AMAP_WEB_JS_SECURITY_CODE: 2021/12 后高德强制要求, 调路径规划等 webservice
+      必须配, 否则 INVALID_USER_SCODE. 跟 web js key 在同一应用下生成.
+    Both restricted to whitelisted referrers in Amap console.
+    """
+    return {
+        "amap_web_js_key": os.environ.get("AMAP_WEB_JS_KEY", ""),
+        "amap_web_js_security_code": os.environ.get("AMAP_WEB_JS_SECURITY_CODE", ""),
+    }
+
+
 @app.get("/", include_in_schema=False)
 async def root():
     page = WEB_DIR / "plan_stack.html"
     if not page.exists():
         raise HTTPException(404, "plan_stack.html not found")
     return FileResponse(page)
+
+
+@app.get("/map")
+async def map_view():
+    """Map view page — left floating panel + full-screen Amap JSAPI."""
+    return FileResponse(WEB_DIR / "map.html")
 
 
 from api import routes  # noqa: E402

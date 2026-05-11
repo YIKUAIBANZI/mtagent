@@ -19,3 +19,4 @@ data/trips/
 # IDE
 .vscode/
 .idea/
+.superpowers/

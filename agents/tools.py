@@ -346,3 +346,100 @@ def rank_by_traveler_type(pois: list[POI], traveler_type: str) -> list[POI]:
         return tag_score + p.star * 50
 
     return sorted(pois, key=score, reverse=True)
+
+
+# =================================================================
+# v2.5 Persona routing
+# =================================================================
+
+NEIGHBOR_TYPES: dict[str, list[str]] = {
+    "银发": ["家庭亲子"],
+    "家庭亲子": ["银发"],
+    "商务": ["朋友团"],
+    "朋友团": ["商务", "情侣"],
+    "情侣": ["朋友团"],
+    "独行": ["朋友团"],
+}
+
+# Modifier relax order: drop in this order when filter yields too few.
+# Reason: 轻量体力 = physical constraint (kept longest);
+#         怕排队 = literal hackathon rubric phrase (kept second);
+#         重文化 / 重美食 = preferences (relaxed first).
+RELAX_ORDER: list[str] = ["重美食", "重文化", "怕排队", "轻量体力"]
+
+
+def _filter_by_traveler_type(pois: list[POI], traveler_type: str) -> list[POI]:
+    """Stage 1: keep only POIs whose persona_labels include the traveler_type."""
+    return [
+        p
+        for p in pois
+        if p.persona_labels and traveler_type in p.persona_labels.traveler_types
+    ]
+
+
+def _score(poi: POI, intent_modifiers: dict[str, bool]) -> int:
+    """+2 when want=True+poi=True, -1 when want=True+poi=False, 0 otherwise."""
+    if not poi.persona_labels:
+        return 0
+    s = 0
+    for mod, want in intent_modifiers.items():
+        poi_has = poi.persona_labels.modifiers.get(mod, False)
+        if want and poi_has:
+            s += 2
+        elif want and not poi_has:
+            s -= 1
+        # want=False → 0 (no reward, no penalty)
+    return s
+
+
+def _rank_by_modifiers(pois: list[POI], intent_modifiers: dict[str, bool]) -> list[POI]:
+    """Stage 2: sort POIs by _score() descending."""
+    return sorted(pois, key=lambda p: _score(p, intent_modifiers), reverse=True)
+
+
+def _progressive_relax(
+    pois: list[POI],
+    intent: ParsedIntent,
+    min_size: int = 8,
+    top_n: int = 20,
+) -> list[POI]:
+    """Fallback: relax constraints until candidate count >= min_size.
+
+    Stage 1: drop active modifiers per RELAX_ORDER (4→3→2→1→0).
+    Stage 2: try neighbor traveler_types (e.g. 银发 → 家庭亲子).
+    Stage 3: return pool[:top_n] (no persona filter).
+    """
+    active = {m: v for m, v in intent.modifiers.items() if v}
+    for mod_to_drop in RELAX_ORDER:
+        if mod_to_drop in active:
+            del active[mod_to_drop]
+            candidates = _filter_by_traveler_type(pois, intent.traveler_type)
+            candidates = _rank_by_modifiers(candidates, active)[:top_n]
+            if len(candidates) >= min_size:
+                return candidates
+
+    for neighbor in NEIGHBOR_TYPES.get(intent.traveler_type, []):
+        candidates = _filter_by_traveler_type(pois, neighbor)
+        if len(candidates) >= min_size:
+            return candidates[:top_n]
+
+    return pois[:top_n]
+
+
+def route_by_persona(
+    pois: list[POI],
+    intent: ParsedIntent,
+    min_size: int = 8,
+    top_n: int = 20,
+) -> list[POI]:
+    """Two-stage persona routing: filter by traveler_type, rank by modifiers,
+    fall back via progressive_relax when too few candidates.
+
+    Returns at most top_n POIs. Designed to be called between
+    batch_get_poi_details and cluster_anchor_orbit in Planner.
+    """
+    candidates = _filter_by_traveler_type(pois, intent.traveler_type)
+    candidates = _rank_by_modifiers(candidates, intent.modifiers)[:top_n]
+    if len(candidates) < min_size:
+        candidates = _progressive_relax(pois, intent, min_size=min_size, top_n=top_n)
+    return candidates
