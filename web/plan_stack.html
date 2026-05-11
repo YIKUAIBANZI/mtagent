@@ -697,7 +697,30 @@ function drawDayPolylineFromStreamPayload(stops, segments, dayIndex, color) {
     const o = [fromStop.longitude, fromStop.latitude];
     const d = [toStop.longitude, toStop.latitude];
     if (typeof o[0] !== 'number' || typeof d[0] !== 'number') continue;
-    drawSegment(o, d, seg.recommended || 'walk', dayIndex, color).catch(e => console.warn('seg draw', e));
+    polylineQueue.push({ o, d, mode: seg.recommended || 'walk', dayIndex, color });
+  }
+  startPolylineWorker();
+}
+
+// v1.6.1: 全局 polyline queue — 防 AMap CUQPS_HAS_EXCEEDED_THE_LIMIT
+// (per-day streaming 让 3 天同时 fire 9-12 个 segment, 撞免费 web JS key 的 QPS)
+const polylineQueue = [];
+let polylineWorkerRunning = false;
+async function startPolylineWorker() {
+  if (polylineWorkerRunning) return;
+  polylineWorkerRunning = true;
+  try {
+    while (polylineQueue.length > 0) {
+      const job = polylineQueue.shift();
+      try {
+        await drawSegment(job.o, job.d, job.mode, job.dayIndex, job.color);
+      } catch (e) {
+        console.warn('polyline worker', e);
+      }
+      await sleep(220);   // ~4.5 req/s, well under AMap web JS QPS cap
+    }
+  } finally {
+    polylineWorkerRunning = false;
   }
 }
 
