@@ -400,3 +400,20 @@ async def _default_qwen_call(system: str, user: str) -> str:
         extra_body={"enable_thinking": False},
     )
     return resp.choices[0].message.content or "{}"
+
+
+import re as _re
+
+_PARTIAL_NAME_RE = _re.compile(r'"name"\s*:\s*"([^"]+)"')
+
+
+def _parse_partial_stops(buf: str) -> list[str]:
+    """Extract stop names from an in-progress LLM JSON buffer.
+
+    Tolerates unterminated JSON, embedded whitespace, and garbage input.
+    Used by `compose_one_day`'s on_partial callback to emit
+    `planner.day_partial { day_idx, names }` events during char-stream.
+    """
+    if not buf:
+        return []
+    return _PARTIAL_NAME_RE.findall(buf)
