@@ -10,11 +10,21 @@ from fastapi.testclient import TestClient
 
 @pytest.fixture
 def app_client_with_broken_llm(monkeypatch, tmp_path):
-    """Wire MockTransport mock_app + override resolve_planner_llm to raise."""
+    """Wire MockTransport mock_app + override both planner LLMs to fail.
+
+    v1.6: compose段用 llm_call_stream (not llm_call), so override both — the
+    legacy non-stream broken fixture is kept for back-compat assertions, and
+    the new stream override drives the per-day failure path.
+    """
     os.environ.pop("DASHSCOPE_API_KEY", None)
     monkeypatch.setenv("MTAGENT_TRIPS_DIR", str(tmp_path))
 
     async def broken(_system, _user):
+        raise ValueError("simulated LLM failure")
+
+    async def broken_stream(_system, _user):
+        if False:
+            yield ""
         raise ValueError("simulated LLM failure")
 
     from api import deps, routes
@@ -22,8 +32,9 @@ def app_client_with_broken_llm(monkeypatch, tmp_path):
     from dianping.client import DianpingClient
     from dianping.mock_server import mock_app
 
-    # Patch the imported binding inside api.routes (not the source module)
+    # Patch the imported bindings inside api.routes (not the source module)
     monkeypatch.setattr(routes, "resolve_planner_llm", lambda: broken)
+    monkeypatch.setattr(routes, "resolve_planner_llm_stream", lambda: broken_stream)
 
     mock_test_client = TestClient(mock_app)
     mock_test_client.__enter__()
@@ -69,7 +80,14 @@ def parse_sse(body: bytes) -> list[dict]:
     return events
 
 
-def test_planner_llm_failure_emits_error_event(app_client_with_broken_llm):
+def test_planner_llm_failure_emits_day_done_fallback(app_client_with_broken_llm):
+    """v1.6: per-day LLM failure → day_done_fallback event + fallback synthesis.
+
+    Previously the entire planner stage emitted an error event when LLM failed.
+    With per-day compose, each day independently falls back to deterministic
+    synthesis from candidate POIs — better UX, demo never breaks. Stream still
+    emits day_done with longitude/latitude (from synthesized real POIs).
+    """
     with app_client_with_broken_llm.stream(
         "POST",
         "/api/plan/stream",
@@ -79,7 +97,10 @@ def test_planner_llm_failure_emits_error_event(app_client_with_broken_llm):
     events = parse_sse(body)
     names = [e["event"] for e in events]
 
-    assert "error" in names
-    error = next(e for e in events if e["event"] == "error")
-    assert error["data"]["phase"] == "planner"
-    assert "simulated LLM failure" in error["data"]["message"]
+    assert "planner.day_done_fallback" in names, (
+        f"Expected day_done_fallback in events, got: {names}"
+    )
+    fallback = next(e for e in events if e["event"] == "planner.day_done_fallback")
+    assert "simulated LLM failure" in fallback["data"]["reason"]
+    # And standard day_done still emits after fallback
+    assert "planner.day_done" in names

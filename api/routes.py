@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import asyncio
-import json
 import os
 import time
 import traceback
@@ -37,7 +36,7 @@ from api.stub_llm import (
     resolve_profiler_llm,
 )
 from dianping.client import DianpingClient
-from dianping.schemas import DayPlan, RouteDraft, Stop, TimeSlot, UserInput
+from dianping.schemas import DayPlan, RouteDraft, UserInput
 
 router = APIRouter(prefix="/api")
 
@@ -214,110 +213,151 @@ async def plan_stream(
                 {"per_day_count": [len(c) for c in ranked_clusters]},
             )
 
-            yield format_event("planner.compose_start", {"phase": "正在编排路线..."})
-
-            payload = planner._build_compose_payload(
-                intent, templates, anchors, ranked_clusters
+            yield format_event(
+                "planner.compose_start",
+                {"phase": "正在编排路线...", "days": intent.days},
             )
-            raw_llm = await planner.llm_call(planner._system_prompt, payload)
-            _stamp("compose_llm_done")
-            try:
-                llm_data = json.loads(raw_llm)
-            except json.JSONDecodeError:
-                llm_data = {"days": [], "summary": ""}
 
-            poi_index = {p.openshopid: p for p in ctx.candidate_pois}
-            days_out = []
-            for d, day_data in enumerate(llm_data.get("days", [])):
-                stops = []
-                for s in day_data.get("stops") or []:
-                    pid = s.get("poi_openshopid")
-                    poi = poi_index.get(pid)
-                    if poi is None:
-                        continue
-                    slot_name = s.get("slot_name", "上午景点")
-                    slot_def = next(
-                        (slot for slot in templates[d].slots if slot.name == slot_name),
-                        templates[d].slots[0],
+            from agents.amap import AmapClient as _AmapClient
+            from agents.planner import PlannerLLMError as _PlannerLLMError
+
+            amap = _AmapClient(key=os.environ.get("AMAP_KEY", ""))
+
+            # ----- v1.6: per-day concurrent compose with as_completed + on_partial -----
+            partial_queue: asyncio.Queue = asyncio.Queue()
+
+            async def _on_partial(day_idx: int, names: list[str]):
+                await partial_queue.put((day_idx, names))
+
+            sem = asyncio.Semaphore(3)
+
+            async def _wrap(d: int):
+                async with sem:
+                    return await planner.compose_one_day(
+                        day_idx=d,
+                        intent=intent,
+                        template=templates[d],
+                        anchor=anchors[d],
+                        day_cluster_pois=ranked_clusters[d],
+                        amap=amap,
+                        on_partial=_on_partial,
                     )
-                    stops.append(
-                        Stop(
-                            poi=poi,
-                            slot=TimeSlot(
-                                name=slot_name,
-                                start=slot_def.start,
-                                end=slot_def.end,
-                            ),
-                            arrival_time=slot_def.start,
-                            leave_time=slot_def.end,
+
+            try:
+                tasks = [asyncio.create_task(_wrap(d)) for d in range(intent.days)]
+                days_out: list[DayPlan] = [None] * intent.days  # type: ignore[list-item]
+                segments_by_day: dict[int, list[dict]] = {}
+
+                for fut in asyncio.as_completed(tasks):
+                    # Drain any queued partials (best-effort, interleaves)
+                    while not partial_queue.empty():
+                        try:
+                            pd, pn = partial_queue.get_nowait()
+                            yield format_event(
+                                "planner.day_partial",
+                                {"day_index": pd, "names": pn},
+                            )
+                        except asyncio.QueueEmpty:
+                            break
+
+                    try:
+                        d_idx, day_plan, segs = await fut
+                    except _PlannerLLMError as plerr:
+                        d_idx = plerr.day_idx
+                        fallback_reason = str(plerr)
+                        day_plan_list = _synthesize_fallback_route(
+                            [templates[d_idx]],
+                            [anchors[d_idx]],
+                            [ranked_clusters[d_idx]],
+                            intent,
                         )
-                    )
-                days_out.append(
-                    DayPlan(
-                        day_index=day_data.get("day_index", d),
-                        anchor_district=day_data.get(
-                            "anchor_district",
-                            anchors[d][0] if d < len(anchors) else "",
-                        ),
-                        stops=stops,
-                    )
-                )
-            if not days_out or all(len(d.stops) == 0 for d in days_out):
-                if any(ranked_clusters):
-                    days_out = _synthesize_fallback_route(
-                        templates, anchors, ranked_clusters, intent
-                    )
+                        day_plan = (
+                            day_plan_list[0]
+                            if day_plan_list
+                            else DayPlan(
+                                day_index=d_idx,
+                                anchor_district=anchors[d_idx][0]
+                                if d_idx < len(anchors)
+                                else "",
+                                stops=[],
+                            )
+                        )
+                        day_plan.day_index = d_idx
+                        _, segs = await _compute_day_transits(day_plan, intent, amap)
+                        yield format_event(
+                            "planner.day_done_fallback",
+                            {"day_index": d_idx, "reason": fallback_reason},
+                        )
 
-            for d in days_out:
-                yield format_event(
-                    "planner.day_done",
-                    {
-                        "day_index": d.day_index,
-                        "anchor_district": d.anchor_district,
-                        "stops": [
-                            {
-                                "poi_name": s.poi.name,
-                                "poi_openshopid": s.poi.openshopid,
-                                "categories": s.poi.categories,
-                                "slot_name": s.slot.name,
-                                "arrival_time": s.arrival_time.strftime("%H:%M"),
-                                "leave_time": s.leave_time.strftime("%H:%M"),
-                                "avgprice": s.poi.avgprice,
-                                "star": s.poi.star,
-                            }
-                            for s in d.stops
-                        ],
-                    },
-                )
-                yield format_event(
-                    "planner.rationale",
-                    build_rationale_for_day(
-                        intent,
-                        d.day_index,
-                        d,
-                        anchors[d.day_index][0] if d.day_index < len(anchors) else "",
-                    ),
-                )
+                    days_out[d_idx] = day_plan
+                    segments_by_day[d_idx] = segs
 
-            # ----- v2: amap transit options for each day -----
-            from agents.amap import AmapClient
+                    # Final drain before day_done
+                    while not partial_queue.empty():
+                        try:
+                            pd, pn = partial_queue.get_nowait()
+                            yield format_event(
+                                "planner.day_partial",
+                                {"day_index": pd, "names": pn},
+                            )
+                        except asyncio.QueueEmpty:
+                            break
 
-            amap = AmapClient(key=os.environ.get("AMAP_KEY", ""))
-            try:
-                transit_tasks = [
-                    _compute_day_transits(d, intent, amap) for d in days_out
-                ]
-                for coro in asyncio.as_completed(transit_tasks):
-                    day_index, segments = await coro
-                    # 持久化到 days_out: /map 页面通过 GET /api/plan/{id} 拿
-                    days_out[day_index].transit_segments = segments
                     yield format_event(
-                        "transit.updated",
-                        {"day_index": day_index, "segments": segments},
+                        "planner.day_done",
+                        {
+                            "day_index": day_plan.day_index,
+                            "anchor_district": day_plan.anchor_district,
+                            "stops": [
+                                {
+                                    "poi_name": s.poi.name,
+                                    "poi_openshopid": s.poi.openshopid,
+                                    "categories": s.poi.categories,
+                                    "slot_name": s.slot.name,
+                                    "arrival_time": s.arrival_time.strftime("%H:%M"),
+                                    "leave_time": s.leave_time.strftime("%H:%M"),
+                                    "avgprice": s.poi.avgprice,
+                                    "star": s.poi.star,
+                                    "longitude": s.poi.longitude,
+                                    "latitude": s.poi.latitude,
+                                }
+                                for s in day_plan.stops
+                            ],
+                            "transit_segments": segs,
+                        },
                     )
+                    yield format_event(
+                        "planner.rationale",
+                        build_rationale_for_day(
+                            intent,
+                            day_plan.day_index,
+                            day_plan,
+                            anchors[day_plan.day_index][0]
+                            if day_plan.day_index < len(anchors)
+                            else "",
+                        ),
+                    )
+
+                for d_idx, segs in segments_by_day.items():
+                    if days_out[d_idx] is not None:
+                        days_out[d_idx].transit_segments = segs
+
+                days_out = [d for d in days_out if d is not None]
             finally:
                 await amap._client.aclose()
+            _stamp("compose_llm_done")
             _stamp("amap_done")
+            yield format_event("planner.compose_done", {})
+
+            # ----- v2: emit transit.updated for backward compat (old clients) -----
+            for d_idx, segs in segments_by_day.items():
+                yield format_event(
+                    "transit.updated",
+                    {"day_index": d_idx, "segments": segs},
+                )
+
+            # llm_data unused in stream path; keep stub for RouteDraft below.
+            llm_data = {"summary": ""}
 
             route = RouteDraft(days=days_out, summary=llm_data.get("summary", ""))
             ctx.draft_route = route
