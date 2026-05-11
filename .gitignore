@@ -20,3 +20,6 @@ data/trips/
 .vscode/
 .idea/
 .superpowers/
+
+# External agent harness artifacts
+AGENTS.md
