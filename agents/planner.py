@@ -256,6 +256,70 @@ class Planner:
         ctx.save()
         return route
 
+    def _build_one_day_payload(
+        self,
+        day_idx: int,
+        intent: ParsedIntent,
+        template: DayTemplate,
+        anchor: tuple[str, float, float],
+        day_cluster_pois: list[POI],
+    ) -> str:
+        """Build a single-day LLM payload (subset of _build_compose_payload).
+
+        Caps candidates at 30 (top-ranked already). Output JSON schema mirrors
+        the per-day shape inside `_build_compose_payload.days_input[i]`, but
+        wrapped at the top level (no N-day batch).
+        """
+        slots_input = [
+            {
+                "name": s.name,
+                "start": s.start.strftime("%H:%M"),
+                "end": s.end.strftime("%H:%M"),
+                "category_pool": s.category_pool,
+                "is_meal": s.is_meal,
+                "min_stay_minutes": s.min_stay_minutes,
+                "max_stay_minutes": s.max_stay_minutes,
+            }
+            for s in template.slots
+        ]
+        poi_brief = [
+            {
+                "openshopid": p.openshopid,
+                "name": p.name,
+                "categories": p.categories,
+                "avgprice": p.avgprice,
+                "star": p.star,
+                "review_tags_top3": [
+                    {"tag": rt.tag, "hit": rt.hit}
+                    for rt in sorted(p.reviewTags, key=lambda x: -x.hit)[:3]
+                ],
+                "business_hour": p.business_hour,
+            }
+            for p in day_cluster_pois[:30]
+        ]
+        return json.dumps(
+            {
+                "intent": {
+                    "city": intent.city,
+                    "traveler_type": intent.traveler_type,
+                    "budget_level": intent.budget_level,
+                    "preferences": intent.preferences,
+                    "must_visit": intent.must_visit,
+                    "avoid": intent.avoid,
+                },
+                "day_index": day_idx,
+                "anchor_district": anchor[0],
+                "slots": slots_input,
+                "candidates": poi_brief,
+                "output_format": {
+                    "stops": [
+                        {"poi_openshopid": "...", "slot_name": "..."},
+                    ]
+                },
+            },
+            ensure_ascii=False,
+        )
+
     def _build_compose_payload(
         self,
         intent: ParsedIntent,
