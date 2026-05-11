@@ -93,9 +93,13 @@ class Planner:
         self,
         client: DianpingClient,
         llm_call: Optional[Callable[[str, str], Awaitable[str]]] = None,
+        llm_call_stream: Optional[Callable[[str, str], AsyncIterator[str]]] = None,
     ):
         self.client = client
         self.llm_call = llm_call or _default_qwen_call
+        # llm_call_stream may be None; compose_one_day late-binds to module-level
+        # _default_qwen_stream so monkeypatch works in tests.
+        self.llm_call_stream = llm_call_stream
         self._system_prompt = (
             _PROMPT_PATH.read_text(encoding="utf-8") if _PROMPT_PATH.exists() else ""
         )
@@ -464,6 +468,41 @@ async def _default_qwen_call(system: str, user: str) -> str:
         extra_body={"enable_thinking": False},
     )
     return resp.choices[0].message.content or "{}"
+
+
+async def _default_qwen_stream(system: str, user: str) -> AsyncIterator[str]:
+    """Streaming variant of _default_qwen_call. Yields content chunks as strings.
+
+    Used by compose_one_day for char-level partial parsing (day_partial events).
+    Non-stream _default_qwen_call is preserved for v0/v1.5 backward compat.
+    """
+    from openai import AsyncOpenAI
+
+    client = AsyncOpenAI(
+        api_key=os.environ.get("DASHSCOPE_API_KEY", ""),
+        base_url=os.environ.get(
+            "QWEN_BASE_URL",
+            "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        ),
+    )
+    stream = await client.chat.completions.create(
+        model=os.environ.get("QWEN_MODEL", "qwen-plus"),
+        messages=[
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ],
+        response_format={"type": "json_object"},
+        temperature=0.3,
+        max_tokens=2000,
+        extra_body={"enable_thinking": False},
+        stream=True,
+    )
+    async for chunk in stream:
+        if not chunk.choices:
+            continue
+        delta_content = chunk.choices[0].delta.content
+        if delta_content:
+            yield delta_content
 
 
 import re as _re

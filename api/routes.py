@@ -31,7 +31,11 @@ from agents.tools import (
 )
 from api import deps
 from api.sse import format_event
-from api.stub_llm import resolve_planner_llm, resolve_profiler_llm
+from api.stub_llm import (
+    resolve_planner_llm,
+    resolve_planner_llm_stream,
+    resolve_profiler_llm,
+)
 from dianping.client import DianpingClient
 from dianping.schemas import DayPlan, RouteDraft, Stop, TimeSlot, UserInput
 
@@ -116,7 +120,11 @@ async def plan_stream(
             yield format_event("planner.start", {"phase": "正在挑选 POI..."})
 
             planner_llm = resolve_planner_llm()
-            planner = Planner(client=client, llm_call=planner_llm)
+            planner = Planner(
+                client=client,
+                llm_call=planner_llm,
+                llm_call_stream=resolve_planner_llm_stream(),
+            )
 
             intent = ctx.intent
             pace = intent.pace or default_pace_for_traveler(intent.traveler_type)

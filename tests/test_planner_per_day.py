@@ -2,7 +2,9 @@
 
 import json
 
-from agents.planner import Planner, _parse_partial_stops
+import pytest
+
+from agents.planner import Planner, _default_qwen_stream, _parse_partial_stops
 from agents.tools import default_pace_for_traveler, generate_day_template
 from dianping.client import DianpingClient
 from dianping.schemas import POI, ParsedIntent, ReviewTag
@@ -82,7 +84,6 @@ def test_build_one_day_payload_only_contains_one_day_candidates():
     )
     anchor = ("钟楼", 34.26, 108.94)
     day_cluster = [_make_poi(f"poi_{i}", f"id_{i}", ["景点"]) for i in range(5)]
-    # control cluster (intentionally not passed to payload — verifies isolation)
     _ = [_make_poi(f"OTHER_{i}", f"oid_{i}", ["景点"]) for i in range(5)]
 
     payload_str = p._build_one_day_payload(
@@ -144,3 +145,50 @@ def test_build_one_day_payload_caps_candidates_at_30():
     payload = json.loads(payload_str)
 
     assert len(payload["candidates"]) == 30
+
+
+# ===== Task 3: _default_qwen_stream tests =====
+
+
+@pytest.mark.asyncio
+async def test_default_qwen_stream_yields_string_chunks(monkeypatch):
+    """Verify stream wrapper yields chunks of string (not raw delta objects)."""
+
+    class _FakeDelta:
+        def __init__(self, content):
+            self.content = content
+
+    class _FakeChoice:
+        def __init__(self, content):
+            self.delta = _FakeDelta(content)
+
+    class _FakeChunk:
+        def __init__(self, content):
+            self.choices = [_FakeChoice(content)]
+
+    async def _fake_stream():
+        for c in ['{"st', 'ops":[{"', 'name":"A"}]}']:
+            yield _FakeChunk(c)
+
+    class _FakeCompletions:
+        async def create(self, **kwargs):
+            assert kwargs.get("stream") is True
+            return _fake_stream()
+
+    class _FakeChat:
+        def __init__(self):
+            self.completions = _FakeCompletions()
+
+    class _FakeClient:
+        def __init__(self, **kwargs):
+            self.chat = _FakeChat()
+
+    import openai
+
+    monkeypatch.setattr(openai, "AsyncOpenAI", _FakeClient)
+
+    chunks = []
+    async for chunk in _default_qwen_stream("sys", "user"):
+        chunks.append(chunk)
+
+    assert "".join(chunks) == '{"stops":[{"name":"A"}]}'
