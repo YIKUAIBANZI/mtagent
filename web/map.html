@@ -157,10 +157,7 @@
         // 5. render
         renderHeader(tripData);
         renderTotals(tripData.draft_route?.days || []);
-        renderDayList(tripData);
-        renderAllMarkers(tripData);
-        fitMapToAllMarkers();
-        await renderAllPolylines(tripData);
+        await renderTripStreaming(tripData);
         renderDayFilter(tripData);
 
       } catch (err) {
@@ -179,61 +176,86 @@
         `${intent.traveler_type || ''} · ${intent.budget_level || ''}`;
     }
 
-    function renderDayList(trip) {
-      const days = trip.draft_route?.days || [];
-      const list = document.getElementById('day-list');
-      list.innerHTML = '';
-      days.forEach((day, i) => {
-        const li = document.createElement('li');
-        li.className = 'day-card fade-in';   // 直接加 fade-in (Task 12 改成流式)
-        li.style.setProperty('--day-color', DAY_COLORS[i] || '#d6d3d1');
-        li.dataset.dayIndex = i;
-
-        const title = document.createElement('div');
-        title.className = 'day-card-title';
-        title.textContent = `Day ${i + 1} · ${day.anchor_district || ''}`;
-        li.appendChild(title);
-
-        (day.stops || []).forEach(stop => {
-          const row = document.createElement('div');
-          row.className = 'stop-row';
-          row.innerHTML = `
-            <span class="stop-time">${stop.arrival_time || ''}</span>
-            <span class="stop-name">${escapeHtml(stop.poi?.name || '未命名')}</span>
-          `;
-          li.appendChild(row);
-        });
-        list.appendChild(li);
-      });
-    }
-
     function escapeHtml(s) {
       return String(s).replace(/[&<>"']/g, c => (
         { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
       ));
     }
 
-    // ============= Map: markers =============
-    function renderAllMarkers(trip) {
+    // ============= Streaming render =============
+    async function renderTripStreaming(trip) {
       const days = trip.draft_route?.days || [];
-      days.forEach((day, dayIndex) => {
-        markersByDay[dayIndex] = [];
-        (day.stops || []).forEach((stop, stopIndex) => {
-          const lng = stop.poi?.longitude;
-          const lat = stop.poi?.latitude;
-          if (typeof lng !== 'number' || typeof lat !== 'number') {
-            console.warn(`day ${dayIndex} stop ${stopIndex} missing coords, skip`);
-            return;
-          }
-          const color = DAY_COLORS[dayIndex] || '#d6d3d1';
-          const marker = new AMap.Marker({
-            position: [lng, lat],
-            offset: new AMap.Pixel(-14, -28),
-            content: `<div class="marker" style="background:${color}">${stopIndex + 1}</div>`,
-            title: stop.poi.name,
-          });
-          marker.setMap(map);
-          markersByDay[dayIndex].push(marker);
+      const list = document.getElementById('day-list');
+      list.innerHTML = '';
+
+      for (let i = 0; i < days.length; i++) {
+        // (a) 浮窗 day card 淡入
+        const card = buildDayCard(days[i], i);
+        list.appendChild(card);
+        requestAnimationFrame(() => card.classList.add('fade-in'));
+        await sleep(150);
+
+        // (b) markers 顺序 drop (每 stop 间隔 200ms)
+        markersByDay[i] = [];
+        await dropDayMarkers(days[i], i);
+
+        // (c) polyline 浮现
+        await drawDayPolyline(days[i], i);
+
+        // (d) 每天间停顿
+        await sleep(200);
+      }
+
+      fitMapToAllMarkers();
+    }
+
+    function buildDayCard(day, dayIndex) {
+      const li = document.createElement('li');
+      li.className = 'day-card';   // 不立即加 fade-in (在调用方 RAF 后加)
+      li.style.setProperty('--day-color', DAY_COLORS[dayIndex] || '#d6d3d1');
+      li.dataset.dayIndex = dayIndex;
+
+      const title = document.createElement('div');
+      title.className = 'day-card-title';
+      title.textContent = `Day ${dayIndex + 1} · ${day.anchor_district || ''}`;
+      li.appendChild(title);
+
+      (day.stops || []).forEach(stop => {
+        const row = document.createElement('div');
+        row.className = 'stop-row';
+        row.innerHTML = `
+          <span class="stop-time">${stop.arrival_time || ''}</span>
+          <span class="stop-name">${escapeHtml(stop.poi?.name || '未命名')}</span>
+        `;
+        li.appendChild(row);
+      });
+      return li;
+    }
+
+    function dropDayMarkers(day, dayIndex) {
+      return new Promise(resolve => {
+        const stops = day.stops || [];
+        if (stops.length === 0) return resolve();
+        let dropped = 0;
+        stops.forEach((stop, stopIndex) => {
+          setTimeout(() => {
+            const lng = stop.poi?.longitude;
+            const lat = stop.poi?.latitude;
+            if (typeof lng === 'number' && typeof lat === 'number') {
+              const color = DAY_COLORS[dayIndex] || '#d6d3d1';
+              const marker = new AMap.Marker({
+                position: [lng, lat],
+                offset: new AMap.Pixel(-14, -28),
+                content: `<div class="marker" style="background:${color}">${stopIndex + 1}</div>`,
+                title: stop.poi.name,
+                animation: 'AMAP_ANIMATION_DROP',
+              });
+              marker.setMap(map);
+              markersByDay[dayIndex].push(marker);
+            }
+            dropped++;
+            if (dropped === stops.length) resolve();
+          }, stopIndex * 200);
         });
       });
     }
@@ -241,19 +263,15 @@
     function fitMapToAllMarkers() {
       const all = markersByDay.flat();
       if (all.length > 0) {
-        map.setFitView(all, false, [60, 60, 60, 380]);  // 左 padding 380 留浮窗
+        map.setFitView(all, false, [60, 60, 60, 380]);
       }
+    }
+
+    function sleep(ms) {
+      return new Promise(r => setTimeout(r, ms));
     }
 
     // ============= Map: polylines =============
-    async function renderAllPolylines(trip) {
-      const days = trip.draft_route?.days || [];
-      // 串行画 (3 天 = 3 次 Driving.search, ~1-2s 总计, 可接受)
-      for (let i = 0; i < days.length; i++) {
-        await drawDayPolyline(days[i], i);
-      }
-    }
-
     function drawDayPolyline(day, dayIndex) {
       const stops = day.stops || [];
       if (stops.length < 2) return Promise.resolve();
