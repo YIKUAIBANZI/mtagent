@@ -106,10 +106,10 @@
 
     // ============= Globals =============
     let map = null;            // AMap.Map instance
-    let driving = null;        // AMap.Driving plugin instance
     let tripData = null;       // GET /api/plan/{trip_id} response
+    const SVC = {};            // SVC[mode] = AMap.{Driving|Walking|Riding} instance
     const markersByDay = [];   // markersByDay[i] = [marker1, marker2, ...]
-    const polylinesByDay = []; // polylinesByDay[i] = AMap.Polyline
+    const polylinesByDay = []; // polylinesByDay[i] = [polyline1, polyline2, ...] per segment
     const DAY_COLORS = ['#FF6B35', '#3D8BFD', '#10B981', '#A855F7', '#F59E0B'];
 
     // ============= Bootstrap =============
@@ -148,8 +148,14 @@
           viewMode: '2D',
         });
         await new Promise(resolve => {
-          AMap.plugin(['AMap.Driving'], () => {
-            driving = new AMap.Driving({ map, hideMarkers: true, autoFitView: false });
+          // 4 个 plugin: Driving 驾车, Walking 步行, Riding 骑行 (共享给 bicycle)
+          // transit (公交) 走 Walking 兜底 — 公交 polyline 含步行+乘车段, 复杂度对 hackathon 不值
+          AMap.plugin(['AMap.Driving', 'AMap.Walking', 'AMap.Riding'], () => {
+            const opts = { map, hideMarkers: true, autoFitView: false };
+            SVC.drive = new AMap.Driving(opts);
+            SVC.walk = new AMap.Walking(opts);
+            SVC.bicycle = new AMap.Riding(opts);
+            SVC.transit = SVC.walk;   // 兜底
             resolve();
           });
         });
@@ -271,41 +277,70 @@
       return new Promise(r => setTimeout(r, ms));
     }
 
-    // ============= Map: polylines =============
-    function drawDayPolyline(day, dayIndex) {
+    // ============= Map: polylines (per-segment, per-mode) =============
+    async function drawDayPolyline(day, dayIndex) {
       const stops = day.stops || [];
-      if (stops.length < 2) return Promise.resolve();
-      const stopCoords = stops
-        .filter(s => typeof s.poi?.longitude === 'number')
-        .map(s => [s.poi.longitude, s.poi.latitude]);
-      if (stopCoords.length < 2) return Promise.resolve();
-
-      const origin = stopCoords[0];
-      const destination = stopCoords[stopCoords.length - 1];
-      const waypoints = stopCoords.slice(1, -1).map(p => ({ location: p }));
+      const segments = day.transit_segments || [];
       const color = DAY_COLORS[dayIndex] || '#d6d3d1';
+      polylinesByDay[dayIndex] = polylinesByDay[dayIndex] || [];
 
-      return new Promise((resolve) => {
-        driving.search(origin, destination, { waypoints }, (status, result) => {
-          let pathLngLat;
-          if (status === 'complete' && result.routes?.[0]) {
-            const route = result.routes[0];
-            pathLngLat = route.steps.flatMap(s => s.path).map(p => [p.lng, p.lat]);
-          } else {
-            console.warn(`Driving.search day ${dayIndex} failed (${status}), fallback straight line`);
-            pathLngLat = stopCoords;
+      // 没 transit_segments 时回退: 整天画一条 walking polyline (旧行为兼容)
+      if (segments.length === 0 && stops.length >= 2) {
+        const coords = stops
+          .filter(s => typeof s.poi?.longitude === 'number')
+          .map(s => [s.poi.longitude, s.poi.latitude]);
+        if (coords.length >= 2) {
+          for (let i = 0; i < coords.length - 1; i++) {
+            await drawSegment(coords[i], coords[i + 1], 'walk', dayIndex, color);
           }
+        }
+        return;
+      }
+
+      // 有 segments: 逐段按 recommended mode 画
+      for (const seg of segments) {
+        const fromStop = stops[seg.from_index];
+        const toStop = stops[seg.to_index];
+        if (!fromStop?.poi || !toStop?.poi) continue;
+        const o = [fromStop.poi.longitude, fromStop.poi.latitude];
+        const d = [toStop.poi.longitude, toStop.poi.latitude];
+        if (typeof o[0] !== 'number' || typeof d[0] !== 'number') continue;
+        await drawSegment(o, d, seg.recommended || 'walk', dayIndex, color);
+      }
+    }
+
+    function drawSegment(origin, destination, mode, dayIndex, color) {
+      const svc = SVC[mode] || SVC.walk;
+      // v1.4.15 callback signature: (status, result)
+      // Driving.search 是 4-arg (origin, destination, opts, cb)
+      // Walking/Riding.search 是 3-arg (origin, destination, cb)
+      return new Promise(resolve => {
+        const handler = (status, result) => {
+          let pathLngLat;
+          if (status === 'complete' && result?.routes?.[0]?.steps) {
+            pathLngLat = result.routes[0].steps.flatMap(s => s.path).map(p => [p.lng, p.lat]);
+          } else {
+            console.warn(`${mode}.search day ${dayIndex} failed (${status}), fallback straight line`);
+            pathLngLat = [origin, destination];
+          }
+          const isDashed = mode === 'walk' || mode === 'bicycle' || mode === 'transit';
           const line = new AMap.Polyline({
             path: pathLngLat,
             strokeColor: color,
             strokeWeight: 5,
             strokeOpacity: 0.85,
+            strokeStyle: isDashed ? 'dashed' : 'solid',
             showDir: true,
           });
           line.setMap(map);
-          polylinesByDay[dayIndex] = line;
+          polylinesByDay[dayIndex].push(line);
           resolve();
-        });
+        };
+        if (mode === 'drive') {
+          svc.search(origin, destination, {}, handler);
+        } else {
+          svc.search(origin, destination, handler);
+        }
       });
     }
 
@@ -373,8 +408,7 @@
       dayVisibility[i] = visible;
 
       (markersByDay[i] || []).forEach(m => visible ? m.setMap(map) : m.setMap(null));
-      const line = polylinesByDay[i];
-      if (line) line.setMap(visible ? map : null);
+      (polylinesByDay[i] || []).forEach(line => line.setMap(visible ? map : null));
 
       const color = DAY_COLORS[i] || '#d6d3d1';
       chip.classList.toggle('active', visible);
