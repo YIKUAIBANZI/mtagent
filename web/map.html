@@ -161,6 +161,7 @@
         renderAllMarkers(tripData);
         fitMapToAllMarkers();
         await renderAllPolylines(tripData);
+        renderDayFilter(tripData);
 
       } catch (err) {
         console.error(err);
@@ -325,6 +326,55 @@
       c2.textContent = labelTime;
       row.appendChild(c1);
       row.appendChild(c2);
+    }
+
+    // ============= Day filter =============
+    const dayVisibility = [];   // dayVisibility[i] = bool
+
+    function renderDayFilter(trip) {
+      const days = trip.draft_route?.days || [];
+      const filter = document.getElementById('day-filter');
+      filter.innerHTML = '';
+      days.forEach((_, i) => {
+        dayVisibility[i] = true;
+        const chip = document.createElement('div');
+        chip.className = 'chip active';
+        chip.dataset.dayIndex = i;
+        const color = DAY_COLORS[i] || '#d6d3d1';
+        chip.style.background = color;
+        chip.style.color = '#fff';
+        chip.style.borderColor = 'transparent';
+        chip.innerHTML = `<span class="chip-dot" style="background:#fff"></span>Day ${i + 1}`;
+        chip.onclick = () => toggleDay(i, chip);
+        filter.appendChild(chip);
+      });
+    }
+
+    function toggleDay(i, chip) {
+      const visible = !dayVisibility[i];
+      dayVisibility[i] = visible;
+
+      (markersByDay[i] || []).forEach(m => visible ? m.setMap(map) : m.setMap(null));
+      const line = polylinesByDay[i];
+      if (line) line.setMap(visible ? map : null);
+
+      const color = DAY_COLORS[i] || '#d6d3d1';
+      chip.classList.toggle('active', visible);
+      if (visible) {
+        chip.style.background = color;
+        chip.style.color = '#fff';
+        chip.style.borderColor = 'transparent';
+      } else {
+        chip.style.background = '#fafaf9';
+        chip.style.color = '#a8a29e';
+        chip.style.borderColor = '#e7e5e4';
+      }
+
+      const card = document.querySelector(`.day-card[data-day-index="${i}"]`);
+      if (card) card.style.opacity = visible ? '1' : '0.35';
+
+      const visibleDays = (tripData.draft_route?.days || []).filter((_, idx) => dayVisibility[idx]);
+      renderTotals(visibleDays);
     }
 
     function loadAmapJsApi(key) {
