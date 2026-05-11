@@ -611,6 +611,16 @@ async function handleEvent({ event, data }) {
       // 打字泡保持中
       break;
 
+    case 'planner.day_partial':
+      // 字符级流: 每收到一批已解析的 stop name 就更新 day-progress hint
+      renderDayPartial(data);
+      break;
+
+    case 'planner.day_done_fallback':
+      // 不影响渲染路径, 仅记录 (后续 day_done 仍 emit)
+      console.warn(`[day_done_fallback] day ${data.day_index}: ${data.reason}`);
+      break;
+
     case 'planner.day_done':
       removeTyping();
       await renderDayDone(data);
@@ -652,6 +662,9 @@ const pendingRationaleByDay = new Map();
 async function renderDayDone(day) {
   const dayIndex = day.day_index;
   const color = DAY_COLORS[dayIndex] || '#ff3e00';
+  // 收尾 day_partial 提示气泡 (替换成"已就绪")
+  const partialEl = dayPartialMsgByIndex.get(dayIndex);
+  if (partialEl) partialEl.textContent = `Day ${dayIndex + 1} 已就绪 ✓`;
   // small intro for day
   pushMsg('bot', `Day ${dayIndex + 1} · ${day.anchor_district || ''} 出炉了 📍`);
   // per-day rationale if arrived earlier
@@ -667,7 +680,25 @@ async function renderDayDone(day) {
     if (map && SVC.drive) addMarker(stops[i], dayIndex, i, color);
     await sleep(350);
   }
+  // v1.6: day_done 现在含 transit_segments — 立即画该天 polyline
+  if (map && SVC.drive && Array.isArray(day.transit_segments) && day.transit_segments.length > 0) {
+    drawDayPolylineFromStreamPayload(stops, day.transit_segments, dayIndex, color);
+  }
   await sleep(150);
+}
+
+// v1.6: 用 day_done event 自带的 stops + transit_segments 画 polyline (不等 trip.complete)
+function drawDayPolylineFromStreamPayload(stops, segments, dayIndex, color) {
+  polylinesByDay[dayIndex] = polylinesByDay[dayIndex] || [];
+  for (const seg of segments) {
+    const fromStop = stops[seg.from_index];
+    const toStop = stops[seg.to_index];
+    if (!fromStop || !toStop) continue;
+    const o = [fromStop.longitude, fromStop.latitude];
+    const d = [toStop.longitude, toStop.latitude];
+    if (typeof o[0] !== 'number' || typeof d[0] !== 'number') continue;
+    drawSegment(o, d, seg.recommended || 'walk', dayIndex, color).catch(e => console.warn('seg draw', e));
+  }
 }
 
 function pushPlaceCard(stop, dayIndex, stopIndex, color) {
@@ -695,11 +726,44 @@ function pushPlaceCard(stop, dayIndex, stopIndex, color) {
 }
 
 function addMarker(stop, dayIndex, stopIndex, color) {
-  // stop here is from planner.day_done event payload — 没有 lat/lng！
-  // 那个事件的 stops 字段是 [{poi_name, poi_openshopid, categories, slot_name, ...}]
-  // lat/lng 要在 trip.complete 后从 /api/plan/{id} 拿
-  // 这里先存 placeholder, 等 transit.updated/trip.complete 时再批量绘制
+  // v1.6: planner.day_done payload 现在含 longitude/latitude. 立即落 marker.
+  const lng = stop.longitude, lat = stop.latitude;
+  if (typeof lng === 'number' && typeof lat === 'number') {
+    const marker = new AMap.Marker({
+      position: [lng, lat],
+      offset: new AMap.Pixel(-18, -36),
+      content: `<div class="pin-wrap" style="background:${color}"><span>${stopIndex + 1}</span></div>`,
+      title: stop.poi_name,
+      animation: 'AMAP_ANIMATION_DROP',
+    });
+    marker.on('click', () => focusMarker(dayIndex, stopIndex));
+    marker.setMap(map);
+    markersByDay[dayIndex][stopIndex] = marker;
+    return;
+  }
+  // 兜底: 老路径 (lng/lat 缺失时), 等 fitMapToAllMarkers 走
   pendingMarkerStops.push({ openshopid: stop.poi_openshopid, dayIndex, stopIndex, color });
+}
+
+// v1.6: day_partial event — push 当天 stop names 进度提示 (覆盖式)
+const dayPartialMsgByIndex = new Map();
+function renderDayPartial(data) {
+  const dayIndex = data.day_index;
+  const names = data.names || [];
+  if (names.length === 0) return;
+  const text = `Day ${dayIndex + 1} 编排中…  ${names.map((n, i) => `${i + 1}. ${n}`).join('  ·  ')}`;
+  let el = dayPartialMsgByIndex.get(dayIndex);
+  if (!el) {
+    const wrap = document.createElement('div');
+    wrap.className = 'msg bot day-partial';
+    wrap.innerHTML = `<div class="avatar bot">⋯</div><div class="bubble" data-day-partial="${dayIndex}">${escapeHtml(text)}</div>`;
+    $('messages').appendChild(wrap);
+    el = wrap.querySelector('.bubble');
+    dayPartialMsgByIndex.set(dayIndex, el);
+  } else {
+    el.textContent = text;
+  }
+  $('messages').scrollTop = $('messages').scrollHeight;
 }
 
 const pendingMarkerStops = [];
