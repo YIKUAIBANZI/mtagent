@@ -410,6 +410,21 @@ class Planner:
         ]
         return json.dumps(
             {
+                "_mode": "single_day_v1.6",
+                "_instruction": (
+                    "本次任务只编排第 "
+                    + str(day_idx + 1)
+                    + " 天（day_index="
+                    + str(day_idx)
+                    + "）。"
+                    "**输出格式必须严格如下**（注意：单天模式不输出 summary / days 数组）：\n"
+                    '{"stops": [\n'
+                    '  {"poi_openshopid": "<从 candidates 选一个>", "name": "<对应名字>", '
+                    '"slot_name": "<slots 中的 name>", "arrival_time": "HH:MM", "leave_time": "HH:MM"}\n'
+                    "]}\n"
+                    "每个 slot 填一个 POI（optional 时段可空）。poi_openshopid 必须来自 candidates 列表。"
+                    "返回必须是合法 JSON，stops 数组不能为空。"
+                ),
                 "intent": {
                     "city": intent.city,
                     "traveler_type": intent.traveler_type,
@@ -422,11 +437,6 @@ class Planner:
                 "anchor_district": anchor[0],
                 "slots": slots_input,
                 "candidates": poi_brief,
-                "output_format": {
-                    "stops": [
-                        {"poi_openshopid": "...", "slot_name": "..."},
-                    ]
-                },
             },
             ensure_ascii=False,
         )
