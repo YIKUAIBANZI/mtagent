@@ -155,6 +155,18 @@
         }
         tripData = await tripResp.json();
 
+        // 3.5 guard: trip 没生成 route (e.g. profiler 进入 awaiting_clarification)
+        const days = tripData?.draft_route?.days || [];
+        if (!tripData?.draft_route || days.length === 0) {
+          showError('这个 trip 没生成完整路线 (可能 query 太模糊, profiler 还在等你补信息). 请回生成页继续对话.');
+          document.getElementById('trip-title').textContent = '路线未生成';
+          document.getElementById('trip-subtitle').textContent =
+            tripData?.intent?.city
+              ? `${tripData.intent.city} · ${tripData.intent.days || '?'} 天 (待补全)`
+              : '需求未理解';
+          return;
+        }
+
         // 4. init map
         map = new AMap.Map('map-container', {
           mapStyle: 'amap://styles/macaron',

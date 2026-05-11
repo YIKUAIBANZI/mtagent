@@ -273,7 +273,8 @@
           break;
         case "trip.complete":
           $("status-text").textContent = `done · ${data.duration_ms}ms`;
-          if (data.trip_id) {
+          // 仅在真完成的 trip (含 route) 才显示地图入口; awaiting_clarification 不显示
+          if (data.trip_id && data.status === "ok") {
             const mapBtn = document.createElement("a");
             mapBtn.href = `/map?trip_id=${data.trip_id}`;
             mapBtn.target = "_blank";
