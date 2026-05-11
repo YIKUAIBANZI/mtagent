@@ -41,27 +41,19 @@
     .chip.active { color: #fff; border-color: transparent; }
     .chip-dot { width: 8px; height: 8px; border-radius: 50%; }
 
-    /* chat bubble (AI 文案气泡) */
-    .chat-bubble {
-      display: flex; gap: 8px; align-items: flex-start;
+    /* 状态行 (plan_stack 风格的极简渐进文本) */
+    .status-line {
+      display: flex; gap: 8px; align-items: baseline;
       list-style: none;
-      opacity: 0; transform: translateY(6px);
-      transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+      font-size: 13px; color: #78716c; line-height: 1.6;
+      padding: 2px 0;
+      opacity: 0; transform: translateY(4px);
+      transition: opacity 0.4s ease-out, transform 0.4s ease-out;
     }
-    .chat-bubble.fade-in { opacity: 1; transform: translateY(0); }
-    .chat-bubble .avatar { font-size: 18px; flex-shrink: 0; padding-top: 2px; }
-    .chat-bubble .bubble-text {
-      background: #fef3e7; color: #44403c;
-      padding: 8px 12px; border-radius: 12px;
-      font-size: 13px; line-height: 1.6; flex: 1;
-      min-height: 22px;
-    }
-    .chat-bubble .bubble-text::after {
-      content: '▍'; opacity: 0.5; margin-left: 1px;
-      animation: cursor-blink 0.8s steps(2) infinite;
-    }
-    .chat-bubble.done .bubble-text::after { display: none; }
-    @keyframes cursor-blink { 50% { opacity: 0; } }
+    .status-line.fade-in { opacity: 1; transform: translateY(0); }
+    .status-line .icon { flex-shrink: 0; width: 14px; color: #a8a29e; }
+    .status-line.emphasis { color: #44403c; font-weight: 500; }
+    .status-line.rationale { color: #57534e; padding: 4px 0; }
 
     /* day cards */
     #day-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
@@ -210,66 +202,59 @@
       ));
     }
 
-    // ============= Streaming render (chat-bubble 对话风格) =============
+    // ============= Streaming render (plan_stack 极简状态行风格) =============
     async function renderTripStreaming(trip) {
       const days = trip.draft_route?.days || [];
       const list = document.getElementById('day-list');
       list.innerHTML = '';
       const city = trip.intent?.city || '这座城市';
 
-      // 0. 开场 AI 气泡
-      await typeBubble(list, '✨', `好啦，${days.length} 天 ${city} 行程帮你画好了，一站一站看 ↓`, 25);
-      await sleep(300);
+      // 0. ✓ 已理解
+      await statusLine(list, '✓', `已理解 — ${city} · ${days.length} 天`);
+      await sleep(250);
 
+      // 1. ✓ 总览
+      const totals = computeTotals(days);
+      const totalsTxt = (totals.km > 0)
+        ? `路线已生成，全程 ${totals.km.toFixed(1)} km · ${(totals.min / 60).toFixed(1)} h`
+        : `路线已生成`;
+      await statusLine(list, '✓', totalsTxt, 'emphasis');
+      await sleep(350);
+
+      // 2. 每天: 状态行 → day card → markers → polyline
       for (let i = 0; i < days.length; i++) {
-        // (a) per-day AI 气泡介绍
-        const lead = i === 0
-          ? `先看 Day ${i + 1}`
-          : (i === days.length - 1 ? `最后 Day ${i + 1}` : `接下来 Day ${i + 1}`);
         const district = days[i].anchor_district || '';
-        const intro = district ? `${lead}，安排在 ${district} 周边 📍` : `${lead} 📍`;
-        await typeBubble(list, '✨', intro, 30);
-        await sleep(150);
+        const stopCount = (days[i].stops || []).length;
+        await statusLine(list, '📍', `Day ${i + 1} · ${district} · ${stopCount} 站`, 'emphasis');
+        await sleep(120);
 
-        // (b) day card 淡入
         const card = buildDayCard(days[i], i);
         list.appendChild(card);
         requestAnimationFrame(() => card.classList.add('fade-in'));
-        await sleep(150);
+        await sleep(120);
 
-        // (c) markers 顺序 drop
         markersByDay[i] = [];
         await dropDayMarkers(days[i], i);
-
-        // (d) polyline 浮现 (按 mode 真实路径)
         await drawDayPolyline(days[i], i);
 
         await sleep(300);
       }
 
-      // 5. 收尾 AI 气泡
-      const { km, min } = computeTotals(days);
-      const closing = (km > 0 || min > 0)
-        ? `全程 ${km.toFixed(1)} km · ${(min / 60).toFixed(1)} h，出发吧 🚀`
-        : `行程画好了，出发吧 🚀`;
-      await typeBubble(list, '✨', closing, 25);
+      // 3. ✨ 收尾
+      await statusLine(list, '✨', '行程画好了，出发吧');
 
       fitMapToAllMarkers();
     }
 
-    async function typeBubble(parent, avatar, text, msPerChar) {
+    async function statusLine(parent, icon, text, extraClass = '') {
       const li = document.createElement('li');
-      li.className = 'chat-bubble';
-      li.innerHTML = `<span class="avatar"></span><span class="bubble-text"></span>`;
-      li.querySelector('.avatar').textContent = avatar;
+      li.className = 'status-line' + (extraClass ? ' ' + extraClass : '');
+      li.innerHTML = `<span class="icon"></span><span class="text"></span>`;
+      li.querySelector('.icon').textContent = icon;
+      li.querySelector('.text').textContent = text;
       parent.appendChild(li);
       requestAnimationFrame(() => li.classList.add('fade-in'));
-      const textEl = li.querySelector('.bubble-text');
-      for (let i = 0; i < text.length; i++) {
-        textEl.textContent = text.slice(0, i + 1);
-        await sleep(msPerChar);
-      }
-      li.classList.add('done');   // 隐藏闪烁光标
+      await sleep(80);
       return li;
     }
 
