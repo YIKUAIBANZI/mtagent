@@ -156,6 +156,7 @@
 
         // 5. render
         renderHeader(tripData);
+        renderTotals(tripData.draft_route?.days || []);
         renderDayList(tripData);
         renderAllMarkers(tripData);
         fitMapToAllMarkers();
@@ -287,6 +288,43 @@
           resolve();
         });
       });
+    }
+
+    // ============= Totals chip =============
+    function computeTotals(days) {
+      let totalKm = 0, totalMin = 0;
+      for (const day of days) {
+        for (const seg of (day.transit_segments || [])) {
+          const rec = seg.options?.[seg.recommended];
+          if (!rec) continue;
+          totalKm += rec.distance_km || 0;
+          totalMin += rec.minutes || 0;
+        }
+      }
+      return { km: totalKm, min: totalMin };
+    }
+
+    function renderTotals(days) {
+      const { km, min } = computeTotals(days);
+      const row = document.getElementById('totals-row');
+      row.innerHTML = '';
+      if (days.length === 0) return;
+      const label = (km > 0 || min > 0)
+        ? `${km.toFixed(1)} km · 全程`
+        : '— 距离数据未计算';
+      const labelTime = (min > 0)
+        ? `${(min / 60).toFixed(1)} h · 在途`
+        : '— 时长数据未计算';
+      const c1 = document.createElement('div');
+      c1.className = 'chip';
+      c1.style.background = '#1c1917';
+      c1.style.color = '#fff';
+      c1.style.borderColor = 'transparent';
+      c1.textContent = label;
+      const c2 = c1.cloneNode(true);
+      c2.textContent = labelTime;
+      row.appendChild(c1);
+      row.appendChild(c2);
     }
 
     function loadAmapJsApi(key) {
