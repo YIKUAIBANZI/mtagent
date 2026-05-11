@@ -494,6 +494,12 @@ async function initMapAsync() {
   if (map) return;
   const cfg = await (await fetch('/api/config')).json();
   if (!cfg.amap_web_js_key) throw new Error('AMAP_WEB_JS_KEY 未配置');
+  // 高德 JSAPI 2021/12 后必须设 securityJsCode, 否则路径规划 INVALID_USER_SCODE
+  if (cfg.amap_web_js_security_code) {
+    window._AMapSecurityConfig = { securityJsCode: cfg.amap_web_js_security_code };
+  } else {
+    console.warn('AMAP_WEB_JS_SECURITY_CODE 未配置 → 路径规划会 INVALID_USER_SCODE, polyline 会回退直线');
+  }
   await loadAmapJsApi(cfg.amap_web_js_key);
   map = new AMap.Map('map-container', {
     mapStyle: 'amap://styles/macaron',

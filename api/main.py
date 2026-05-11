@@ -76,11 +76,14 @@ async def health():
 async def get_public_config():
     """Public config exposed to frontend (non-sensitive only).
 
-    AMAP_WEB_JS_KEY is required for client-side JSAPI; it's restricted
-    to whitelisted referrers in the Amap console as the security boundary.
+    - AMAP_WEB_JS_KEY: JSAPI 加载用 key
+    - AMAP_WEB_JS_SECURITY_CODE: 2021/12 后高德强制要求, 调路径规划等 webservice
+      必须配, 否则 INVALID_USER_SCODE. 跟 web js key 在同一应用下生成.
+    Both restricted to whitelisted referrers in Amap console.
     """
     return {
         "amap_web_js_key": os.environ.get("AMAP_WEB_JS_KEY", ""),
+        "amap_web_js_security_code": os.environ.get("AMAP_WEB_JS_SECURITY_CODE", ""),
     }
 
 
