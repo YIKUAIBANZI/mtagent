@@ -41,8 +41,30 @@
     .chip.active { color: #fff; border-color: transparent; }
     .chip-dot { width: 8px; height: 8px; border-radius: 50%; }
 
+    /* chat bubble (AI 文案气泡) */
+    .chat-bubble {
+      display: flex; gap: 8px; align-items: flex-start;
+      list-style: none;
+      opacity: 0; transform: translateY(6px);
+      transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+    }
+    .chat-bubble.fade-in { opacity: 1; transform: translateY(0); }
+    .chat-bubble .avatar { font-size: 18px; flex-shrink: 0; padding-top: 2px; }
+    .chat-bubble .bubble-text {
+      background: #fef3e7; color: #44403c;
+      padding: 8px 12px; border-radius: 12px;
+      font-size: 13px; line-height: 1.6; flex: 1;
+      min-height: 22px;
+    }
+    .chat-bubble .bubble-text::after {
+      content: '▍'; opacity: 0.5; margin-left: 1px;
+      animation: cursor-blink 0.8s steps(2) infinite;
+    }
+    .chat-bubble.done .bubble-text::after { display: none; }
+    @keyframes cursor-blink { 50% { opacity: 0; } }
+
     /* day cards */
-    #day-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    #day-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
     .day-card {
       border-left: 4px solid var(--day-color, #d6d3d1);
       background: #fff; border-radius: 8px; padding: 12px;
@@ -188,31 +210,67 @@
       ));
     }
 
-    // ============= Streaming render =============
+    // ============= Streaming render (chat-bubble 对话风格) =============
     async function renderTripStreaming(trip) {
       const days = trip.draft_route?.days || [];
       const list = document.getElementById('day-list');
       list.innerHTML = '';
+      const city = trip.intent?.city || '这座城市';
+
+      // 0. 开场 AI 气泡
+      await typeBubble(list, '✨', `好啦，${days.length} 天 ${city} 行程帮你画好了，一站一站看 ↓`, 25);
+      await sleep(300);
 
       for (let i = 0; i < days.length; i++) {
-        // (a) 浮窗 day card 淡入
+        // (a) per-day AI 气泡介绍
+        const lead = i === 0
+          ? `先看 Day ${i + 1}`
+          : (i === days.length - 1 ? `最后 Day ${i + 1}` : `接下来 Day ${i + 1}`);
+        const district = days[i].anchor_district || '';
+        const intro = district ? `${lead}，安排在 ${district} 周边 📍` : `${lead} 📍`;
+        await typeBubble(list, '✨', intro, 30);
+        await sleep(150);
+
+        // (b) day card 淡入
         const card = buildDayCard(days[i], i);
         list.appendChild(card);
         requestAnimationFrame(() => card.classList.add('fade-in'));
         await sleep(150);
 
-        // (b) markers 顺序 drop (每 stop 间隔 200ms)
+        // (c) markers 顺序 drop
         markersByDay[i] = [];
         await dropDayMarkers(days[i], i);
 
-        // (c) polyline 浮现
+        // (d) polyline 浮现 (按 mode 真实路径)
         await drawDayPolyline(days[i], i);
 
-        // (d) 每天间停顿
-        await sleep(200);
+        await sleep(300);
       }
 
+      // 5. 收尾 AI 气泡
+      const { km, min } = computeTotals(days);
+      const closing = (km > 0 || min > 0)
+        ? `全程 ${km.toFixed(1)} km · ${(min / 60).toFixed(1)} h，出发吧 🚀`
+        : `行程画好了，出发吧 🚀`;
+      await typeBubble(list, '✨', closing, 25);
+
       fitMapToAllMarkers();
+    }
+
+    async function typeBubble(parent, avatar, text, msPerChar) {
+      const li = document.createElement('li');
+      li.className = 'chat-bubble';
+      li.innerHTML = `<span class="avatar"></span><span class="bubble-text"></span>`;
+      li.querySelector('.avatar').textContent = avatar;
+      parent.appendChild(li);
+      requestAnimationFrame(() => li.classList.add('fade-in'));
+      const textEl = li.querySelector('.bubble-text');
+      for (let i = 0; i < text.length; i++) {
+        textEl.textContent = text.slice(0, i + 1);
+        await sleep(msPerChar);
+      }
+      li.classList.add('done');   // 隐藏闪烁光标
+      return li;
     }
 
     function buildDayCard(day, dayIndex) {
