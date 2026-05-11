@@ -502,10 +502,11 @@ async function initMapAsync() {
   });
   await new Promise(resolve => {
     AMap.plugin(['AMap.Driving','AMap.Walking','AMap.Riding'], () => {
-      const opts = { map, hideMarkers: true, autoFitView: false };
-      SVC.drive = new AMap.Driving(opts);
-      SVC.walk = new AMap.Walking(opts);
-      SVC.bicycle = new AMap.Riding(opts);
+      // extensions: 'all' 才返回 step.path 数组 (默认 'base' 不含路径坐标!)
+      const baseOpts = { map, hideMarkers: true, autoFitView: false };
+      SVC.drive = new AMap.Driving({ ...baseOpts, extensions: 'all' });
+      SVC.walk = new AMap.Walking({ ...baseOpts, extensions: 'all' });
+      SVC.bicycle = new AMap.Riding({ ...baseOpts, extensions: 'all' });
       SVC.transit = SVC.walk;
       resolve();
     });
@@ -762,12 +763,28 @@ function drawSegment(origin, destination, mode, dayIndex, color) {
   const svc = SVC[mode] || SVC.walk;
   return new Promise(resolve => {
     const handler = (status, result) => {
-      let pathLngLat;
-      if (status === 'complete' && result?.routes?.[0]?.steps) {
-        pathLngLat = result.routes[0].steps.flatMap(s => s.path).map(p => [p.lng, p.lat]);
-      } else {
-        console.warn(`${mode}.search day ${dayIndex} failed (${status}), fallback straight line`);
+      let pathLngLat = null;
+      if (status === 'complete' && result?.routes?.[0]) {
+        const route = result.routes[0];
+        // 兼容多种 path 位置:
+        //  v1.4 Driving: route.steps[i].path = [LngLat, ...]
+        //  v1.4 Walking/Riding: route.steps[i].path 同样
+        //  少数情况 path 直接挂在 route 上
+        const rawPts = route.steps?.length
+          ? route.steps.flatMap(s => s.path || [])
+          : (route.path || []);
+        pathLngLat = rawPts.map(p => {
+          if (Array.isArray(p)) return p;                      // 已是 [lng,lat]
+          if (typeof p?.getLng === 'function') return [p.getLng(), p.getLat()];
+          if (typeof p?.lng === 'number') return [p.lng, p.lat];
+          return null;
+        }).filter(Boolean);
+      }
+      if (!pathLngLat || pathLngLat.length < 2) {
+        console.warn(`${mode}.search day ${dayIndex} failed/empty (status=${status}, routes=${result?.routes?.length}, pathLen=${pathLngLat?.length}), fallback straight line`, result);
         pathLngLat = [origin, destination];
+      } else {
+        console.log(`${mode}.search day ${dayIndex}: ${pathLngLat.length} points`);
       }
       const isDashed = mode === 'walk' || mode === 'bicycle' || mode === 'transit';
       const line = new AMap.Polyline({
