@@ -688,18 +688,54 @@ async function renderDayDone(day) {
 }
 
 // v1.6: 用 day_done event 自带的 stops + transit_segments 画 polyline (不等 trip.complete)
+// P2: 后端 source==='estimated' → 画灰色虚线 (区分真街道路径), 跳过 AMap 调用
+//     AMap 调用失败 → 也画灰色虚线 (drawSegment 内部处理)
+//     fromStop/toStop 缺失 或 坐标非 number → 完全跳过 (无法画), 计 invalidData
 function drawDayPolylineFromStreamPayload(stops, segments, dayIndex, color) {
   polylinesByDay[dayIndex] = polylinesByDay[dayIndex] || [];
   for (const seg of segments) {
     const fromStop = stops[seg.from_index];
     const toStop = stops[seg.to_index];
-    if (!fromStop || !toStop) continue;
+    if (!fromStop || !toStop) {
+      console.warn(`[day${dayIndex}] segment ${seg.from_index}→${seg.to_index} stop missing → skip`);
+      polylineStats.invalidData += 1;
+      continue;
+    }
     const o = [fromStop.longitude, fromStop.latitude];
     const d = [toStop.longitude, toStop.latitude];
-    if (typeof o[0] !== 'number' || typeof d[0] !== 'number') continue;
-    polylineQueue.push({ o, d, mode: seg.recommended || 'walk', dayIndex, color });
+    if (typeof o[0] !== 'number' || typeof d[0] !== 'number') {
+      console.warn(`[day${dayIndex}] segment ${seg.from_index}→${seg.to_index} coord NaN → skip`, o, d);
+      polylineStats.invalidData += 1;
+      continue;
+    }
+    const mode = seg.recommended || 'walk';
+    const src = seg.options?.[mode]?.source;
+    if (src === 'estimated') {
+      polylineStats.skippedEstimated += 1;
+      polylineQueue.push({ o, d, dayIndex, isEstimated: true });
+      continue;
+    }
+    polylineQueue.push({ o, d, mode, dayIndex, color });
   }
   startPolylineWorker();
+}
+
+// P2: polyline 真实性统计 — drain 完后弹 banner
+const polylineStats = { skippedEstimated: 0, amapFailed: 0, invalidData: 0, bannerShown: false };
+
+// P2: 灰色虚线 — 用于 estimated 段 + AMap 失败兜底, 跟真街道路径 (实线/带色) 视觉区分
+function drawEstimatedLine(origin, destination, dayIndex) {
+  polylinesByDay[dayIndex] = polylinesByDay[dayIndex] || [];
+  const line = new AMap.Polyline({
+    path: [origin, destination],
+    strokeColor: '#9aa0a6',
+    strokeWeight: 4,
+    strokeOpacity: 0.55,
+    strokeStyle: 'dashed',
+    showDir: false,
+  });
+  line.setMap(map);
+  polylinesByDay[dayIndex].push(line);
 }
 
 // v1.6.1: 全局 polyline queue — 防 AMap CUQPS_HAS_EXCEEDED_THE_LIMIT
@@ -712,12 +748,34 @@ async function startPolylineWorker() {
   try {
     while (polylineQueue.length > 0) {
       const job = polylineQueue.shift();
+      // P2: estimated 段直接画灰色虚线, 不调 AMap, 也不占 QPS sleep
+      if (job.isEstimated) {
+        try { drawEstimatedLine(job.o, job.d, job.dayIndex); }
+        catch (e) { console.warn('estimated line', e); }
+        continue;
+      }
       try {
-        await drawSegment(job.o, job.d, job.mode, job.dayIndex, job.color);
+        const ok = await drawSegment(job.o, job.d, job.mode, job.dayIndex, job.color);
+        if (ok === false) {
+          polylineStats.amapFailed += 1;
+          drawEstimatedLine(job.o, job.d, job.dayIndex);   // 失败兜底灰虚线
+        }
       } catch (e) {
         console.warn('polyline worker', e);
+        polylineStats.amapFailed += 1;
+        try { drawEstimatedLine(job.o, job.d, job.dayIndex); } catch (_) {}
       }
       await sleep(220);   // ~4.5 req/s, well under AMap web JS QPS cap
+    }
+    // P2: drain 完后, 若有估算/失败/无效段, 弹 banner (整 trip 只弹一次)
+    const total = polylineStats.skippedEstimated + polylineStats.amapFailed + polylineStats.invalidData;
+    if (total > 0 && !polylineStats.bannerShown) {
+      polylineStats.bannerShown = true;
+      const parts = [];
+      if (polylineStats.skippedEstimated) parts.push(`估算 ${polylineStats.skippedEstimated}`);
+      if (polylineStats.amapFailed) parts.push(`实时失败 ${polylineStats.amapFailed}`);
+      if (polylineStats.invalidData) parts.push(`数据无效 ${polylineStats.invalidData}`);
+      showError(`⚠ 本次行程 ${total} 段为估算路径 (${parts.join(' · ')})`);
     }
   } finally {
     polylineWorkerRunning = false;
@@ -823,31 +881,10 @@ async function fitMapToAllMarkers() {
 }
 
 function drawDayPolylinesIfReady(/*dayIndex, segments*/) {
-  // polyline 等 fitMapToAllMarkers 走 — 因为需要 lat/lng (transit.updated payload 没坐标)
+  // v1.6: polyline 由 drawDayPolylineFromStreamPayload 在 day_done 阶段走完
+  // transit.updated 仅作旧 client 兼容, 不再触发画线
 }
 
-async function drawDayPolyline(day, dayIndex) {
-  const stops = day.stops || [];
-  const segments = day.transit_segments || [];
-  const color = DAY_COLORS[dayIndex] || '#ff3e00';
-  polylinesByDay[dayIndex] = polylinesByDay[dayIndex] || [];
-  if (segments.length === 0 && stops.length >= 2) {
-    const coords = stops.filter(s => typeof s.poi?.longitude === 'number')
-                       .map(s => [s.poi.longitude, s.poi.latitude]);
-    for (let i = 0; i < coords.length - 1; i++) {
-      await drawSegment(coords[i], coords[i + 1], 'walk', dayIndex, color);
-    }
-    return;
-  }
-  for (const seg of segments) {
-    const fromStop = stops[seg.from_index], toStop = stops[seg.to_index];
-    if (!fromStop?.poi || !toStop?.poi) continue;
-    const o = [fromStop.poi.longitude, fromStop.poi.latitude];
-    const d = [toStop.poi.longitude, toStop.poi.latitude];
-    if (typeof o[0] !== 'number' || typeof d[0] !== 'number') continue;
-    await drawSegment(o, d, seg.recommended || 'walk', dayIndex, color);
-  }
-}
 
 function drawSegment(origin, destination, mode, dayIndex, color) {
   const svc = SVC[mode] || SVC.walk;
@@ -871,11 +908,12 @@ function drawSegment(origin, destination, mode, dayIndex, color) {
         }).filter(Boolean);
       }
       if (!pathLngLat || pathLngLat.length < 2) {
-        console.warn(`[${mode} day${dayIndex}] failed/empty → fallback straight line. status=${status}`);
-        pathLngLat = [origin, destination];
-      } else {
-        console.log(`[${mode} day${dayIndex}] OK ${pathLngLat.length} pts`);
+        // P2: AMap 实时调用失败 → 不画 misleading 直线, 让统计 +1 弹 banner
+        console.warn(`[${mode} day${dayIndex}] failed/empty → skip (no fallback line). status=${status}`);
+        resolve(false);
+        return;
       }
+      console.log(`[${mode} day${dayIndex}] OK ${pathLngLat.length} pts`);
       const isDashed = mode === 'walk' || mode === 'bicycle' || mode === 'transit';
       const line = new AMap.Polyline({
         path: pathLngLat,
@@ -887,7 +925,7 @@ function drawSegment(origin, destination, mode, dayIndex, color) {
       });
       line.setMap(map);
       polylinesByDay[dayIndex].push(line);
-      resolve();
+      resolve(true);
     };
     // 显式 LngLat 实例 + 每次都传 extensions:'all' (双保险)
     if (mode === 'drive') svc.search(oLng, dLng, { extensions: 'all' }, handler);
