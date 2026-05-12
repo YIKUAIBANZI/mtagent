@@ -7,11 +7,17 @@ from __future__ import annotations
 
 import json
 import os
+from datetime import datetime
 from pathlib import Path
 from typing import Awaitable, Callable, Optional
 
+try:
+    from zoneinfo import ZoneInfo  # py3.9+
+except ImportError:  # pragma: no cover
+    ZoneInfo = None  # type: ignore
+
 from agents.context import TripContext
-from dianping.schemas import ParsedIntent, ProfilerOutput
+from dianping.schemas import ConstraintName, ModifierName, ParsedIntent, ProfilerOutput
 
 _PROMPT_PATH = Path(__file__).parent / "prompts" / "profiler.md"
 
@@ -26,6 +32,12 @@ KEYWORD_RULES: dict[ModifierName, tuple[str, ...]] = {
 }
 
 ALL_MODIFIERS: tuple[ModifierName, ...] = ("轻量体力", "重文化", "重美食", "怕排队")
+ALL_CONSTRAINTS: tuple[ConstraintName, ...] = (
+    "avoid_queue",
+    "avoid_walking",
+    "avoid_cross_district",
+    "need_meal",
+)
 
 
 def _apply_modifier_defaults(intent: ParsedIntent, user_text: str) -> None:
@@ -46,6 +58,24 @@ def _apply_modifier_defaults(intent: ParsedIntent, user_text: str) -> None:
         intent.modifiers.setdefault(m, False)
 
 
+def _apply_constraint_defaults(intent: ParsedIntent) -> None:
+    """Backfill v1.7 constraints with deterministic defaults.
+
+    LLM may omit constraints; ensure all 4 keys present as bool.
+    """
+    if intent.traveler_type in ("银发", "家庭亲子"):
+        intent.constraints.setdefault("avoid_walking", True)
+    for c in ALL_CONSTRAINTS:
+        intent.constraints.setdefault(c, False)
+
+
+def _server_now_iso() -> str:
+    """Current server time in Asia/Shanghai ISO 8601 (China hackathon target)."""
+    if ZoneInfo is not None:
+        return datetime.now(ZoneInfo("Asia/Shanghai")).isoformat(timespec="seconds")
+    return datetime.now().astimezone().isoformat(timespec="seconds")
+
+
 class Profiler:
     """Profiler agent. v0 minimal — single LLM call, no clarifying loop."""
 
@@ -58,7 +88,10 @@ class Profiler:
 
     async def run(self, ctx: TripContext) -> ProfilerOutput:
         ctx.log_event("Profiler", "start", {"input": ctx.user_input.free_text[:100]})
-        raw = await self.llm_call(self._system_prompt, ctx.user_input.free_text)
+        # v1.7: inject server time into user message for "current departure" inference
+        now_iso = _server_now_iso()
+        user_msg = f"当前服务器时间: {now_iso}\n\n{ctx.user_input.free_text}"
+        raw = await self.llm_call(self._system_prompt, user_msg)
         try:
             data = json.loads(raw)
         except json.JSONDecodeError as exc:
@@ -73,6 +106,17 @@ class Profiler:
             if v in (None, "", 0):
                 missing.append(k)
 
+        # v1.7 即时出发字段 (全部 optional, LLM 没返回也安全)
+        v17_extra = dict(
+            time_window=data.get("time_window"),
+            interests=data.get("interests") or [],
+            constraints=data.get("constraints") or {},
+            start_location_text=data.get("start_location_text"),
+            start_with_meal=bool(data.get("start_with_meal") or False),
+            estimated_hours=data.get("estimated_hours"),
+            current_time=data.get("current_time") or now_iso,
+        )
+
         if missing:
             understood = ParsedIntent(
                 city=data.get("city") or "?",
@@ -83,6 +127,7 @@ class Profiler:
                 preferences=data.get("preferences") or [],
                 must_visit=data.get("must_visit") or [],
                 avoid=data.get("avoid") or [],
+                **v17_extra,
             )
             ready = False
         else:
@@ -95,10 +140,12 @@ class Profiler:
                 preferences=data.get("preferences") or [],
                 must_visit=data.get("must_visit") or [],
                 avoid=data.get("avoid") or [],
+                **v17_extra,
             )
             ready = True
 
         _apply_modifier_defaults(understood, ctx.user_input.free_text)
+        _apply_constraint_defaults(understood)
         ctx.intent = understood
         ctx.log_event(
             "Profiler",
@@ -106,6 +153,9 @@ class Profiler:
             {
                 "ready_to_plan": ready,
                 "missing_fields": missing,
+                "time_window": understood.time_window,
+                "start_with_meal": understood.start_with_meal,
+                "estimated_hours": understood.estimated_hours,
             },
         )
         ctx.save()

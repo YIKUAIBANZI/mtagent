@@ -710,6 +710,11 @@ function drawDayPolylineFromStreamPayload(stops, segments, dayIndex, color) {
     }
     const mode = seg.recommended || 'walk';
     const src = seg.options?.[mode]?.source;
+    if (src === 'unavailable') {
+      // v1.7: 后端明确无法估算 → 不画任何线, 只让 banner 提示
+      polylineStats.unavailable += 1;
+      continue;
+    }
     if (src === 'estimated') {
       polylineStats.skippedEstimated += 1;
       polylineQueue.push({ o, d, dayIndex, isEstimated: true });
@@ -721,7 +726,8 @@ function drawDayPolylineFromStreamPayload(stops, segments, dayIndex, color) {
 }
 
 // P2: polyline 真实性统计 — drain 完后弹 banner
-const polylineStats = { skippedEstimated: 0, amapFailed: 0, invalidData: 0, bannerShown: false };
+// v1.7: 加 unavailable (后端完全失败, 不画任何线)
+const polylineStats = { skippedEstimated: 0, amapFailed: 0, invalidData: 0, unavailable: 0, bannerShown: false };
 
 // P2: 灰色虚线 — 用于 estimated 段 + AMap 失败兜底, 跟真街道路径 (实线/带色) 视觉区分
 function drawEstimatedLine(origin, destination, dayIndex) {
@@ -767,15 +773,16 @@ async function startPolylineWorker() {
       }
       await sleep(220);   // ~4.5 req/s, well under AMap web JS QPS cap
     }
-    // P2: drain 完后, 若有估算/失败/无效段, 弹 banner (整 trip 只弹一次)
-    const total = polylineStats.skippedEstimated + polylineStats.amapFailed + polylineStats.invalidData;
+    // P2: drain 完后, 若有估算/失败/无效/不可用段, 弹 banner (整 trip 只弹一次)
+    const total = polylineStats.skippedEstimated + polylineStats.amapFailed + polylineStats.invalidData + polylineStats.unavailable;
     if (total > 0 && !polylineStats.bannerShown) {
       polylineStats.bannerShown = true;
       const parts = [];
       if (polylineStats.skippedEstimated) parts.push(`估算 ${polylineStats.skippedEstimated}`);
       if (polylineStats.amapFailed) parts.push(`实时失败 ${polylineStats.amapFailed}`);
       if (polylineStats.invalidData) parts.push(`数据无效 ${polylineStats.invalidData}`);
-      showError(`⚠ 本次行程 ${total} 段为估算路径 (${parts.join(' · ')})`);
+      if (polylineStats.unavailable) parts.push(`不可用 ${polylineStats.unavailable}`);
+      showError(`⚠ 本次行程 ${total} 段路线未获取街道路径 (${parts.join(' · ')})`);
     }
   } finally {
     polylineWorkerRunning = false;

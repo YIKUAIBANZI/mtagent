@@ -212,6 +212,15 @@ BudgetLevel = Literal["性价比", "适中", "精致"]
 PaceLevel = Literal["暴走", "适中", "佛系"]
 SlotName = Literal["上午景点", "午饭", "下午", "下午茶", "晚饭", "夜场"]
 ModifierName = Literal["轻量体力", "重文化", "重美食", "怕排队"]
+# v1.7 即时出发: 半日/一日 时间窗口
+TimeWindow = Literal["半日_上午", "半日_下午", "半日_夜间", "一日", "多日"]
+# v1.7 即时出发: 用户约束 (与 modifiers 并行, modifiers 是负空间口语, constraints 是中性结构)
+ConstraintName = Literal[
+    "avoid_queue",  # 怕排队
+    "avoid_walking",  # 少走路
+    "avoid_cross_district",  # 不想跨区
+    "need_meal",  # 必须安排餐饮
+]
 
 
 class PersonaLabels(BaseModel):
@@ -237,6 +246,14 @@ class ParsedIntent(BaseModel):
     avoid: list[str] = Field(default_factory=list)
     start_date: Optional[date] = None
     modifiers: dict[ModifierName, bool] = Field(default_factory=dict)
+    # v1.7 即时出发扩展 (全部 optional, 多日路径不依赖, 不破坏 v0/v1/v2.5 测试)
+    time_window: Optional[TimeWindow] = None
+    interests: list[str] = Field(default_factory=list)
+    constraints: dict[ConstraintName, bool] = Field(default_factory=dict)
+    start_location_text: Optional[str] = None  # "我现在在 XX 附近", geo 解析后续做
+    start_with_meal: bool = False  # Profiler 时刻感知推断: 现在该先吃还是先玩
+    estimated_hours: Optional[int] = None  # 实际可用时长 (从 now → time_window 结束)
+    current_time: Optional[str] = None  # ISO 8601, Profiler 注入的服务器时间快照
 
 
 class ProfilerOutput(BaseModel):
@@ -255,7 +272,8 @@ class TimeSlot(BaseModel):
 
 
 TransitMode = Literal["drive", "walk", "transit", "bicycle"]
-TransitSource = Literal["amap", "estimated"]
+# v1.7: 三档可信度. amap=真实路径; estimated=有距离/时间但无街道点; unavailable=完全失败, 前端不应画线
+TransitSource = Literal["amap", "estimated", "unavailable"]
 
 
 class TransitInfo(BaseModel):
