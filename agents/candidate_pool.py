@@ -155,6 +155,22 @@ def score_poi(poi: POI, intent: ParsedIntent, variant: Variant = "main") -> floa
         if is_outdoor_landmark:
             score += rules.get("landmark_outdoor_penalty", 0)
 
+    # v1.8 anchor distance_penalty (Spec §4.1)
+    if intent.anchor_lng is not None and intent.anchor_lat is not None:
+        from agents.anchor import _haversine_km
+
+        d_km = _haversine_km(
+            (intent.anchor_lng, intent.anchor_lat),
+            (poi.longitude, poi.latitude),
+        )
+        radius = intent.anchor_radius_km or 3.0
+        if d_km <= radius / 2:
+            pass  # 半径一半内不扣
+        elif d_km <= radius:
+            score -= (d_km - radius / 2) * 10  # 线性扣
+        else:
+            score -= 50 + (d_km - radius) * 20  # 超出硬扣
+
     return score
 
 
@@ -193,6 +209,16 @@ def build_candidate_pool(
     for poi in pois:
         if poi.city != intent.city:
             continue
+        # v1.8: 有 anchor 时硬过滤掉超出 radius 2x 的 POI
+        if intent.anchor_lng is not None and intent.anchor_lat is not None:
+            from agents.anchor import _haversine_km
+
+            d = _haversine_km(
+                (intent.anchor_lng, intent.anchor_lat),
+                (poi.longitude, poi.latitude),
+            )
+            if d > (intent.anchor_radius_km or 3.0) * 2:
+                continue
         bucket = _bucket_of(poi)
         if bucket not in buckets:
             continue  # fallback or no-enriched 跳过
