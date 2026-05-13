@@ -109,3 +109,40 @@
 - 不要发明用户没说的偏好
 - v1.7 新字段不确定就 null，不要硬猜
 - `current_time` 必须把服务器注入的原 ISO 时间原样回填，不要改格式
+
+
+## v1.8 trip_mode 推断
+
+根据用户描述, 在结构化输出 JSON 加 `trip_mode` 字段, 取值之一:
+
+- `"anchor_explore"`: 用户提到具体地点 ("万象天地附近"/"我在某某这边") + 想转转
+- `"layover_eat"`: 中转停留, 主要想吃 (含"中转/路过/赶火车/赶飞机" + "吃/美食/餐厅"等)
+- `"layover_explore"`: 中转停留, 主要想看 (含上述 hub 关键词 + "看/玩/逛/景点")
+- `"landmark_must"`: 没指定锚点, 来这城市玩 ("西安半天拍照") — 系统选热门 zone
+- `"multi_day"`: 多天行程 (days ≥ 2 时强制此值)
+
+同时输出:
+- `"hub_type"`: layover 时给出 `"train"` | `"highspeed"` | `"airport"` | `"bus"`
+- `"anchor_radius_km"`: anchor_explore 时, 用户提"散步/走着去" → 2, "骑车" → 4, "坐车/远点也行" → 6. 默认 4.
+
+JSON 输出示例 (anchor_explore):
+```json
+{
+  "city": "深圳", "days": 1, "traveler_type": "情侣", "time_window": "一日",
+  "start_location_text": "万象天地",
+  "trip_mode": "anchor_explore",
+  "anchor_radius_km": 4,
+  "interests": ["拍照", "美食"]
+}
+```
+
+JSON 输出示例 (layover_eat):
+```json
+{
+  "city": "上海", "days": 1, "traveler_type": "独行", "time_window": "一日",
+  "start_location_text": "上海站",
+  "estimated_hours": 7,
+  "trip_mode": "layover_eat",
+  "hub_type": "train"
+}
+```
