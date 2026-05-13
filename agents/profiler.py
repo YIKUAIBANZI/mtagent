@@ -16,7 +16,14 @@ try:
 except ImportError:  # pragma: no cover
     ZoneInfo = None  # type: ignore
 
+from agents.anchor import resolve_anchor as _resolve_anchor
 from agents.context import TripContext
+from agents.trip_router import (
+    DEFAULT_ANCHOR_RADIUS_KM,
+    compute_safety_margin,
+    infer_hub_type,
+    route_trip_mode,
+)
 from dianping.schemas import ConstraintName, ModifierName, ParsedIntent, ProfilerOutput
 
 _PROMPT_PATH = Path(__file__).parent / "prompts" / "profiler.md"
@@ -108,6 +115,12 @@ class Profiler:
         ) and not data.get("days"):
             data["days"] = 1
 
+        # v1.7.3 简化默认: 真 LLM 可能不返 traveler_type (stub 已 backfill).
+        # 单字段 backfill 让 ready_to_plan 不再因 traveler_type 缺失被拒.
+        # city 仍需用户/LLM 给出, 没说才走 clarifying.
+        if not data.get("traveler_type"):
+            data["traveler_type"] = "情侣"
+
         # Build ParsedIntent — None values keep field optional/missing
         missing: list[str] = []
         for k in REQUIRED_FIELDS:
@@ -168,6 +181,51 @@ class Profiler:
             except Exception as wxerr:
                 understood.weather_hint = "unknown"
                 ctx.log_event("Profiler", "weather_failed", {"error": str(wxerr)})
+
+        # v1.8 trip_mode 路由 + anchor 解析
+
+        # 1) Resolve anchor (best-effort, 失败不阻塞)
+        if understood.start_location_text and understood.city:
+            try:
+                anchor = await _resolve_anchor(
+                    understood.start_location_text, understood.city
+                )
+            except Exception as aerr:
+                anchor = None
+                ctx.log_event("Profiler", "anchor_failed", {"error": str(aerr)})
+            if anchor is not None:
+                understood.anchor_lng = anchor.lng
+                understood.anchor_lat = anchor.lat
+                understood.anchor_resolved_name = anchor.name
+
+        # 2) Route trip_mode (规则路由, LLM 已抽 trip_mode 则尊重)
+        if not understood.trip_mode:
+            understood.trip_mode = route_trip_mode(understood, ctx.user_input.free_text)
+
+        # 3) Layover: 推 hub_type + safety_margin
+        if understood.trip_mode in ("layover_eat", "layover_explore"):
+            if not understood.hub_type:
+                understood.hub_type = infer_hub_type(understood.start_location_text)
+            if understood.safety_margin_min is None:
+                understood.safety_margin_min = compute_safety_margin(
+                    understood.hub_type
+                )
+
+        # 4) Anchor_explore: 默认半径
+        if (
+            understood.trip_mode == "anchor_explore"
+            and understood.anchor_radius_km is None
+        ):
+            understood.anchor_radius_km = DEFAULT_ANCHOR_RADIUS_KM
+
+        # 5) 锚点解析失败 + 用户提了锚点 → 降级 landmark_must
+        if (
+            understood.start_location_text
+            and understood.anchor_lng is None
+            and understood.trip_mode
+            in ("anchor_explore", "layover_eat", "layover_explore")
+        ):
+            understood.trip_mode = "landmark_must"
 
         ctx.intent = understood
         ctx.log_event(
