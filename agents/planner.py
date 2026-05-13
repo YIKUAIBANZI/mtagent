@@ -326,16 +326,31 @@ class Planner:
 
         poi_index = {p.openshopid: p for p in day_cluster_pois}
         stops: list[Stop] = []
+        used_pids: set[str] = set()
+        used_slot_names: set[str] = set()
         for s in llm_data.get("stops") or []:
             pid = s.get("poi_openshopid")
             poi = poi_index.get(pid)
             if poi is None:
+                continue
+            # v1.7.3 去重: 同一 POI 不能重复 (LLM 在 meal 缺失时会复用景点)
+            if pid in used_pids:
                 continue
             slot_name = s.get("slot_name", template.slots[0].name)
             slot_def = next(
                 (slot for slot in template.slots if slot.name == slot_name),
                 template.slots[0],
             )
+            # v1.7.3 slot-aware: meal slot 必须美食 POI, 否则跳过 (公园当晚饭这种)
+            if slot_def.is_meal and not any(
+                "美食" in (c or "") for c in (poi.categories or [])
+            ):
+                continue
+            # 同一 slot 只接受第一个匹配, 后续重复 slot_name 跳过
+            if slot_name in used_slot_names:
+                continue
+            used_pids.add(pid)
+            used_slot_names.add(slot_name)
             stops.append(
                 Stop(
                     poi=poi,
@@ -350,12 +365,16 @@ class Planner:
                 )
             )
 
-        # Empty-stops outcome (e.g., stub_planner_llm_stream yields '{"stops":[]}')
+        # Empty-stops outcome (e.g., stub_planner_llm_stream yields '{"stops":[]}'
+        # or all stops were filtered out by dedupe/meal-slot checks)
         # → raise so caller fallback synthesizes from candidate POIs.
         if not stops and day_cluster_pois:
             raise PlannerLLMError(
                 day_idx,
-                ValueError("LLM returned 0 stops despite non-empty candidates"),
+                ValueError(
+                    "LLM returned 0 valid stops despite non-empty candidates "
+                    "(possibly filtered by dedupe or meal-slot check)"
+                ),
             )
 
         day_plan = DayPlan(

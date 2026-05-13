@@ -365,3 +365,105 @@ async def test_compose_one_day_raises_planner_llm_error_on_stream_exception(
 
     assert exc_info.value.day_idx == 2
     assert "dashscope 500" in str(exc_info.value)
+
+
+# ===== v1.7.3: dedupe + meal-slot-aware tests =====
+
+
+@pytest.mark.asyncio
+async def test_compose_one_day_dedupes_repeated_poi_openshopids(monkeypatch):
+    """LLM 在 meal 桶缺失时会复用景点 POI 当晚饭. 后处理必须去重."""
+    p = _planner()
+    intent = _make_intent()
+    pace = default_pace_for_traveler(intent.traveler_type)
+    templates = generate_day_template(
+        days=3, traveler_type=intent.traveler_type, pace=pace
+    )
+    anchor = ("钟楼", 34.26, 108.94)
+    # 单一 POI: LLM 会被诱导重复填三槽
+    cluster = [_make_poi("东湖公园", "id_park", ["休闲娱乐"])]
+
+    async def _fake_stream(system, user):
+        # LLM 把同一 POI 填进 3 个槽 (用户截图的"东湖公园 × 3"案例)
+        yield (
+            '{"stops":['
+            '{"poi_openshopid":"id_park","slot_name":"上午景点","arrival_time":"09:00","leave_time":"11:00"},'
+            '{"poi_openshopid":"id_park","slot_name":"午饭","arrival_time":"12:00","leave_time":"13:00"},'
+            '{"poi_openshopid":"id_park","slot_name":"下午","arrival_time":"13:30","leave_time":"17:00"}'
+            "]}"
+        )
+
+    async def _fake_transit(day_plan, intent_arg, amap):
+        return (day_plan.day_index, [])
+
+    monkeypatch.setattr("agents.planner._default_qwen_stream", _fake_stream)
+    monkeypatch.setattr("api.routes._compute_day_transits", _fake_transit)
+
+    amap = AmapClient(key="")
+    try:
+        _, day_plan, _ = await p.compose_one_day(
+            day_idx=0,
+            intent=intent,
+            template=templates[0],
+            anchor=anchor,
+            day_cluster_pois=cluster,
+            amap=amap,
+        )
+    finally:
+        await amap._client.aclose()
+
+    # 去重后只剩 1 stop (上午景点), 不能 3 个全是同一 POI
+    assert len(day_plan.stops) == 1
+    assert day_plan.stops[0].poi.openshopid == "id_park"
+
+
+@pytest.mark.asyncio
+async def test_compose_one_day_skips_non_meal_poi_in_meal_slot(monkeypatch):
+    """meal slot (is_meal=True) 必须美食 POI. 公园被塞进午饭槽必须跳过."""
+    p = _planner()
+    intent = _make_intent()
+    pace = default_pace_for_traveler(intent.traveler_type)
+    templates = generate_day_template(
+        days=3, traveler_type=intent.traveler_type, pace=pace
+    )
+    anchor = ("钟楼", 34.26, 108.94)
+    cluster = [
+        _make_poi("钟楼", "id_a", ["景点"]),
+        _make_poi("东湖公园", "id_park", ["休闲娱乐"]),  # 非美食
+        _make_poi("老孙家", "id_food", ["美食"]),
+    ]
+
+    async def _fake_stream(system, user):
+        # LLM 错把公园塞进午饭, 美食 POI 塞进上午景点
+        yield (
+            '{"stops":['
+            '{"poi_openshopid":"id_a","slot_name":"上午景点","arrival_time":"09:00","leave_time":"11:00"},'
+            '{"poi_openshopid":"id_park","slot_name":"午饭","arrival_time":"12:00","leave_time":"13:00"},'
+            '{"poi_openshopid":"id_food","slot_name":"下午","arrival_time":"13:30","leave_time":"17:00"}'
+            "]}"
+        )
+
+    async def _fake_transit(day_plan, intent_arg, amap):
+        return (day_plan.day_index, [])
+
+    monkeypatch.setattr("agents.planner._default_qwen_stream", _fake_stream)
+    monkeypatch.setattr("api.routes._compute_day_transits", _fake_transit)
+
+    amap = AmapClient(key="")
+    try:
+        _, day_plan, _ = await p.compose_one_day(
+            day_idx=0,
+            intent=intent,
+            template=templates[0],
+            anchor=anchor,
+            day_cluster_pois=cluster,
+            amap=amap,
+        )
+    finally:
+        await amap._client.aclose()
+
+    # 午饭槽 (东湖公园-休闲娱乐) 被跳过, 剩 2 个 stop
+    assert len(day_plan.stops) == 2
+    slot_names = [s.slot.name for s in day_plan.stops]
+    assert "午饭" not in slot_names
+    assert "上午景点" in slot_names
