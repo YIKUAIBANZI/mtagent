@@ -13,7 +13,7 @@ from typing import Optional
 import httpx
 
 from .auth import sign
-from .schemas import POI, PersonaLabels, SearchRecord
+from .schemas import POI, EnrichedLabel, PersonaLabels, SearchRecord
 
 
 class DianpingAPIError(Exception):
@@ -39,6 +39,8 @@ class DianpingClient:
         self.session = session or os.environ.get("DIANPING_SESSION", "demo-session")
         self._client = httpx.AsyncClient(timeout=timeout)
         self._labels_cache: dict[str, dict[str, dict]] = self._load_labels()
+        # v1.7: enriched routing labels (poi_role / planning_tags / risk_tags / ...)
+        self._enriched_cache: dict[str, dict[str, dict]] = self._load_enriched()
 
     @staticmethod
     def _load_labels() -> dict[str, dict[str, dict]]:
@@ -48,13 +50,32 @@ class DianpingClient:
             return {}
         return json.loads(path.read_text(encoding="utf-8"))
 
+    @staticmethod
+    def _load_enriched() -> dict[str, dict[str, dict]]:
+        """Load data/poi_enriched_labels.json. Empty dict if file missing (graceful degrade).
+
+        Structure: { city: { openshopid: enriched_label_dict } }
+        """
+        path = Path("data/poi_enriched_labels.json")
+        if not path.exists():
+            return {}
+        return json.loads(path.read_text(encoding="utf-8"))
+
     def _attach_labels(self, pois: list[POI], city: str) -> None:
-        """Inject persona_labels into each POI matching openshopid (in-place)."""
+        """Inject persona_labels + enriched into each POI matching openshopid (in-place).
+
+        v1.7: 同时注入 EnrichedLabel (poi_role / planning_tags / city_zone / ...).
+        Backward-compatible: missing labels stay None.
+        """
         city_labels = self._labels_cache.get(city, {})
+        city_enriched = self._enriched_cache.get(city, {})
         for poi in pois:
             label_dict = city_labels.get(poi.openshopid)
             if label_dict:
                 poi.persona_labels = PersonaLabels(**label_dict)
+            enriched_dict = city_enriched.get(poi.openshopid)
+            if enriched_dict:
+                poi.enriched = EnrichedLabel(**enriched_dict)
 
     async def _post(self, path: str, biz_params: Optional[dict] = None) -> dict:
         biz = biz_params or {}
