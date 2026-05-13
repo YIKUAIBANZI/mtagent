@@ -201,12 +201,19 @@ async def plan_one_variant(
 
     template = make_instant_template(intent.time_window)
     flat_pois = flatten_candidate_pool(intent, variant, pois)
-    # anchor: 若 start_location_text 有值且能解析坐标, 用它; 否则用 candidate pool 第一个 POI 当锚点
-    anchor_name = intent.start_location_text or (
-        flat_pois[0].name if flat_pois else "市中心"
-    )
-    anchor_lat = flat_pois[0].latitude if flat_pois else 0.0
-    anchor_lng = flat_pois[0].longitude if flat_pois else 0.0
+    # v1.8: 优先用 intent.anchor_lng/lat (来自高德 geocode); 兜底 POI[0]
+    if intent.anchor_lng is not None and intent.anchor_lat is not None:
+        anchor_name = (
+            intent.anchor_resolved_name or intent.start_location_text or "锚点"
+        )
+        anchor_lat = intent.anchor_lat
+        anchor_lng = intent.anchor_lng
+    else:
+        anchor_name = intent.start_location_text or (
+            flat_pois[0].name if flat_pois else "市中心"
+        )
+        anchor_lat = flat_pois[0].latitude if flat_pois else 0.0
+        anchor_lng = flat_pois[0].longitude if flat_pois else 0.0
     anchor = (anchor_name, anchor_lat, anchor_lng)
 
     try:
