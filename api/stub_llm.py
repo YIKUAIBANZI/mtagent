@@ -53,6 +53,14 @@ _HALF_DAY_FALLBACK = re.compile(r"(半天|半日)")
 _START_LOC_PAT = re.compile(
     r"我?现在在([^,，。.！!？?\s]+?)(附近|这|这里|这边)?(?=[,，。.！!？?\s]|$)"
 )
+# v1.8 通用锚点抽取 (动词约束 + 非贪婪 取最近 2-15 字)
+_ANCHOR_PATS = [
+    re.compile(
+        r"(?:想?去|想?到|在|从)([一-龥A-Za-z]{2,15}?)(?:附近|周边|这边|这里|一带)"
+    ),
+    re.compile(r"(?:在|从)([一-龥A-Za-z]{2,15}?(?:站|机场|客运站))"),
+]
+_HOURS_PAT = re.compile(r"(\d+)\s*(?:个)?小时")
 _INTEREST_TOKENS = ["拍照", "美食", "文化", "购物", "展览", "自然", "夜景"]
 
 
@@ -120,8 +128,20 @@ async def stub_profiler_llm(system: str, user: str) -> str:
 
     interests = [t for t in _INTEREST_TOKENS if t in user]
 
+    # v1.8 锚点抽取: 三正则按优先级试, 命中即停
+    start_location_text = None
     loc_match = _START_LOC_PAT.search(user)
-    start_location_text = loc_match.group(1) if loc_match else None
+    if loc_match:
+        start_location_text = loc_match.group(1)
+    else:
+        for pat in _ANCHOR_PATS:
+            m = pat.search(user)
+            if m:
+                cand = m.group(1).strip()
+                # 过滤短噪音 (≤ 1 字 / 含数字)
+                if len(cand) >= 2 and not any(c.isdigit() for c in cand):
+                    start_location_text = cand
+                    break
 
     # 半日 / 一日 时长估算
     estimated_hours = None
@@ -129,6 +149,11 @@ async def stub_profiler_llm(system: str, user: str) -> str:
         estimated_hours = 8
     elif time_window and time_window.startswith("半日_"):
         estimated_hours = 4
+
+    # v1.8: "X 小时" 显式抽 (覆盖 time_window 估算)
+    hours_match = _HOURS_PAT.search(user)
+    if hours_match:
+        estimated_hours = int(hours_match.group(1))
 
     out = {
         "city": city,
