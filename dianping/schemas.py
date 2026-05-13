@@ -285,6 +285,16 @@ class UserInput(BaseModel):
     cookie_key: Optional[str] = None  # v3 reserved
 
 
+TripMode = Literal[
+    "anchor_explore",
+    "layover_eat",
+    "layover_explore",
+    "landmark_must",
+    "multi_day",
+]
+HubType = Literal["train", "highspeed", "airport", "bus"]
+
+
 class ParsedIntent(BaseModel):
     city: str
     days: int
@@ -309,6 +319,14 @@ class ParsedIntent(BaseModel):
     weather_hint: Optional[str] = None
     weather_raw: Optional[str] = None  # 原始描述 "小雨" / "晴" / "多云"
     weather_temp_c: Optional[int] = None
+    # v1.8 trip_mode 路由 + 锚点驱动 (全部 optional, 老 v1.7 路径不依赖)
+    trip_mode: Optional[TripMode] = None
+    anchor_radius_km: Optional[float] = None  # 默认按 mode 推 (anchor_explore=4.0)
+    hub_type: Optional[HubType] = None  # layover 专用
+    safety_margin_min: Optional[int] = None  # layover 返程预留分钟
+    anchor_lng: Optional[float] = None  # 高德 geocode 解析后的坐标
+    anchor_lat: Optional[float] = None
+    anchor_resolved_name: Optional[str] = None  # 高德标准化地名
 
 
 class ProfilerOutput(BaseModel):
