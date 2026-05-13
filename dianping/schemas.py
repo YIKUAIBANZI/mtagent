@@ -304,6 +304,11 @@ class ParsedIntent(BaseModel):
     start_with_meal: bool = False  # Profiler 时刻感知推断: 现在该先吃还是先玩
     estimated_hours: Optional[int] = None  # 实际可用时长 (从 now → time_window 结束)
     current_time: Optional[str] = None  # ISO 8601, Profiler 注入的服务器时间快照
+    # v1.7.2 天气感知 (高德 weather API)
+    # hint 值: rainy / stormy / snowy / hot / cold / normal / unknown
+    weather_hint: Optional[str] = None
+    weather_raw: Optional[str] = None  # 原始描述 "小雨" / "晴" / "多云"
+    weather_temp_c: Optional[int] = None
 
 
 class ProfilerOutput(BaseModel):

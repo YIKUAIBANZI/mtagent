@@ -611,19 +611,49 @@ async function handleEvent({ event, data }) {
       // 打字泡保持中
       break;
 
+    case 'variant.queued':
+      // v1.7 即时出发: 3 方案串行流
+      pushMsg('bot', `为你准备 ${data.variants.length} 个方案 ✨ 主推荐先出，备选稍后`);
+      break;
+
+    case 'variant.main_started':
+      // 主推荐开始 — 不改 UI, 后续 day_done 跟原 v1.6 一致
+      break;
+
+    case 'variant.branch_started':
+      // 备选方案开始 — chat 提示, 但不动地图
+      pushMsg('bot', `另一份「${variantLabel(data.variant)}」方案准备中…`);
+      break;
+
+    case 'variant.main_done':
+      // 主方案画完 — noop, day_done 已落 markers
+      break;
+
+    case 'variant.branch_done':
+      // 备选画完 — push 总览 chip
+      pushVariantSummary(data);
+      break;
+
     case 'planner.day_partial':
       // 字符级流: 每收到一批已解析的 stop name 就更新 day-progress hint
-      renderDayPartial(data);
+      // v1.7: 仅 main variant 显示 (避免气泡错乱)
+      if (!data.variant || data.variant === 'main') renderDayPartial(data);
       break;
 
     case 'planner.day_done_fallback':
       // 不影响渲染路径, 仅记录 (后续 day_done 仍 emit)
-      console.warn(`[day_done_fallback] day ${data.day_index}: ${data.reason}`);
+      console.warn(`[day_done_fallback] day ${data.day_index} variant=${data.variant || 'main'}: ${data.reason}`);
       break;
 
     case 'planner.day_done':
       removeTyping();
-      await renderDayDone(data);
+      // v1.7: 仅 main variant 画地图, 备选走 pushVariantSummary 在 chat 总览
+      if (!data.variant || data.variant === 'main') {
+        await renderDayDone(data);
+      } else {
+        // 暂存到 variantStops, 等 variant.branch_done 统一 push (避免半数据 chat)
+        variantStops[data.variant] = data.stops || [];
+      }
       pushTyping();
       break;
 
@@ -657,6 +687,41 @@ async function handleEvent({ event, data }) {
 }
 
 const pendingRationaleByDay = new Map();
+
+// v1.7 即时出发: branch variant 数据缓存 (main 走原 renderDayDone, branches 缓存到 chat 总览)
+const variantStops = {};
+const VARIANT_LABELS = {
+  main: '主推荐',
+  low_queue: '少排队',
+  interest_first: '兴趣优先',
+};
+const VARIANT_ICONS = {
+  main: '⭐',
+  low_queue: '🧘',
+  interest_first: '💖',
+};
+function variantLabel(v) { return VARIANT_LABELS[v] || v; }
+function pushVariantSummary(data) {
+  const v = data.variant;
+  const names = data.stop_names || [];
+  if (names.length === 0) {
+    pushMsg('bot', `${VARIANT_ICONS[v] || '📋'} ${variantLabel(v)}方案: (空)`);
+    return;
+  }
+  const wrap = document.createElement('div');
+  wrap.className = 'msg bot';
+  const items = names.map((n, i) => `<span class="place-tag" style="display:inline-block;margin:2px 4px 2px 0">${i + 1}. ${escapeHtml(n)}</span>`).join('');
+  wrap.innerHTML = `
+    <div class="avatar bot">${VARIANT_ICONS[v] || '📋'}</div>
+    <div class="bubble">
+      <div style="font-weight:600;margin-bottom:4px">${variantLabel(v)}方案 (备选)</div>
+      <div>${items}</div>
+      ${data.has_fallback ? '<div class="place-note" style="margin-top:4px;color:#9aa0a6">⚠ 该方案部分 LLM 失败, 走兜底</div>' : ''}
+    </div>`;
+  $('messages').appendChild(wrap);
+  $('messages').scrollTop = $('messages').scrollHeight;
+}
+
 
 // ============ Render Day (chat cards + map markers, paced) ============
 async function renderDayDone(day) {

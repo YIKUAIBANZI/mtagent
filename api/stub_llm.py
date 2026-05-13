@@ -42,6 +42,19 @@ _BUDGET_PATS = [
 ]
 _PREFERENCE_TOKENS = ["拍照", "打卡", "美食", "文化", "历史", "出片", "小众", "网红"]
 
+# v1.7 即时出发关键词
+_TIME_WINDOW_PATS = [
+    (re.compile(r"(夜里|晚上|夜场|夜间)"), "半日_夜间"),
+    (re.compile(r"(下午)"), "半日_下午"),
+    (re.compile(r"(上午|早上)"), "半日_上午"),
+    (re.compile(r"(一整天|一天|一日|整天)"), "一日"),
+]
+_HALF_DAY_FALLBACK = re.compile(r"(半天|半日)")
+_START_LOC_PAT = re.compile(
+    r"我?现在在([^,，。.！!？?\s]+?)(附近|这|这里|这边)?(?=[,，。.！!？?\s]|$)"
+)
+_INTEREST_TOKENS = ["拍照", "美食", "文化", "购物", "展览", "自然", "夜景"]
+
 
 async def stub_profiler_llm(system: str, user: str) -> str:
     """Pattern-match the user text into a ParsedIntent JSON.
@@ -81,6 +94,42 @@ async def stub_profiler_llm(system: str, user: str) -> str:
 
     preferences = [t for t in _PREFERENCE_TOKENS if t in user]
 
+    # v1.7 即时出发字段抽取
+    time_window = None
+    for pat, label in _TIME_WINDOW_PATS:
+        if pat.search(user):
+            time_window = label
+            break
+    if time_window is None and _HALF_DAY_FALLBACK.search(user):
+        # "半天" 没指明 → 默认下午
+        time_window = "半日_下午"
+    # 如果用户写多日 (days > 1) 而上面 time_window=半日/一日, 以 days 为准
+    if (
+        time_window in ("半日_上午", "半日_下午", "半日_夜间", "一日")
+        and (days or 0) > 1
+    ):
+        time_window = "多日"
+
+    # v1.7 简化: 用户没说几天 + 没说半天/上午/下午 → 默认一日 (full day, 含两顿饭)
+    if time_window is None and (days is None or days == 0):
+        time_window = "一日"
+
+    # v1.7: traveler_type 兜底 — 没说默认情侣 (demo 最常见场景)
+    if traveler_type is None:
+        traveler_type = "情侣"
+
+    interests = [t for t in _INTEREST_TOKENS if t in user]
+
+    loc_match = _START_LOC_PAT.search(user)
+    start_location_text = loc_match.group(1) if loc_match else None
+
+    # 半日 / 一日 时长估算
+    estimated_hours = None
+    if time_window == "一日":
+        estimated_hours = 8
+    elif time_window and time_window.startswith("半日_"):
+        estimated_hours = 4
+
     out = {
         "city": city,
         "days": days,
@@ -91,6 +140,12 @@ async def stub_profiler_llm(system: str, user: str) -> str:
         "must_visit": [],
         "avoid": [],
         "start_date": None,
+        # v1.7 字段 (Profiler 还会做 server-time 注入 + constraint defaults)
+        "time_window": time_window,
+        "interests": interests,
+        "constraints": {},
+        "start_location_text": start_location_text,
+        "estimated_hours": estimated_hours,
     }
     return json.dumps(out, ensure_ascii=False)
 

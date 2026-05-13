@@ -26,8 +26,12 @@ def parse_sse(body: bytes) -> list[dict]:
     return events
 
 
-def test_partial_input_emits_clarifying(app_client):
-    """Input without days+traveler_type → clarifying event + early close."""
+def test_minimal_input_uses_defaults_and_proceeds(app_client):
+    """v1.7 默认行为: 仅城市输入也不应让用户补 days/traveler_type.
+
+    backfill 规则: days 缺 → time_window=一日, traveler_type 缺 → 情侣.
+    用户期望: 发一个'西安'就能直接出方案, 不要再追问.
+    """
     with app_client.stream(
         "POST",
         "/api/plan/stream",
@@ -37,15 +41,14 @@ def test_partial_input_emits_clarifying(app_client):
     events = parse_sse(body)
     names = [e["event"] for e in events]
 
-    assert "profiler.clarifying" in names
-    clarifying = next(e for e in events if e["event"] == "profiler.clarifying")
-    assert "days" in clarifying["data"]["missing_fields"]
-    assert "traveler_type" in clarifying["data"]["missing_fields"]
-
-    assert "planner.start" not in names
-    assert "trip.complete" in names
+    # 不应阻塞用户补充信息
+    assert "profiler.clarifying" not in names
+    # 走完正常 pipeline
+    assert "profiler.ready" in names
+    assert "planner.start" in names
+    # trip 完成状态正常
     complete = next(e for e in events if e["event"] == "trip.complete")
-    assert complete["data"]["status"] == "awaiting_clarification"
+    assert complete["data"]["status"] == "ok"
 
 
 def test_extra_fields_complete_clarifying(app_client):

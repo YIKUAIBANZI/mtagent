@@ -114,6 +114,26 @@ async def plan_stream(
             )
             return
 
+        # ----- v1.7 即时出发分流 (单日 / 半日 走三方案路径) -----
+        # inline import 避免 formatter 删未引用 import
+        from agents.planner_instant import (
+            is_instant_window as _is_instant,
+            load_city_pois_from_mock as _load_pois_instant,
+            plan_one_variant as _plan_one_variant,
+        )
+
+        if _is_instant(ctx.intent):
+            async for ev in _stream_instant_variants(
+                ctx,
+                start_time=start_time,
+                phases=phases,
+                stamp=_stamp,
+                load_pois=_load_pois_instant,
+                plan_one_variant=_plan_one_variant,
+            ):
+                yield ev
+            return
+
         # ----- Planner (orchestrated step-by-step for fine-grained events) -----
         try:
             yield format_event("planner.start", {"phase": "正在挑选 POI..."})
@@ -456,3 +476,186 @@ async def _compute_day_transits(day_plan, intent, amap):
             }
         )
     return day_plan.day_index, segments
+
+
+# v1.7 即时出发: 三方案 SSE 流式 ----------------------------------------------------
+
+
+async def _stream_instant_variants(
+    ctx,
+    *,
+    start_time: float,
+    phases: dict,
+    stamp,
+    load_pois,
+    plan_one_variant,
+) -> AsyncIterator[str]:
+    """B 方案: main → low_queue → interest_first 串行流, ctx.variants 持久化.
+
+    每个 variant 复用 v1.6 SSE 事件 (planner.day_partial / day_done), 但 payload
+    加 variant 字段, 前端按 variant 维护三份 markers/polylines.
+
+    Variant 边界事件 (v1.7 新增):
+      - variant.queued: trip 开始前, 通知有 N 个 variant
+      - variant.main_started / variant.main_done: 主方案边界
+      - variant.branch_started / variant.branch_done: 分方案边界
+    """
+    intent = ctx.intent
+    yield format_event("planner.start", {"phase": "正在准备即时出发方案..."})
+
+    # 加载 POI + attach enriched, 三 variant 共享同一份
+    pois = load_pois(intent.city)
+    if not pois:
+        yield format_event(
+            "error",
+            {
+                "phase": "planner_instant",
+                "message": f"未找到城市 {intent.city} 的本地 POI 数据 (data/mock_dianping/{intent.city}.json)",
+            },
+        )
+        return
+    stamp("instant_pois_loaded")
+    yield format_event(
+        "planner.candidates_loaded",
+        {"count": len(pois), "city": intent.city, "mode": "instant"},
+    )
+
+    yield format_event(
+        "variant.queued",
+        {
+            "variants": ["main", "low_queue", "interest_first"],
+            "labels": {
+                "main": "主推荐",
+                "low_queue": "少排队",
+                "interest_first": "兴趣优先",
+            },
+        },
+    )
+
+    # 设置 amap + planner (复用 compose_one_day)
+    from agents.amap import AmapClient as _AmapClient
+    from agents.planner import Planner as _Planner
+
+    amap = _AmapClient(key=os.environ.get("AMAP_KEY", ""))
+    planner = _Planner(
+        client=None,  # instant 路径不用 dianping client
+        llm_call=resolve_planner_llm(),
+        llm_call_stream=resolve_planner_llm_stream(),
+    )
+
+    variant_routes: dict[str, RouteDraft] = {}
+
+    try:
+        for vi, variant in enumerate(["main", "low_queue", "interest_first"]):
+            is_main = variant == "main"
+            yield format_event(
+                f"variant.{'main_started' if is_main else 'branch_started'}",
+                {"variant": variant, "index": vi},
+            )
+
+            # on_partial: 转发 day_partial 事件, 带 variant 字段
+            # 用 list 作 buffer (单线程 generator 简化, 不需 Queue)
+            partial_buffer: list[tuple[int, list[str]]] = []
+
+            async def _on_partial(day_idx: int, names: list[str], _v=variant):
+                partial_buffer.append((day_idx, names))
+
+            vp = await plan_one_variant(
+                intent=intent,
+                variant=variant,
+                planner=planner,
+                amap=amap,
+                pois=pois,
+                on_partial=_on_partial,
+            )
+
+            # 把累计的 partials 一次性 emit (v1.7 instant 每 variant 只有单天, partial 顺序无歧义)
+            for day_idx, names in partial_buffer:
+                yield format_event(
+                    "planner.day_partial",
+                    {"day_index": day_idx, "names": names, "variant": variant},
+                )
+
+            # emit day_done with variant tag
+            day = vp.day_plan
+            yield format_event(
+                "planner.day_done",
+                {
+                    "day_index": day.day_index,
+                    "variant": variant,
+                    "anchor_district": day.anchor_district,
+                    "stops": [
+                        {
+                            "poi_name": s.poi.name,
+                            "poi_openshopid": s.poi.openshopid,
+                            "categories": s.poi.categories,
+                            "slot_name": s.slot.name,
+                            "arrival_time": s.arrival_time.strftime("%H:%M"),
+                            "leave_time": s.leave_time.strftime("%H:%M"),
+                            "avgprice": s.poi.avgprice,
+                            "star": s.poi.star,
+                            "longitude": s.poi.longitude,
+                            "latitude": s.poi.latitude,
+                        }
+                        for s in day.stops
+                    ],
+                    "transit_segments": vp.transit_segments,
+                },
+            )
+
+            if vp.error:
+                yield format_event(
+                    "planner.day_done_fallback",
+                    {
+                        "day_index": day.day_index,
+                        "variant": variant,
+                        "reason": vp.error,
+                    },
+                )
+
+            # 保存到 ctx.variants
+            day.transit_segments = vp.transit_segments
+            variant_routes[variant] = RouteDraft(
+                days=[day],
+                summary=f"{variant} variant",
+            )
+
+            yield format_event(
+                f"variant.{'main_done' if is_main else 'branch_done'}",
+                {
+                    "variant": variant,
+                    "stop_count": len(day.stops),
+                    "stop_names": [s.poi.name for s in day.stops],
+                    "has_fallback": vp.error is not None,
+                },
+            )
+            stamp(f"variant_{variant}_done")
+    finally:
+        await amap._client.aclose()
+
+    # 持久化 ctx
+    ctx.variants = variant_routes
+    if "main" in variant_routes:
+        ctx.draft_route = variant_routes["main"]  # GET /api/plan/{id} 老前端兼容
+    ctx.save()
+
+    yield format_event("planner.compose_done", {})
+    yield format_event(
+        "planner.done",
+        {
+            "summary": "三方案已完成",
+            "variants": {
+                v: r.model_dump(mode="json") for v, r in variant_routes.items()
+            },
+        },
+    )
+    yield format_event(
+        "trip.complete",
+        {
+            "trip_id": ctx.trip_id,
+            "duration_ms": int((time.time() - start_time) * 1000),
+            "status": "ok",
+            "phases": phases,
+            "mode": "instant",
+        },
+    )

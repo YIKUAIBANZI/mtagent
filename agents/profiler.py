@@ -99,6 +99,15 @@ class Profiler:
                 f"Profiler LLM did not return valid JSON: {raw[:200]}"
             ) from exc
 
+        # v1.7: time_window 非 None 时, days 缺失自动当 1 (半日/一日 = 单日规划)
+        if data.get("time_window") in (
+            "半日_上午",
+            "半日_下午",
+            "半日_夜间",
+            "一日",
+        ) and not data.get("days"):
+            data["days"] = 1
+
         # Build ParsedIntent — None values keep field optional/missing
         missing: list[str] = []
         for k in REQUIRED_FIELDS:
@@ -146,6 +155,20 @@ class Profiler:
 
         _apply_modifier_defaults(understood, ctx.user_input.free_text)
         _apply_constraint_defaults(understood)
+
+        # v1.7.2: 天气感知 (best-effort, 失败不阻塞 profiler)
+        if understood.city:
+            try:
+                from agents.weather import fetch_weather as _fetch_weather
+
+                wx = await _fetch_weather(understood.city)
+                understood.weather_hint = wx["hint"]
+                understood.weather_raw = wx["raw"]
+                understood.weather_temp_c = wx["temp_c"]
+            except Exception as wxerr:
+                understood.weather_hint = "unknown"
+                ctx.log_event("Profiler", "weather_failed", {"error": str(wxerr)})
+
         ctx.intent = understood
         ctx.log_event(
             "Profiler",
@@ -156,6 +179,8 @@ class Profiler:
                 "time_window": understood.time_window,
                 "start_with_meal": understood.start_with_meal,
                 "estimated_hours": understood.estimated_hours,
+                "weather_hint": understood.weather_hint,
+                "weather_raw": understood.weather_raw,
             },
         )
         ctx.save()

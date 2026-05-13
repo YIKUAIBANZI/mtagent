@@ -41,6 +41,10 @@ class TripContext(BaseModel):
     intent: Optional[ParsedIntent] = None
     candidate_pois: list[POI] = Field(default_factory=list)
     draft_route: Optional[RouteDraft] = None
+    # v1.7 即时出发: 三方案存储. v1.6 多日路径保持 None.
+    # key 是 variant 名 (main / low_queue / interest_first), value 是该方案完整 RouteDraft.
+    # draft_route 仍存 main, 保证 GET /api/plan/{trip_id} 老前端兼容.
+    variants: Optional[dict[str, RouteDraft]] = None
     critic_patches: list[Patch] = Field(default_factory=list)
     user_feedback: list[Feedback] = Field(default_factory=list)
     trace: list[Event] = Field(default_factory=list)

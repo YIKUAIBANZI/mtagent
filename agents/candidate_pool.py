@@ -137,6 +137,24 @@ def score_poi(poi: POI, intent: ParsedIntent, variant: Variant = "main") -> floa
             if t in want_tags:
                 score += 15.0  # 再叠加
 
+    # v1.7.2 天气感知: 雨/雪/极端温度 → 户外类 walk_heavy 惩罚, rain_friendly 加分
+    hint = intent.weather_hint or "normal"
+    if hint in ("rainy", "stormy", "snowy", "hot", "cold"):
+        from agents.weather import WEATHER_PENALTY_RULES
+
+        rules = WEATHER_PENALTY_RULES.get(hint, {})
+        if "rain_friendly" in enriched.planning_tags:
+            score += rules.get("rain_friendly_bonus", 0)
+        if walk_heavy:
+            score += rules.get("walk_heavy_penalty", 0)
+        # landmark + 户外 (无 rain_friendly 标签) 视为户外景点, 惩罚 outdoor
+        is_outdoor_landmark = (
+            "landmark" in enriched.planning_tags
+            and "rain_friendly" not in enriched.planning_tags
+        )
+        if is_outdoor_landmark:
+            score += rules.get("landmark_outdoor_penalty", 0)
+
     return score
 
 
