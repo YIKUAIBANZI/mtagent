@@ -676,7 +676,22 @@ async function handleEvent({ event, data }) {
       // 更新 totals
       const trip = await fetch(`/api/plan/${currentTripId}`).then(r => r.json()).catch(() => null);
       if (trip) updateChromeTotals(trip);
-      pushMsg('bot', '行程画好啦。点地图上的 pin 或左边的卡片，能看每一站的小心思 🗺️');
+      // v1.8: anchor_explore 模式画半径圈 + ★ marker
+      if (trip && trip.intent && trip.intent.trip_mode === 'anchor_explore'
+          && trip.intent.anchor_lng && trip.intent.anchor_lat) {
+        drawAnchorCircle(
+          trip.intent.anchor_lng,
+          trip.intent.anchor_lat,
+          (trip.intent.anchor_radius_km || 4) * 1000,
+          trip.intent.anchor_resolved_name || trip.intent.start_location_text
+        );
+      }
+      // v1.7.3: 只在 status=ok 时显示"行程画好啦", 否则按 status 分支
+      if (data.status === 'awaiting_clarification') {
+        // 已有 profiler.clarifying 文案, 这里不再 push 避免"行程画好啦"误导
+      } else if (data.status === 'ok') {
+        pushMsg('bot', '行程画好啦。点地图上的 pin 或左边的卡片，能看每一站的小心思 🗺️');
+      }
       break;
 
     case 'error':
@@ -1116,6 +1131,47 @@ const SLOT_ICON = {
   '上午景点': '🗺️', '午餐': '🥢', '下午活动': '🎒', '晚餐': '🍜', '夜景': '🌃',
   '出发': '🚄', '住宿': '🏠', '咖啡': '☕', '休闲': '🌿',
 };
+
+// v1.8: anchor_explore 模式画半径圈 + ★ marker
+let anchorCircle = null;
+let anchorMarker = null;
+
+function drawAnchorCircle(lng, lat, radius_m, name) {
+  if (!map) return;
+  if (anchorCircle) map.remove(anchorCircle);
+  if (anchorMarker) map.remove(anchorMarker);
+
+  anchorCircle = new AMap.Circle({
+    center: [lng, lat],
+    radius: radius_m,
+    strokeColor: '#ff3e00',
+    strokeOpacity: 0.6,
+    strokeWeight: 2,
+    strokeStyle: 'dashed',
+    fillColor: '#ff3e00',
+    fillOpacity: 0.08,
+    zIndex: 50,
+  });
+  const starSvg = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36">' +
+    '<circle cx="18" cy="18" r="14" fill="#ff3e00" stroke="white" stroke-width="3"/>' +
+    '<text x="18" y="24" text-anchor="middle" font-size="18" fill="white">★</text>' +
+    '</svg>'
+  );
+  anchorMarker = new AMap.Marker({
+    position: [lng, lat],
+    icon: new AMap.Icon({
+      size: new AMap.Size(36, 36),
+      imageSize: new AMap.Size(36, 36),
+      image: starSvg,
+    }),
+    offset: new AMap.Pixel(-18, -18),
+    zIndex: 120,
+    title: name || '锚点',
+  });
+  map.add(anchorCircle);
+  map.add(anchorMarker);
+}
 </script>
 </body>
 </html>
