@@ -199,6 +199,48 @@ async def plan_one_variant(
     from agents.planner import PlannerLLMError, _synthesize_fallback_route
     from api.routes import _compute_day_transits
 
+    # v1.9: anchor 模式下拉高德周边 POI 合进本地池 (扩 pool)
+    if (
+        intent.anchor_lng is not None
+        and intent.anchor_lat is not None
+        and intent.trip_mode in ("anchor_explore", "layover_eat", "layover_explore")
+    ):
+        from agents import anchor as _anchor_mod
+        from agents.anchor import AnchorResolution, merge_with_local_pool
+
+        types = (
+            "050000"
+            if intent.trip_mode == "layover_eat"
+            else "050000|060000|080000|110000"
+        )
+        radius_m = int((intent.anchor_radius_km or 3.0) * 1000)
+        try:
+            around = await _anchor_mod.fetch_around(
+                lng=intent.anchor_lng,
+                lat=intent.anchor_lat,
+                radius_m=radius_m,
+                types=types,
+                limit=50,
+            )
+        except Exception:
+            around = []
+        if around:
+            anchor_obj = AnchorResolution(
+                text=intent.start_location_text or "",
+                name=intent.anchor_resolved_name or "",
+                lng=intent.anchor_lng,
+                lat=intent.anchor_lat,
+                adcode="",
+                formatted_address="",
+                confidence="medium",
+            )
+            pois = merge_with_local_pool(
+                amap_pois=around,
+                local_pois=pois,
+                anchor=anchor_obj,
+                radius_m=radius_m,
+            )
+
     template = make_instant_template(intent.time_window)
     flat_pois = flatten_candidate_pool(intent, variant, pois)
     # v1.8: 优先用 intent.anchor_lng/lat (来自高德 geocode); 兜底 POI[0]
