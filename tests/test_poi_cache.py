@@ -204,6 +204,205 @@ async def test_batch_enrich_calls_llm_per_poi(monkeypatch):
         assert entry["poi_role"] == "meal"
 
 
+async def test_lookup_and_enrich_all_cache_hit_skips_llm(monkeypatch, tmp_path):
+    """全 cache hit → 不调 batch_enrich, 返回 POI 含 enriched."""
+    from agents import poi_cache as pc
+    from agents.anchor import AroundPOI
+
+    cache_path = tmp_path / "cache.json"
+    around = [
+        AroundPOI(
+            name="X",
+            lng=114.0,
+            lat=22.0,
+            typecode="050000",
+            distance_m=100,
+            address="addr",
+        ),
+    ]
+    key = pc.cache_key("X", 114.0, 22.0)
+    seed_cache = {
+        key: {
+            "name": "X",
+            "lng": 114.0,
+            "lat": 22.0,
+            "city": "深圳",
+            "typecode": "050000",
+            "categories": ["美食"],
+            "enriched": {
+                "poi_role": "meal",
+                "planning_tags": ["food_quality", "local_food"],
+                "risk_tags": [],
+                "city_zone": "罗湖",
+                "manual_priority": 80,
+                "min_stay_minutes": 45,
+                "max_stay_minutes": 90,
+            },
+            "source": "amap_around",
+            "version": "v1.9.1",
+            "created_at": "2026-01-01T00:00:00Z",
+            "last_seen": "2026-01-01T00:00:00Z",
+            "seen_count": 5,
+        }
+    }
+    pc.save_cache(seed_cache, path=cache_path)
+
+    batch_called = {"n": 0}
+
+    async def _no_call(pois):
+        batch_called["n"] += 1
+        return {}
+
+    monkeypatch.setattr(pc, "batch_enrich", _no_call)
+
+    result = await pc.lookup_and_enrich(around, city="深圳", cache_path=cache_path)
+    assert batch_called["n"] == 0
+    assert len(result) == 1
+    assert result[0].name == "X"
+    assert result[0].enriched is not None
+    assert result[0].enriched.poi_role == "meal"
+
+
+async def test_lookup_and_enrich_miss_calls_batch_enrich_and_writes_cache(
+    monkeypatch, tmp_path
+):
+    """全 miss → 调 batch_enrich, 写入 cache, 返回 POI 含 enriched."""
+    from agents import poi_cache as pc
+    from agents.anchor import AroundPOI
+
+    cache_path = tmp_path / "cache.json"
+    around = [
+        AroundPOI(
+            name="新店 A",
+            lng=114.0,
+            lat=22.0,
+            typecode="050000",
+            distance_m=200,
+            address="addrA",
+        ),
+        AroundPOI(
+            name="新店 B",
+            lng=114.1,
+            lat=22.1,
+            typecode="110000",
+            distance_m=300,
+            address="addrB",
+        ),
+    ]
+    fake_enriched_a = {
+        "poi_role": "meal",
+        "planning_tags": ["food_quality", "local_food"],
+        "risk_tags": [],
+        "city_zone": "罗湖",
+        "manual_priority": 75,
+        "min_stay_minutes": 45,
+        "max_stay_minutes": 90,
+    }
+    fake_enriched_b = {
+        "poi_role": "city_essential",
+        "planning_tags": ["landmark", "photo_friendly"],
+        "risk_tags": ["crowded_weekend"],
+        "city_zone": "南山",
+        "manual_priority": 90,
+        "min_stay_minutes": 60,
+        "max_stay_minutes": 120,
+    }
+
+    async def _fake_batch(pois, **kw):
+        return {
+            pc.cache_key("新店 A", 114.0, 22.0): fake_enriched_a,
+            pc.cache_key("新店 B", 114.1, 22.1): fake_enriched_b,
+        }
+
+    monkeypatch.setattr(pc, "batch_enrich", _fake_batch)
+
+    result = await pc.lookup_and_enrich(around, city="深圳", cache_path=cache_path)
+    assert len(result) == 2
+    names = {p.name for p in result}
+    assert names == {"新店 A", "新店 B"}
+    for p in result:
+        assert p.enriched is not None
+        assert len(p.enriched.planning_tags) >= 2
+
+    # 写回 cache
+    saved = pc.load_cache(path=cache_path)
+    assert len(saved) == 2
+    for entry in saved.values():
+        assert entry["seen_count"] == 1
+
+
+async def test_lookup_and_enrich_hit_increments_seen_count(monkeypatch, tmp_path):
+    from agents import poi_cache as pc
+    from agents.anchor import AroundPOI
+
+    cache_path = tmp_path / "cache.json"
+    key = pc.cache_key("X", 114.0, 22.0)
+    seed = {
+        key: {
+            "name": "X",
+            "lng": 114.0,
+            "lat": 22.0,
+            "city": "深圳",
+            "typecode": "050000",
+            "categories": ["美食"],
+            "enriched": {
+                "poi_role": "meal",
+                "planning_tags": ["food_quality", "local_food"],
+                "risk_tags": [],
+                "city_zone": "罗湖",
+                "manual_priority": 80,
+                "min_stay_minutes": 45,
+                "max_stay_minutes": 90,
+            },
+            "source": "amap_around",
+            "version": "v1.9.1",
+            "created_at": "2026-01-01T00:00:00Z",
+            "last_seen": "2026-01-01T00:00:00Z",
+            "seen_count": 3,
+        }
+    }
+    pc.save_cache(seed, path=cache_path)
+
+    async def _no_call(pois, **kw):
+        return {}
+
+    monkeypatch.setattr(pc, "batch_enrich", _no_call)
+
+    around = [
+        AroundPOI(
+            name="X", lng=114.0, lat=22.0, typecode="050000", distance_m=100, address=""
+        )
+    ]
+    await pc.lookup_and_enrich(around, city="深圳", cache_path=cache_path)
+    saved = pc.load_cache(path=cache_path)
+    assert saved[key]["seen_count"] == 4
+
+
+async def test_lookup_and_enrich_llm_failure_returns_poi_without_enriched(
+    monkeypatch, tmp_path
+):
+    """batch_enrich 失败 (key 不在返回 dict) → POI 仍返回但 enriched=None,
+    走 _bucket_of categories 兜底."""
+    from agents import poi_cache as pc
+    from agents.anchor import AroundPOI
+
+    cache_path = tmp_path / "cache.json"
+
+    async def _empty_batch(pois, **kw):
+        return {}
+
+    monkeypatch.setattr(pc, "batch_enrich", _empty_batch)
+    around = [
+        AroundPOI(
+            name="Z", lng=114.0, lat=22.0, typecode="050000", distance_m=100, address=""
+        )
+    ]
+    result = await pc.lookup_and_enrich(around, city="深圳", cache_path=cache_path)
+    assert len(result) == 1
+    assert result[0].name == "Z"
+    assert result[0].enriched is None  # LLM 失败, _bucket_of 走 categories
+
+
 async def test_batch_enrich_failure_does_not_block_others(monkeypatch):
     from agents import poi_cache as pc
 

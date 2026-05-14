@@ -19,7 +19,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Literal, Optional
 
-from agents.anchor import _norm_name
+from agents.anchor import AroundPOI, _norm_name, _typecode_to_categories
+from dianping.schemas import POI, EnrichedLabel
 
 _CACHE_PATH = Path("data/poi_cache.json")
 CACHE_VERSION = "v1.9.1"
@@ -248,3 +249,101 @@ async def batch_enrich(
 
     results = await asyncio.gather(*(_one(p) for p in pois))
     return {k: v for k, v in results if v is not None}
+
+
+def _around_to_poi(ap: AroundPOI, city: str, enriched_dict: Optional[dict]) -> POI:
+    """高德 AroundPOI → 项目 POI; 可选 attach EnrichedLabel."""
+    poi = POI(
+        openshopid=f"amap_{ap.typecode}_{round(ap.lng, 4)}_{round(ap.lat, 4)}",
+        name=ap.name,
+        city=city,
+        latitude=ap.lat,
+        longitude=ap.lng,
+        categories=_typecode_to_categories(ap.typecode),
+        address=ap.address,
+        avgprice=0,
+        star=0,
+        business_hour="",
+    )
+    if enriched_dict:
+        poi.enriched = EnrichedLabel(**enriched_dict)
+    return poi
+
+
+async def lookup_and_enrich(
+    around_pois: list[AroundPOI],
+    city: str,
+    *,
+    cache_path: Optional[Path] = None,
+) -> list[POI]:
+    """高德 around POI → cache lookup → miss 并发 enrich → 写回 cache → 返回 list[POI].
+
+    每个返回的 POI:
+    - cache hit: enriched attach + cache seen_count++
+    - cache miss + LLM 成功: enriched attach + cache 新写入
+    - cache miss + LLM 失败: enriched=None (caller 的 _bucket_of 走 categories 兜底)
+    """
+    cache = load_cache(path=cache_path)
+
+    hits: list[tuple[AroundPOI, str, dict]] = []
+    miss_around: list[tuple[AroundPOI, str]] = []
+    for ap in around_pois:
+        key = cache_key(ap.name, ap.lng, ap.lat)
+        entry = cache.get(key)
+        if entry is not None and entry.get("enriched"):
+            hits.append((ap, key, entry["enriched"]))
+        else:
+            miss_around.append((ap, key))
+
+    enriched_results: dict[str, dict] = {}
+    if miss_around:
+        miss_payloads = [
+            {
+                "name": ap.name,
+                "lng": ap.lng,
+                "lat": ap.lat,
+                "city": city,
+                "typecode": ap.typecode,
+                "categories": _typecode_to_categories(ap.typecode),
+            }
+            for ap, _ in miss_around
+        ]
+        enriched_results = await batch_enrich(miss_payloads)
+
+    out: list[POI] = []
+    for ap, key, enr_dict in hits:
+        upsert_entry(
+            cache,
+            key,
+            name=ap.name,
+            lng=ap.lng,
+            lat=ap.lat,
+            city=city,
+            typecode=ap.typecode,
+            categories=_typecode_to_categories(ap.typecode),
+            enriched=enr_dict,
+            source="amap_around",
+        )
+        out.append(_around_to_poi(ap, city, enr_dict))
+
+    for ap, key in miss_around:
+        enr_dict = enriched_results.get(key)
+        if enr_dict is None:
+            out.append(_around_to_poi(ap, city, None))
+            continue
+        upsert_entry(
+            cache,
+            key,
+            name=ap.name,
+            lng=ap.lng,
+            lat=ap.lat,
+            city=city,
+            typecode=ap.typecode,
+            categories=_typecode_to_categories(ap.typecode),
+            enriched=enr_dict,
+            source="amap_around",
+        )
+        out.append(_around_to_poi(ap, city, enr_dict))
+
+    save_cache(cache, path=cache_path)
+    return out
