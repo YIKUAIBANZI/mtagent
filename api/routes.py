@@ -520,6 +520,30 @@ async def _stream_instant_variants(
         {"count": len(pois), "city": intent.city, "mode": "instant"},
     )
 
+    # v1.9.2 M6: must_visit 命中率检查, miss 的发 chat 警告
+    must_visit_list = list(intent.must_visit or [])
+    if must_visit_list:
+        from agents.candidate_pool import _match_must_visit_name
+
+        unmatched: list[str] = []
+        for must in must_visit_list:
+            hit = any(_match_must_visit_name(p.name, [must]) is not None for p in pois)
+            if not hit:
+                unmatched.append(must)
+        if unmatched:
+            yield format_event(
+                "chat",
+                {
+                    "role": "assistant",
+                    "text": (
+                        f"⚠️ 本地 POI 库里没找到 {' / '.join(unmatched)}, "
+                        f"我会先按你的其它偏好规划. 如有需要可换附近相似的地点."
+                    ),
+                    "kind": "must_visit_warning",
+                    "unmatched": unmatched,
+                },
+            )
+
     yield format_event(
         "variant.queued",
         {
