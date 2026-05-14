@@ -146,6 +146,118 @@ def test_classify_line_b_for_food_and_shopping():
     assert classify_line("某酒吧", "080000") == "B"
 
 
+async def test_batch_enrich_empty_list_returns_empty():
+    from agents.poi_cache import batch_enrich
+
+    result = await batch_enrich([])
+    assert result == {}
+
+
+async def test_batch_enrich_calls_llm_per_poi(monkeypatch):
+    from agents import poi_cache as pc
+
+    call_count = {"n": 0}
+
+    async def _fake_enrich(poi):
+        call_count["n"] += 1
+        return {
+            "poi_role": "meal",
+            "planning_tags": ["food_quality", "local_food"],
+            "risk_tags": [],
+            "city_zone": "test",
+            "manual_priority": 75,
+            "min_stay_minutes": 45,
+            "max_stay_minutes": 90,
+        }
+
+    monkeypatch.setattr(pc, "_enrich_via_qwen", _fake_enrich)
+    pois = [
+        {
+            "name": "A",
+            "lng": 114.0,
+            "lat": 22.0,
+            "city": "深圳",
+            "typecode": "050000",
+            "categories": ["美食"],
+        },
+        {
+            "name": "B",
+            "lng": 114.1,
+            "lat": 22.1,
+            "city": "深圳",
+            "typecode": "050000",
+            "categories": ["美食"],
+        },
+        {
+            "name": "C",
+            "lng": 114.2,
+            "lat": 22.2,
+            "city": "深圳",
+            "typecode": "050000",
+            "categories": ["美食"],
+        },
+    ]
+    result = await pc.batch_enrich(pois)
+    assert call_count["n"] == 3
+    assert len(result) == 3
+    for entry in result.values():
+        assert entry["poi_role"] == "meal"
+
+
+async def test_batch_enrich_failure_does_not_block_others(monkeypatch):
+    from agents import poi_cache as pc
+
+    async def _flaky_enrich(poi):
+        if poi["name"] == "BAD":
+            raise RuntimeError("LLM 失败")
+        return {
+            "poi_role": "meal",
+            "planning_tags": ["food_quality", "local_food"],
+            "risk_tags": [],
+            "city_zone": "x",
+            "manual_priority": 70,
+            "min_stay_minutes": 45,
+            "max_stay_minutes": 90,
+        }
+
+    monkeypatch.setattr(pc, "_enrich_via_qwen", _flaky_enrich)
+    pois = [
+        {
+            "name": "OK1",
+            "lng": 114.0,
+            "lat": 22.0,
+            "city": "深圳",
+            "typecode": "050000",
+            "categories": ["美食"],
+        },
+        {
+            "name": "BAD",
+            "lng": 114.1,
+            "lat": 22.1,
+            "city": "深圳",
+            "typecode": "050000",
+            "categories": ["美食"],
+        },
+        {
+            "name": "OK2",
+            "lng": 114.2,
+            "lat": 22.2,
+            "city": "深圳",
+            "typecode": "050000",
+            "categories": ["美食"],
+        },
+    ]
+    result = await pc.batch_enrich(pois)
+    # BAD 失败不进结果, OK1/OK2 应在
+    assert len(result) == 2
+    [v.get("_name") for v in result.values() if "_name" in v]
+    # 用 cache_key 验证: BAD 的 key 不应出现
+    from agents.poi_cache import cache_key
+
+    bad_key = cache_key("BAD", 114.1, 22.1)
+    assert bad_key not in result
+
+
 def test_upsert_existing_entry_increments_seen_count(tmp_path):
     cache = {}
     key = cache_key("旧店", 114.0, 22.0)

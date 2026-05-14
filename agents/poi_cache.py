@@ -12,10 +12,12 @@ Spec: docs/superpowers/specs/2026-05-14-v19-stage1-5-poi-enrichment-cache.md
 
 from __future__ import annotations
 
+import asyncio
 import json
+import os
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
 from agents.anchor import _norm_name
 
@@ -217,3 +219,32 @@ async def _enrich_via_qwen(poi: dict) -> dict:
         extra_body={"enable_thinking": False},
     )
     return json.loads(resp.choices[0].message.content or "{}")
+
+
+async def batch_enrich(
+    pois: list[dict],
+    *,
+    sem_limit: int = 5,
+) -> dict[str, dict]:
+    """并发 enrich 一批新 POI. 返回 dict[cache_key, enriched].
+
+    输入 poi dict 必须含 name/lng/lat/city/typecode/categories.
+    单个失败 swallow + 不进结果, 不阻塞其它.
+    Caller 责任: cache lookup 后只把 miss 传进来; upsert 写回 cache.
+    """
+    if not pois:
+        return {}
+
+    sem = asyncio.Semaphore(sem_limit)
+
+    async def _one(poi: dict) -> tuple[str, Optional[dict]]:
+        key = cache_key(poi["name"], poi["lng"], poi["lat"])
+        async with sem:
+            try:
+                enriched = await _enrich_via_qwen(poi)
+                return key, enriched
+            except Exception:
+                return key, None
+
+    results = await asyncio.gather(*(_one(p) for p in pois))
+    return {k: v for k, v in results if v is not None}
