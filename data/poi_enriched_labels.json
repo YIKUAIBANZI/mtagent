@@ -24751,6 +24751,719 @@
         "独行"
       ],
       "universal_level": "low"
+    },
+    "CACHE_D0839764E1": {
+      "poi_role": "meal",
+      "manual_priority": 75,
+      "planning_tags": [
+        "food_quality",
+        "shopping_friendly",
+        "lunch_friendly",
+        "dinner_friendly"
+      ],
+      "risk_tags": [
+        "queue_heavy",
+        "crowded_weekend"
+      ],
+      "city_zone": "南山万象天地",
+      "min_stay_minutes": 45,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_95951D888E": {
+      "poi_role": "connector",
+      "manual_priority": 75,
+      "planning_tags": [
+        "shopping_friendly",
+        "night_friendly",
+        "couple_friendly"
+      ],
+      "risk_tags": [
+        "queue_heavy",
+        "crowded_weekend"
+      ],
+      "city_zone": "万象天地 / 高新园",
+      "min_stay_minutes": 60,
+      "max_stay_minutes": 120,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_50C169A018": {
+      "poi_role": "connector",
+      "manual_priority": 75,
+      "planning_tags": [
+        "shopping_friendly",
+        "photo_friendly",
+        "premium_friendly",
+        "couple_friendly"
+      ],
+      "risk_tags": [
+        "pricey"
+      ],
+      "city_zone": "南山万象天地",
+      "min_stay_minutes": 30,
+      "max_stay_minutes": 60,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_923DDC0BA3": {
+      "poi_role": "meal",
+      "manual_priority": 75,
+      "planning_tags": [
+        "local_food",
+        "lunch_friendly",
+        "dinner_friendly"
+      ],
+      "risk_tags": [],
+      "city_zone": "万象天地 / 科技园",
+      "min_stay_minutes": 45,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_EE7F0D61D4": {
+      "poi_role": "meal",
+      "manual_priority": 75,
+      "planning_tags": [
+        "premium_friendly",
+        "shopping_friendly",
+        "atmosphere",
+        "dinner_friendly"
+      ],
+      "risk_tags": [
+        "pricey",
+        "queue_heavy"
+      ],
+      "city_zone": "万象天地 / 高新园",
+      "min_stay_minutes": 60,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_2BB0F6DBAF": {
+      "poi_role": "meal",
+      "manual_priority": 75,
+      "planning_tags": [
+        "shopping_friendly",
+        "photo_friendly",
+        "atmosphere"
+      ],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
+      "city_zone": "万象天地 / 高新园",
+      "min_stay_minutes": 45,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_43CB43E006": {
+      "poi_role": "connector",
+      "manual_priority": 75,
+      "planning_tags": [
+        "shopping_friendly",
+        "premium_friendly",
+        "citywalk_friendly"
+      ],
+      "risk_tags": [
+        "pricey"
+      ],
+      "city_zone": "南山万象天地",
+      "min_stay_minutes": 60,
+      "max_stay_minutes": 120,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_6978EACAB8": {
+      "poi_role": "city_essential",
+      "manual_priority": 85,
+      "planning_tags": [
+        "photo_friendly",
+        "citywalk_friendly",
+        "family_friendly"
+      ],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
+      "city_zone": "福田中心区 / 购物公园",
+      "min_stay_minutes": 30,
+      "max_stay_minutes": 60,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_325AE7D566": {
+      "poi_role": "connector",
+      "manual_priority": 75,
+      "planning_tags": [
+        "shopping_friendly",
+        "photo_friendly",
+        "premium_friendly",
+        "atmosphere"
+      ],
+      "risk_tags": [
+        "pricey",
+        "hard_to_find"
+      ],
+      "city_zone": "南山万象天地",
+      "min_stay_minutes": 45,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_6F8FBE5404": {
+      "poi_role": "meal",
+      "manual_priority": 75,
+      "planning_tags": [
+        "food_quality",
+        "dinner_friendly",
+        "atmosphere"
+      ],
+      "risk_tags": [
+        "queue_heavy",
+        "pricey"
+      ],
+      "city_zone": "南山万象天地",
+      "min_stay_minutes": 60,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_4E2BE0C618": {
+      "poi_role": "connector",
+      "manual_priority": 75,
+      "planning_tags": [
+        "shopping_friendly",
+        "photo_friendly",
+        "premium_friendly",
+        "citywalk_friendly"
+      ],
+      "risk_tags": [
+        "pricey",
+        "crowded_weekend"
+      ],
+      "city_zone": "南山万象天地 / 高新园",
+      "min_stay_minutes": 60,
+      "max_stay_minutes": 120,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_3E46491BE4": {
+      "poi_role": "meal",
+      "manual_priority": 75,
+      "planning_tags": [
+        "food_quality",
+        "lunch_friendly",
+        "dinner_friendly",
+        "shopping_friendly"
+      ],
+      "risk_tags": [
+        "queue_heavy",
+        "crowded_weekend"
+      ],
+      "city_zone": "南山万象天地",
+      "min_stay_minutes": 45,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_ED1A18D107": {
+      "poi_role": "meal",
+      "manual_priority": 75,
+      "planning_tags": [
+        "snack_friendly",
+        "photo_friendly",
+        "shopping_friendly"
+      ],
+      "risk_tags": [
+        "queue_heavy"
+      ],
+      "city_zone": "万象天地 / 科技园",
+      "min_stay_minutes": 30,
+      "max_stay_minutes": 60,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_19B45542BB": {
+      "poi_role": "meal",
+      "manual_priority": 75,
+      "planning_tags": [
+        "food_quality",
+        "dinner_friendly",
+        "atmosphere"
+      ],
+      "risk_tags": [
+        "queue_heavy",
+        "reservation_needed"
+      ],
+      "city_zone": "万象天地 / 高新园",
+      "min_stay_minutes": 60,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_063C58DDCC": {
+      "poi_role": "connector",
+      "manual_priority": 75,
+      "planning_tags": [
+        "shopping_friendly",
+        "premium_friendly",
+        "citywalk_friendly"
+      ],
+      "risk_tags": [
+        "pricey"
+      ],
+      "city_zone": "万象天地 / 科技园",
+      "min_stay_minutes": 60,
+      "max_stay_minutes": 120,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_DFE7929856": {
+      "poi_role": "meal",
+      "manual_priority": 75,
+      "planning_tags": [
+        "lunch_friendly",
+        "dinner_friendly",
+        "shopping_friendly"
+      ],
+      "risk_tags": [
+        "queue_heavy"
+      ],
+      "city_zone": "南山万象天地",
+      "min_stay_minutes": 45,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_30A14267CC": {
+      "poi_role": "meal",
+      "manual_priority": 75,
+      "planning_tags": [
+        "local_food",
+        "dinner_friendly",
+        "lunch_friendly"
+      ],
+      "risk_tags": [
+        "queue_heavy",
+        "crowded_weekend"
+      ],
+      "city_zone": "南山万象天地",
+      "min_stay_minutes": 45,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_81DFECAFEF": {
+      "poi_role": "connector",
+      "manual_priority": 75,
+      "planning_tags": [
+        "shopping_friendly",
+        "photo_friendly",
+        "premium_friendly",
+        "atmosphere"
+      ],
+      "risk_tags": [
+        "pricey",
+        "crowded_weekend"
+      ],
+      "city_zone": "万象天地 / 高新园",
+      "min_stay_minutes": 60,
+      "max_stay_minutes": 120,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_89D8229E59": {
+      "poi_role": "connector",
+      "manual_priority": 75,
+      "planning_tags": [
+        "shopping_friendly",
+        "photo_friendly",
+        "premium_friendly",
+        "atmosphere"
+      ],
+      "risk_tags": [
+        "pricey",
+        "crowded_weekend"
+      ],
+      "city_zone": "万象天地 / 高新园",
+      "min_stay_minutes": 60,
+      "max_stay_minutes": 120,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_F1D482317E": {
+      "poi_role": "meal",
+      "manual_priority": 75,
+      "planning_tags": [
+        "food_quality",
+        "dinner_friendly",
+        "shopping_friendly"
+      ],
+      "risk_tags": [
+        "queue_heavy"
+      ],
+      "city_zone": "南山万象天地",
+      "min_stay_minutes": 45,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_AAF9BB4741": {
+      "poi_role": "connector",
+      "manual_priority": 75,
+      "planning_tags": [
+        "shopping_friendly",
+        "premium_friendly",
+        "photo_friendly",
+        "atmosphere"
+      ],
+      "risk_tags": [
+        "pricey"
+      ],
+      "city_zone": "万象天地 / 高新园",
+      "min_stay_minutes": 30,
+      "max_stay_minutes": 60,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_E89585DE13": {
+      "poi_role": "connector",
+      "manual_priority": 65,
+      "planning_tags": [
+        "shopping_friendly",
+        "photo_friendly",
+        "citywalk_friendly"
+      ],
+      "risk_tags": [
+        "hard_to_find"
+      ],
+      "city_zone": "福田中心区 / 购物公园",
+      "min_stay_minutes": 30,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_CF41054BDE": {
+      "poi_role": "meal",
+      "manual_priority": 75,
+      "planning_tags": [
+        "dinner_friendly",
+        "atmosphere",
+        "shopping_friendly"
+      ],
+      "risk_tags": [
+        "queue_heavy",
+        "pricey"
+      ],
+      "city_zone": "南山万象天地",
+      "min_stay_minutes": 60,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_FE4EF609BF": {
+      "poi_role": "connector",
+      "manual_priority": 75,
+      "planning_tags": [
+        "shopping_friendly",
+        "photo_friendly",
+        "premium_friendly",
+        "citywalk_friendly"
+      ],
+      "risk_tags": [
+        "pricey",
+        "crowded_weekend"
+      ],
+      "city_zone": "南山万象天地",
+      "min_stay_minutes": 60,
+      "max_stay_minutes": 120,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_0D11DF3EEF": {
+      "poi_role": "connector",
+      "manual_priority": 85,
+      "planning_tags": [
+        "shopping_friendly",
+        "photo_friendly",
+        "citywalk_friendly",
+        "premium_friendly"
+      ],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
+      "city_zone": "万象天地 / 高新园",
+      "min_stay_minutes": 60,
+      "max_stay_minutes": 150,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_C47B662062": {
+      "poi_role": "meal",
+      "manual_priority": 75,
+      "planning_tags": [
+        "dinner_friendly",
+        "atmosphere",
+        "night_friendly"
+      ],
+      "risk_tags": [
+        "crowded_weekend",
+        "reservation_needed"
+      ],
+      "city_zone": "南山万象天地",
+      "min_stay_minutes": 60,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_E94805B854": {
+      "poi_role": "meal",
+      "manual_priority": 75,
+      "planning_tags": [
+        "food_quality",
+        "premium_friendly",
+        "shopping_friendly"
+      ],
+      "risk_tags": [
+        "pricey",
+        "queue_heavy"
+      ],
+      "city_zone": "万象天地 / 高新园",
+      "min_stay_minutes": 45,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_6664DAFB68": {
+      "poi_role": "meal",
+      "manual_priority": 75,
+      "planning_tags": [
+        "food_quality",
+        "lunch_friendly",
+        "dinner_friendly",
+        "shopping_friendly"
+      ],
+      "risk_tags": [
+        "queue_heavy",
+        "crowded_weekend"
+      ],
+      "city_zone": "万象天地 / 高新园",
+      "min_stay_minutes": 45,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_BE03810557": {
+      "poi_role": "connector",
+      "manual_priority": 75,
+      "planning_tags": [
+        "shopping_friendly",
+        "photo_friendly",
+        "premium_friendly"
+      ],
+      "risk_tags": [
+        "pricey"
+      ],
+      "city_zone": "南山万象天地",
+      "min_stay_minutes": 60,
+      "max_stay_minutes": 120,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_586FC34E1F": {
+      "poi_role": "meal",
+      "manual_priority": 75,
+      "planning_tags": [
+        "dinner_friendly",
+        "atmosphere",
+        "photo_friendly"
+      ],
+      "risk_tags": [
+        "queue_heavy"
+      ],
+      "city_zone": "万象天地 / 高新园",
+      "min_stay_minutes": 60,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_2386AB6ED1": {
+      "poi_role": "meal",
+      "manual_priority": 75,
+      "planning_tags": [
+        "dinner_friendly",
+        "couple_friendly",
+        "premium_friendly"
+      ],
+      "risk_tags": [
+        "queue_heavy",
+        "pricey"
+      ],
+      "city_zone": "万象天地 / 高新园",
+      "min_stay_minutes": 60,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_791EF90432": {
+      "poi_role": "connector",
+      "manual_priority": 45,
+      "planning_tags": [
+        "shopping_friendly",
+        "photo_friendly",
+        "couple_friendly"
+      ],
+      "risk_tags": [],
+      "city_zone": "南山",
+      "min_stay_minutes": 30,
+      "max_stay_minutes": 60,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_92D2F84794": {
+      "poi_role": "meal",
+      "manual_priority": 75,
+      "planning_tags": [
+        "coffee_friendly",
+        "premium_friendly",
+        "photo_friendly",
+        "shopping_friendly"
+      ],
+      "risk_tags": [
+        "queue_heavy",
+        "pricey"
+      ],
+      "city_zone": "南山万象天地",
+      "min_stay_minutes": 45,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_E9D0652E41": {
+      "poi_role": "meal",
+      "manual_priority": 75,
+      "planning_tags": [
+        "food_quality",
+        "premium_friendly",
+        "shopping_friendly",
+        "dinner_friendly"
+      ],
+      "risk_tags": [
+        "pricey",
+        "queue_heavy"
+      ],
+      "city_zone": "万象天地 / 高新园",
+      "min_stay_minutes": 60,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_AD41D34899": {
+      "poi_role": "connector",
+      "manual_priority": 75,
+      "planning_tags": [
+        "shopping_friendly",
+        "premium_friendly",
+        "citywalk_friendly"
+      ],
+      "risk_tags": [
+        "pricey",
+        "crowded_weekend"
+      ],
+      "city_zone": "万象天地 / 高新园",
+      "min_stay_minutes": 60,
+      "max_stay_minutes": 120,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_631B8A4A56": {
+      "poi_role": "connector",
+      "manual_priority": 85,
+      "planning_tags": [
+        "shopping_friendly",
+        "landmark",
+        "photo_friendly",
+        "citywalk_friendly"
+      ],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
+      "city_zone": "南山万象天地",
+      "min_stay_minutes": 60,
+      "max_stay_minutes": 120,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_E67447D1ED": {
+      "poi_role": "connector",
+      "manual_priority": 75,
+      "planning_tags": [
+        "shopping_friendly",
+        "premium_friendly",
+        "citywalk_friendly"
+      ],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
+      "city_zone": "南山万象天地",
+      "min_stay_minutes": 60,
+      "max_stay_minutes": 120,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
+    },
+    "CACHE_AC86E65B3D": {
+      "poi_role": "meal",
+      "manual_priority": 75,
+      "planning_tags": [
+        "food_quality",
+        "lunch_friendly",
+        "dinner_friendly"
+      ],
+      "risk_tags": [],
+      "city_zone": "南山万象天地",
+      "min_stay_minutes": 45,
+      "max_stay_minutes": 90,
+      "label_sources": [
+        "cache_promoted:v1.9.1"
+      ]
     }
   },
   "西安": {
