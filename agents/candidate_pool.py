@@ -157,6 +157,34 @@ def _infer_role_from_categories(categories: Optional[list[str]]) -> str:
     return "fallback"
 
 
+_MUST_VISIT_ALIASES: dict[str, list[str]] = {
+    "故宫": ["紫禁城"],
+    "兵马俑": ["秦始皇陵", "始皇陵"],
+    "长城": ["八达岭", "慕田峪", "司马台"],
+    "大唐不夜城": ["大唐芙蓉园", "唐文化"],
+    "外滩": ["陆家嘴对岸", "万国建筑"],
+    "西湖": ["杭州西湖"],
+    "天坛": ["祈年殿"],
+    "颐和园": ["昆明湖"],
+}
+
+
+def _match_must_visit_name(poi_name: str, must_visit: list[str]) -> Optional[str]:
+    """子串 + 别名匹配. 命中返回 must_visit 原词, 否则 None."""
+    if not must_visit or not poi_name:
+        return None
+    for must in must_visit:
+        if not must:
+            continue
+        if must in poi_name:
+            return must
+        aliases = _MUST_VISIT_ALIASES.get(must, [])
+        for alias in aliases:
+            if alias in poi_name:
+                return must
+    return None
+
+
 def _bucket_of(poi: POI) -> Optional[str]:
     """Return poi_role bucket name, or None if no enriched + categories 也推不出.
 
@@ -193,11 +221,17 @@ def build_candidate_pool(
         "meal": [],
         "connector": [],
     }
+    must_visit_list = list(intent.must_visit or [])
     for poi in pois:
         if poi.city != intent.city:
             continue
-        # v1.8: 有 anchor 时硬过滤掉超出 radius 2x 的 POI
-        if intent.anchor_lng is not None and intent.anchor_lat is not None:
+        is_must = _match_must_visit_name(poi.name, must_visit_list) is not None
+        # v1.8: 有 anchor 时硬过滤掉超出 radius 2x 的 POI (must_visit 命中跳过过滤)
+        if (
+            not is_must
+            and intent.anchor_lng is not None
+            and intent.anchor_lat is not None
+        ):
             from agents.anchor import _haversine_km
 
             d = _haversine_km(
@@ -207,6 +241,10 @@ def build_candidate_pool(
             if d > (intent.anchor_radius_km or 3.0) * 2:
                 continue
         bucket = _bucket_of(poi)
+        if is_must:
+            # v1.9.2: 必去点强制进 city_essential head, score=999 顶到最前
+            buckets["city_essential"].append((999.0, poi))
+            continue
         if bucket not in buckets:
             continue  # fallback or no-enriched 跳过
         s = score_poi(poi, intent, variant=variant)
