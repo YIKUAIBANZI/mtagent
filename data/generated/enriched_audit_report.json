@@ -1,0 +1,4696 @@
+{
+  "深圳": {
+    "city": "深圳",
+    "total": 300,
+    "flagged_count": 149,
+    "flagged_rate": 0.497,
+    "report": [
+      {
+        "openshopid": "B0HRV7WSCL",
+        "name": "10号星球乐园",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFG8DEVG",
+        "name": "1号沙滩",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0H2MS2LOW",
+        "name": "AquaFUN水悦荟亲子游泳(宝能环球汇店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LK753BV1",
+        "name": "FUNDAY运动游乐场",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KA4UAD9J",
+        "name": "MELAND CLUB(深圳壹方天地店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0H0K1TU2J",
+        "name": "MELAND亲子儿童游乐园",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFIOXKHB",
+        "name": "meland club(万象天地·拓竹联名店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0I2HRCV1C",
+        "name": "nicemini网红打卡·光影艺术馆",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFH01VII",
+        "name": "万科云城",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0HRLZ0HD9",
+        "name": "三联郊野公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F30242A",
+        "name": "中山公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JRTH5D43",
+        "name": "乐悠游(宝安中心店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JUYHO9K5",
+        "name": "云海公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFI9DQX8",
+        "name": "五指耙公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F3002EE",
+        "name": "人民公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KGTU75ZP",
+        "name": "今毕昇快印广告",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFM5LTTS",
+        "name": "企龙山公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0J6NUM74E",
+        "name": "侨城北公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LD4OT5XS",
+        "name": "儿童欢乐世界(66乐园店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFJF1B20",
+        "name": "光明开明公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFGQHFID",
+        "name": "八合里潮汕鲜牛肉火锅(深圳购物公园店)",
+        "categories": [
+          "美食",
+          "购物"
+        ],
+        "flags": [
+          "landmark_with_food"
+        ]
+      },
+      {
+        "openshopid": "B0H2NZG6BT",
+        "name": "冒险岛家庭游乐中心(City花园城店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F37VM42",
+        "name": "前海公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFG9KGTS",
+        "name": "前海石公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFKKJPT5",
+        "name": "前海石公园(桂湾段)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFLJ6Q2R",
+        "name": "北站中心公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F37W86X",
+        "name": "华侨城旅行社(总部)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JRUUUDFY",
+        "name": "华润雪花科创城",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFG3WT2M",
+        "name": "南山公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFG47P61",
+        "name": "南澳第一沙滩",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFHUFCCK",
+        "name": "南澳蓝宝石沙滩",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F38SVMD",
+        "name": "南澳镇西涌仙人掌沙滩",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0K0KUF8OL",
+        "name": "卡游(星河WORLD·COCO Park店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JBKULU95",
+        "name": "后海中心河公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LB5U2OLC",
+        "name": "哆樂婴儿游泳馆",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0MBMU7DQK",
+        "name": "哈小猪智梦农场",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F391N6L",
+        "name": "唐宫·粤菜海鲜(彩德店)",
+        "categories": [
+          "美食"
+        ],
+        "flags": [
+          "landmark_with_food"
+        ]
+      },
+      {
+        "openshopid": "B02F302563",
+        "name": "四海公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LKR64YS3",
+        "name": "国深旅行(坪山营业部)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JAT7W15P",
+        "name": "国深旅行(大浪营业部)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0J3TCMYVG",
+        "name": "国深旅行宝安石岩营业部",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0M6O5LU3I",
+        "name": "国深旅行龙华世纪春城营业部",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFF2M634",
+        "name": "地王观光·深港之窗",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F37U63X",
+        "name": "塘朗山公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFFXRPOM",
+        "name": "大冲城市花园",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KUBRTY1K",
+        "name": "大南山公园荔林登山口",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0HGD77THA",
+        "name": "大梧桐山顶鹏城第一峰",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F38IGU3",
+        "name": "大沙河公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0K2FADKBW",
+        "name": "大沙河生态长廊绿道-赛艇看台",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F37W35R",
+        "name": "大浪劳动者广场",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFHJYM50",
+        "name": "大运会火炬塔纪念广场",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFI1B6JH",
+        "name": "大阳台山顶",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F37UU7A",
+        "name": "天安高尔夫花园",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0I1UO0OPA",
+        "name": "天安高尔夫花园2期",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFGMCFSC",
+        "name": "女娲滨海公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFG7LRO2",
+        "name": "官湖沙滩",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F37VPCW",
+        "name": "宝安公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFG7LLXC",
+        "name": "宝安西湾红树林公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LB9UWD17",
+        "name": "宝旅旅游(桃源居营业部)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F37WPYL",
+        "name": "小南山公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFFE9VIE",
+        "name": "小沙山",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F37UAJD",
+        "name": "市民广场",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F300115",
+        "name": "广东梧桐山风景名胜区",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F38NJ9E",
+        "name": "广东深圳华侨城国家湿地公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0M6CUVYPV",
+        "name": "康辉旅游深圳第二分公司",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFIY13EW",
+        "name": "弯月山谷-观景平台",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LUHHJ58M",
+        "name": "恒远海立方·深圳海洋馆",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0IBG7J677",
+        "name": "恩上湿地公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0J2OUIRB6",
+        "name": "招商蛇口邮轮母港",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0L1K7UMDB",
+        "name": "携程旅游(常兴天虹营业部)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JAC7RI8X",
+        "name": "携程旅游(海月官方旗舰店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0G335VOYB",
+        "name": "携程旅游(福海营业部)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F302E7D",
+        "name": "新安公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFJRNKCT",
+        "name": "星高度云里梦想乐园",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFKYR555",
+        "name": "景观湖",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFG4GP75",
+        "name": "本原广告",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFFRCZ8O",
+        "name": "杨梅坑",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFKM8ITG",
+        "name": "桂湾公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F37VH8P",
+        "name": "桔钓沙",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFHF9V1L",
+        "name": "梅园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KRJU4NJL",
+        "name": "梅拉尼亚小镇",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F38NJOI",
+        "name": "椰林沙滩(不对外开放)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F300114",
+        "name": "求水山公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFI6919L",
+        "name": "沙鱼涌沙滩",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFFA24XP",
+        "name": "泰和图文广告(宝安大仟里店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0K6C71R48",
+        "name": "海鲸宝国际水育中心(前海店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JGFHOOWA",
+        "name": "海鲸宝游泳体验馆(太古城店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0IGD7AS1P",
+        "name": "淘金山绿道",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFLF6FO2",
+        "name": "淘金山绿道沙湾驿站",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F38S8E8",
+        "name": "深圳东涌沙滩",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F3009FA",
+        "name": "深圳中心公园(暂停开放)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFI1VATT",
+        "name": "深圳人才公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F38SLSE",
+        "name": "深圳国际园林花卉博览园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F38J6GZ",
+        "name": "深圳大鹏半岛国家地质公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0L3TC88ZL",
+        "name": "深圳市恒升国际旅行社(盐田分公司)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFK7OXTF",
+        "name": "深圳平安金融中心云际观光层",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0G3AXJ1UG",
+        "name": "深圳梅林山郊野径",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F30248F",
+        "name": "深圳欢乐谷",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JKNZEUCG",
+        "name": "游游水育馆(龙都花园店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFGE56HJ",
+        "name": "溪涌度假村海滨浴场",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0M6SY2LEP",
+        "name": "滨寿司(深圳连城购物公园二店)",
+        "categories": [
+          "美食",
+          "购物"
+        ],
+        "flags": [
+          "landmark_with_food"
+        ]
+      },
+      {
+        "openshopid": "B02F37TRLI",
+        "name": "燕晗山郊野公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFM6542O",
+        "name": "玉龙公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JR55QBP8",
+        "name": "玛林爸爸亲子游泳俱乐部(龙华佐伶店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFFFFZB1",
+        "name": "玛雅海滩",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFM7XJUE",
+        "name": "白沙湾公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFH0ZH1A",
+        "name": "白石龙音乐主题公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KRDCLEFL",
+        "name": "白色星球乐园",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F305FCR",
+        "name": "皇岗公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F37VK03",
+        "name": "石芽岭公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F37V2FC",
+        "name": "福田区",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0H1Y5WI4R",
+        "name": "福田海滨生态体育公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F37T4ZP",
+        "name": "笔架山公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0I13AR9J0",
+        "name": "紫涧园",
+        "categories": [
+          "休闲娱乐",
+          "美食"
+        ],
+        "flags": [
+          "landmark_with_food"
+        ]
+      },
+      {
+        "openshopid": "B02F301A51",
+        "name": "红花山公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0K21DVL06",
+        "name": "美人鱼岛打卡地旅游摄影",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFG9KJIW",
+        "name": "翠湖文体公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F37VZK1",
+        "name": "翠竹公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFKECF4B",
+        "name": "背仔角沙滩",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFI8DIT3",
+        "name": "背仔角海滩",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F37VFPD",
+        "name": "英伦名苑",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LR6CFF80",
+        "name": "范宝婴幼儿游泳馆",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F3022D6",
+        "name": "荔香公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFIUCFKY",
+        "name": "荞上人活鳗炭烧酒场(深圳购物公园店)",
+        "categories": [
+          "美食",
+          "购物"
+        ],
+        "flags": [
+          "landmark_with_food"
+        ]
+      },
+      {
+        "openshopid": "B0G1DSEKCI",
+        "name": "虹桥公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0J1NHJIPK",
+        "name": "西塔老太太泥炉烤肉(领展中心城店)",
+        "categories": [
+          "美食"
+        ],
+        "flags": [
+          "landmark_with_food"
+        ]
+      },
+      {
+        "openshopid": "B0FFGZPVM1",
+        "name": "西涌4号沙滩",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFHU49UZ",
+        "name": "西涌国际滨海旅游区",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFL0TB8G",
+        "name": "西湾公园沙滩",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0I13UUQ44",
+        "name": "观澜古墟",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0L1JH8TJA",
+        "name": "贝丽诺国际水宝贝游泳馆",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0L1L7FD81",
+        "name": "贝斯特婴幼儿spa游泳馆",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F37TZCA",
+        "name": "金中环国际商务大厦",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFG8Y28Q",
+        "name": "金龟露营小镇",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFFFLR9U",
+        "name": "银湖山郊野公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F37WNHZ",
+        "name": "锦绣园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F37VJSA",
+        "name": "阳台山森林公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F37VKOP",
+        "name": "雪竹径公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0H64SHBWZ",
+        "name": "雪竹径公园儿童游乐园",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0MBNXV67M",
+        "name": "馨乐游亲子养护中心(嘉洲华苑店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KKHY56BK",
+        "name": "马峦山瀑布群",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F37UI6D",
+        "name": "马峦山郊野公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KD67G204",
+        "name": "鸡公山徒步点(不对外开放)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F37W5V7",
+        "name": "黄金豪庭",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LRXU1BA8",
+        "name": "龙园公园儿童游乐场",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JA6M9DOX",
+        "name": "龙城公园活力谷",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFJCC19D",
+        "name": "龙格亲子游泳俱乐部(南山中心店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFJ6XV1B",
+        "name": "龙格亲子游泳俱乐部(龙岗店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B02F30A3OV",
+        "name": "龙胜公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      }
+    ]
+  },
+  "上海": {
+    "city": "上海",
+    "total": 320,
+    "flagged_count": 146,
+    "flagged_rate": 0.456,
+    "report": [
+      {
+        "openshopid": "B0JGBA85WK",
+        "name": "Aloha亲子游泳俱乐部(黄浦校区)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFIDGF8M",
+        "name": "EVA雕像(装修中)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFJNJC9C",
+        "name": "Heetravel亲子游泳(碧云中心)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFHP0IMV",
+        "name": "Heetravel亲子游泳会所(虹桥盛世莲花广场店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFME80VA",
+        "name": "Ministry Of Crab(人民公园店)",
+        "categories": [
+          "美食"
+        ],
+        "flags": [
+          "landmark_with_food"
+        ]
+      },
+      {
+        "openshopid": "B0L697QCH3",
+        "name": "bb boom亲子协作游戏·聚会·亲子·团建(徐家汇店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0I2HR7Q4Y",
+        "name": "jellyfish水育成长中心(尚海湾豪庭3期店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155L7QF",
+        "name": "七宝古镇",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFJGWFDS",
+        "name": "上海世博园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00154DUI6",
+        "name": "上海世纪公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155KO68",
+        "name": "上海中心大厦",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFHLLF0C",
+        "name": "上海之巅观光厅",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155IWT7",
+        "name": "上海佘山国家森林公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0015211C2",
+        "name": "上海共青森林公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0015397C9",
+        "name": "上海动物园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00156EP9N",
+        "name": "上海千古情景区",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFFDX6IA",
+        "name": "上海周浦花海",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFHN6HWW",
+        "name": "上海城隍庙-游客中心",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFH18766",
+        "name": "上海大宁公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00154DWH8",
+        "name": "上海植物园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFG954E8",
+        "name": "上海海昌海洋公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001559PZQ",
+        "name": "上海海洋水族馆",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFGRDHAA",
+        "name": "上海花开海上生态园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00152F15F",
+        "name": "上海野生动物园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155KK03",
+        "name": "上海长风公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155G3HG",
+        "name": "上海鲜花港",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155R1A4",
+        "name": "世茂滨江花园",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155KO9N",
+        "name": "东晶国际公寓",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "hotel_as_poi",
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00157G053",
+        "name": "中山公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0015138BA",
+        "name": "中山公寓",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "hotel_as_poi",
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155LNR3",
+        "name": "中心铂庭",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155LGXF",
+        "name": "中福城三期",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFF7M0EA",
+        "name": "乍浦路桥",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFG8I1BF",
+        "name": "乐游宝宝亲子游泳(徐汇中心)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0J395CKZF",
+        "name": "京东图文(张江店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155KKQJ",
+        "name": "人民公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFKF847Z",
+        "name": "企业公馆",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0K0K559UJ",
+        "name": "优晟图文广告&标书画册图纸印刷&门头灯箱(可预约24小时)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0G3FCMZ7V",
+        "name": "优贝聪亲子游泳俱乐部",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFHV6JWS",
+        "name": "儿童游乐场",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFMDSQRR",
+        "name": "儿童游乐场",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFGFW4NK",
+        "name": "前滩休闲公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0K6ULWFDH",
+        "name": "北步园火锅(人民广场店)",
+        "categories": [
+          "美食"
+        ],
+        "flags": [
+          "landmark_with_food"
+        ]
+      },
+      {
+        "openshopid": "B001539A08",
+        "name": "南园公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155LZBN",
+        "name": "南翔古镇",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFFTRZGW",
+        "name": "友城公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LR3RFJ1T",
+        "name": "双子山-观景平台",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0K6246NZ4",
+        "name": "同程旅行(上海松江印象城店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155R0GW",
+        "name": "后滩公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LDX99RY0",
+        "name": "哈灵模玩乐园 HARING RC PARK",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155KI2N",
+        "name": "嘉汇广场",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0L27LLHB3",
+        "name": "城之央·轰趴团建聚会沙龙活动场地(南京东路店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0L3SB2TH1",
+        "name": "塔塔屋婴幼儿游泳俱乐部",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155IL1T",
+        "name": "外白渡桥",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFFSLB1H",
+        "name": "大北电报公司旧址",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFH5SYJ7",
+        "name": "大宁音乐广场",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00154DIBB",
+        "name": "天山公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFH83WJN",
+        "name": "太平湖公园·湖心岛",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFGUD46Q",
+        "name": "奇幻童话城堡",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JUYZC7KK",
+        "name": "好印图文广告(龙湖上海虹桥天街店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0I1Y57H6S",
+        "name": "季高兔窝窝pancoat乐园",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155L2RU",
+        "name": "宜川公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFG6DOG1",
+        "name": "宝成桥",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JRP7X1BP",
+        "name": "小小泳者(游泳馆.儿童游泳)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0J0SUG53L",
+        "name": "山楂花儿童游乐场",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFGUD0ZJ",
+        "name": "巴斯光年星际营救",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00156TH4Z",
+        "name": "延中广场公园春之园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155LW4D",
+        "name": "延福绿地",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFHKDU6C",
+        "name": "徐家汇体育公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFG1Y73F",
+        "name": "徐汇滨江大道",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00156ZEPU",
+        "name": "徐汇滨江绿地",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KKBO1Q7S",
+        "name": "扑扑鲸亲子游泳(AI PLAZA西岸凤巢店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0K2NPZHV7",
+        "name": "扑扑鲸亲子游泳(宝龙中心)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0J6P4UYNX",
+        "name": "扑扑鲸亲子游泳-世博源中心",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0H2PRTDL1",
+        "name": "扑扑鲸亲子游泳-夏都小镇中心(夏都小镇新舍汇店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155QJII",
+        "name": "扬子江大厦",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFJ2FDTE",
+        "name": "携程旅游(中山公园店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KGYAARUE",
+        "name": "携程旅游(华光路门市)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0J1LCU9VD",
+        "name": "携程旅游(四川北路旗舰店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0K0ZZZ2UT",
+        "name": "携程旅游(四平路门市)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFIY5JTI",
+        "name": "携程旅游(巨峰路店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0IA3OCLVA",
+        "name": "携程旅游(延长路店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KBXGEHAK",
+        "name": "携程旅游(斜土路营业部)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFIVWRHJ",
+        "name": "携程旅游(曹杨路营业部)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0G0V1NMXW",
+        "name": "携程旅游(永泰路营业部)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFMBZK0X",
+        "name": "携程旅游(牡丹江路营业部)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0HAKBGJFG",
+        "name": "携程旅游·钻石门店",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0L6GSF712",
+        "name": "携程旅游七莘路营业部",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFJ917TS",
+        "name": "携程旅游陆翔路营业部(宝山陆翔路营业部)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFGHRVM8",
+        "name": "摩天轮(上海大悦城北座店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155LZNL",
+        "name": "新场古镇",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KRJH4RZ7",
+        "name": "日落长廊",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFIZ4X7O",
+        "name": "星快印(中山公园店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFL9PMQS",
+        "name": "智财图文·印刷广告复印打印标书装订海报横幅锦旗(俱进路店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFGKCVII",
+        "name": "曲阳公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001556VY1",
+        "name": "枫泾古镇",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00156E325",
+        "name": "梅园公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KK95JZ09",
+        "name": "梦幻游乐园",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0H1HKQ2HT",
+        "name": "水母艾拉中庚漫游城店(中庚漫游城店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0J3FS5A05",
+        "name": "水母艾拉高端婴幼儿游泳SPA(森兰商都店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0H3Z5G59J",
+        "name": "水母艾拉高端婴幼儿游泳水育中心(万达广场店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155N7DE",
+        "name": "汇龙新城",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155L4JF",
+        "name": "汉中小区",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFGFJ4BN",
+        "name": "泰兴路227弄小区",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LGCURYZ3",
+        "name": "浦东lalaland",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155G34C",
+        "name": "淀山湖风景区",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0G0LXLALZ",
+        "name": "滨江绿道",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155LYLW",
+        "name": "滴水湖",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFLP3R8M",
+        "name": "澳水育儿童游泳中心(七宝宝龙店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00153B874",
+        "name": "爱家豪庭",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KA1MQAEH",
+        "name": "玩在这儿·儿童乐园·亲子游乐场(万嘉商业广场店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0H6KABQKR",
+        "name": "璟希Hope亲子游泳俱乐部(万达广场店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155IOQD",
+        "name": "碧海金沙",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KROZSDMC",
+        "name": "绿色蘑方",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JUZ4BSFB",
+        "name": "耀游少儿水育培训中心·原鱼乐贝贝(上海南站店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFL5P95R",
+        "name": "耀雪冰雪世界",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00153C454",
+        "name": "苔圣园酒家(黄浦店)",
+        "categories": [
+          "美食"
+        ],
+        "flags": [
+          "landmark_with_food"
+        ]
+      },
+      {
+        "openshopid": "B00155KJKK",
+        "name": "蝴蝶湾花园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0H23NQFZ5",
+        "name": "西塔老太太泥炉烤肉(人广来福士店)",
+        "categories": [
+          "美食"
+        ],
+        "flags": [
+          "landmark_with_food"
+        ]
+      },
+      {
+        "openshopid": "B0JAULGVD3",
+        "name": "贝游游水育成长中心(大华锦绣优嘉店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0J0NUH6E5",
+        "name": "贝艾宝游泳馆(太平洋中环广场店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFI0M2IA",
+        "name": "辣椒宝贝游泳馆(新场店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LUNZ5T2V",
+        "name": "速优印图文广告",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155D6FY",
+        "name": "金山城市沙滩",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFGMS7VI",
+        "name": "长兴岛",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00154DWCM",
+        "name": "闸北公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JD21VQCC",
+        "name": "阿强龙虾垂钓",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFHMUL9V",
+        "name": "雄雄广告图文(设计制作安装)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LB7K2UTG",
+        "name": "青西郊野公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155I3HL",
+        "name": "静安丽舍北区",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155AOCD",
+        "name": "马陆葡萄主题公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JDVUM47G",
+        "name": "魔大星爆笑亲子魔术秀(华润时代广场店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KUN5B25T",
+        "name": "鲸鱼爸爸儿童游泳综合运动馆(长宁来福士东区店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JBFLZSCS",
+        "name": "黄浦公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155P5GP",
+        "name": "黄浦区",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0G0ZSX6EI",
+        "name": "黄浦江",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155QFFH",
+        "name": "黄浦江游览",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFGXK4ZE",
+        "name": "黄浦江游览十六铺码头售票处",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFKJLSCR",
+        "name": "黄浦江游览快线游(金陵东路码头)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B00155AMEJ",
+        "name": "龙华寺",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0HD1B1GKI",
+        "name": "龙格亲子游泳俱乐部(三迪曼哈顿店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFJOT7D0",
+        "name": "龙格亲子游泳俱乐部(南洋1931店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFM6D0FU",
+        "name": "龙格亲子游泳俱乐部(奉贤中心)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0I2CG7TZ3",
+        "name": "龙格亲子游泳俱乐部(盈丰天地店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFG8OCPM",
+        "name": "龙格亲子游泳俱乐部(露香园店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JKPZVAZ0",
+        "name": "龙格亲子游泳普陀绿地缤纷城中心",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      }
+    ]
+  },
+  "西安": {
+    "city": "西安",
+    "total": 314,
+    "flagged_count": 165,
+    "flagged_rate": 0.525,
+    "report": [
+      {
+        "openshopid": "B0FFK9RKSF",
+        "name": "AR浐灞后海观景平台",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFJOK5KE",
+        "name": "PARTY DAY(西安东大街店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JKD54ZIN",
+        "name": "SUPERB儿童游泳运动中心(立丰城LE CITY店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KAML73UX",
+        "name": "中亚公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KG5A9GE0",
+        "name": "中国·秦岭·竹海",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JGU7AV0A",
+        "name": "中国康辉西安国际旅行社有限责任公司朱雀大街南门市部",
+        "categories": [
+          "休闲娱乐",
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JRMOH9AI",
+        "name": "乐淘淘游乐园",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0I357MSC7",
+        "name": "乐游时光少儿游泳成长中心(天地源·香都东岸店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFHZGT12",
+        "name": "乐贝尔婴童游泳生活馆(华远海蓝城店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D064HK",
+        "name": "九龙潭",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFGSINL0",
+        "name": "仪祉湖",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0H0DU7UXB",
+        "name": "伍小鱼亲子游泳中心(天和中心)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFJ5GS6B",
+        "name": "伍小鱼亲子游泳中心(锦悦中心)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0G3LBEOEN",
+        "name": "儿童游乐场",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KGLANZQA",
+        "name": "兰亭广告图文快印门头灯箱(大寨路店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D09HQR",
+        "name": "兴庆宫公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFHWV8IF",
+        "name": "华夏文旅海洋公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFKGMW3F",
+        "name": "印都图文快印·广告",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KKXD4LPU",
+        "name": "去哪儿旅行桃园东路店",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JK6O5U2D",
+        "name": "君城部落儿童游乐场",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFF3526H",
+        "name": "周至水街",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0HD3SPB5D",
+        "name": "周至水街·烟火巷子",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D08BYM",
+        "name": "唐大慈恩寺遗址公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFLEKWGM",
+        "name": "喷泉",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0H2ODE5SK",
+        "name": "夜谭·白鹿原",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D031C7",
+        "name": "大兴善寺",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D0WL5D",
+        "name": "大唐华清城",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFFW8583",
+        "name": "大唐盛世浮雕",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D0VWVB",
+        "name": "大唐西市",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D117RP",
+        "name": "大慈恩寺",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0H6PXVF5M",
+        "name": "大慈恩寺-售票处",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D0ZYYD",
+        "name": "大明宫国家遗址公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFL98CJI",
+        "name": "大洋图文快印标书打印证件照",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0K6LCNDXY",
+        "name": "天桥湖欢乐世界",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D08POG",
+        "name": "太平国家森林公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LB9UV51U",
+        "name": "家家乐亲子游乐园",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D026D8",
+        "name": "小雁塔",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LA69CLPF",
+        "name": "屿鲸儿童游泳运动中心",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0G1NC4OEM",
+        "name": "布若思小屋儿童游泳推拿",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D048LX",
+        "name": "广仁寺",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KDTUFG00",
+        "name": "广济镇跃进村周塬路观景台",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFGQ2ZN4",
+        "name": "广运潭公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D09VTL",
+        "name": "广运门",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFKLPGQK",
+        "name": "康辉旅游(凤城五路东段门市部)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D0VVLI",
+        "name": "开元广场",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFHW9TML",
+        "name": "开心岛婴儿游泳馆",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D09H24",
+        "name": "恒天国际城",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0IUO9B4KC",
+        "name": "恒奇艺广告图文快印",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFGB8N6S",
+        "name": "护城河智能游船",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JG9HBSSQ",
+        "name": "携程旅游(太奥广场店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JG4SBX5T",
+        "name": "携程旅游(甜水井店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JAU5QFDH",
+        "name": "携程旅游(龙首商业街店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0J2AZ26LE",
+        "name": "携程旅游旅行社(化龙三路门市)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0I19ARTDS",
+        "name": "时光文化公园",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0G35RYY2M",
+        "name": "时光机旅行",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFHCVRBS",
+        "name": "昆明池·七夕公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFJYGL1Y",
+        "name": "星乐园(民乐园万达店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0K0MCRGN3",
+        "name": "星乐园(高新万达店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KU7H4SEU",
+        "name": "星享游国际亲子游泳中心红星美凯龙校区",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFKHQN2T",
+        "name": "景观区东水牛广场",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0IDUAPSXY",
+        "name": "智奕游儿童体育",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D0VQ3N",
+        "name": "曲江池遗址公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFFFK2GB",
+        "name": "月亮桥",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KK3MKWO6",
+        "name": "未来之瞳科学公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFG2R2FT",
+        "name": "松园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFG8V1OG",
+        "name": "榴园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JDXSEFZL",
+        "name": "水母艾拉婴童游泳水育中心",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D03C82",
+        "name": "水陆庵",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D0W24M",
+        "name": "永兴坊",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D0WRTA",
+        "name": "汉城湖旅游风景区",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0I03SWGSJ",
+        "name": "汉神宝贝王",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JUYSN2PE",
+        "name": "池塘与蝉婴童水育馆(自然界·忘岳店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KRFUQ7M4",
+        "name": "沐朵婴儿游泳馆(立丰城LE CITY店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFKBCQ9G",
+        "name": "沣河生态湿地公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFHF7Q8B",
+        "name": "洨河生态公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D0VV1K",
+        "name": "洪庆山国家森林公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D08PYI",
+        "name": "流峪飞峡",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFGJQ960",
+        "name": "浐灞金融小区",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0L22DZR08",
+        "name": "海宏青苹果游乐场",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KGTZD3M3",
+        "name": "淘乐淘益智游乐园",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LULC83CG",
+        "name": "游游岛",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0J2Z5DJA9",
+        "name": "溪滩公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFFJ8D3P",
+        "name": "灞渭生态滩区",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JK6HXD57",
+        "name": "爱乐游婴幼儿水育中心(大都荟店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0G0YHK4FI",
+        "name": "爱玩爱游(临潼店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0IGJCSEA8",
+        "name": "狄小鲨国际儿童游泳俱乐部(辛家庙店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0IUKSNL3J",
+        "name": "玛雅海滩水公园-游客中心摩天轮",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LADH5LTV",
+        "name": "玩乐兽家庭游乐中心(龙湖西安香醍天街店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D089ON",
+        "name": "环城西苑公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KKM7K0IB",
+        "name": "瑞真图文广告快印",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0K27SA30M",
+        "name": "生命之树",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFLGDOT5",
+        "name": "畅游吧婴幼儿水中体适能拓展中心",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KGZL036T",
+        "name": "畅游吧婴幼儿水中体适能拓展中心(长乐壹号店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFHCF8EO",
+        "name": "白鹿原·白鹿仓",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFMF2J2X",
+        "name": "白鹿原古街",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFGAB102",
+        "name": "白鹿原影视城",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D09OYW",
+        "name": "秦始皇帝陵博物院",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0HDZL0TPS",
+        "name": "秦岭四宝科学公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0J6RZOU1V",
+        "name": "秦风源非遗剧场",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFHJ45O9",
+        "name": "粉巷",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KDXZZEHJ",
+        "name": "红旗铁路公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D08PIN",
+        "name": "翠华山景区",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0GKC5SHDX",
+        "name": "考拉儿童游乐园(大旺城店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0K6VC0VZL",
+        "name": "蓝鲸快乐宝贝婴童游泳馆(世茂璀璨店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LASR4FIY",
+        "name": "蓝鲸快乐宝贝婴童游泳馆(凯德广场店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KR5LZ61D",
+        "name": "蓝鲸快乐宝贝婴童游泳馆(华远海蓝城店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0M6YAQB5J",
+        "name": "蓝鲸快乐宝贝婴童游泳馆(方圆荟)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KAZ5CMCK",
+        "name": "蓝鲸快乐宝贝婴童游泳馆(春风心语)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0L0DAMS69",
+        "name": "蓝鲸快乐宝贝婴童游泳馆(盛龙广场店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LAYSYTWU",
+        "name": "蓝鲸快乐宝贝婴童游泳馆(龙湖天街店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0M6UZOFKI",
+        "name": "虎娃团亲子游泳中心",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0I2JX0LL3",
+        "name": "西塔老太太泥炉烤肉(未央国际店)",
+        "categories": [
+          "美食"
+        ],
+        "flags": [
+          "landmark_with_food"
+        ]
+      },
+      {
+        "openshopid": "B0J3ZUXIBG",
+        "name": "西塔老太太泥炉烤肉(汉神购物广场店)",
+        "categories": [
+          "美食",
+          "购物"
+        ],
+        "flags": [
+          "landmark_with_food"
+        ]
+      },
+      {
+        "openshopid": "B001D12FJ8",
+        "name": "西安世博园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFKRTZR7",
+        "name": "西安中旅国际旅行社有限责任公司(团建定制出境游国内游签证)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFKLE8Q1",
+        "name": "西安千古情",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LRAS0B6V",
+        "name": "西安后海",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0K3N5GE9C",
+        "name": "西安国旅雁翔路门市",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFFSUJAH",
+        "name": "西安城墙安远门售票处",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFKG0HLU",
+        "name": "西安城墙永宁门城楼",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFKM7M80",
+        "name": "西安城墙永宁门城楼南入口售票处",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFG1DLYV",
+        "name": "西安城墙长乐门售票处",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LR9UQ18J",
+        "name": "西安宾悦国际旅行社有限公司",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D0W140",
+        "name": "西安市丰庆公园游乐场",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D11A31",
+        "name": "西安康辉旅游(长安路店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0G07D4S4J",
+        "name": "西安康辉旅游丈八四路门店(团建定制国内旅游代办签证)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LA2LP3VU",
+        "name": "西安景捷国际旅行社",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFHWS5KV",
+        "name": "西安植物园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFKDDM6X",
+        "name": "西安欢乐谷(暂停开放)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D15L5H",
+        "name": "西安浐灞国家湿地公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D0VJN7",
+        "name": "西安环城公园(顺城北路西段)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D0VR42",
+        "name": "西安祥峪森林公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D092I6",
+        "name": "西安秦岭野生动物园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFFGUYRR",
+        "name": "西安运筹图文快印(汇鑫中心店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFFY6ZNZ",
+        "name": "西寺沟旅游风景区",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0JGH7MXF1",
+        "name": "观景台",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFICEIL2",
+        "name": "诗经里",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFH9BRWQ",
+        "name": "贞观广场",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFF64YJQ",
+        "name": "运筹快印(南门店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LASLZ9OF",
+        "name": "速美优印图文广告",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D06E2S",
+        "name": "都城隍庙",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0GR1AY39S",
+        "name": "鄠邑区天桥湖",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0L1BRZLFZ",
+        "name": "金凯蒙亲子游泳俱乐部(临潼店)",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0KAGUPLVQ",
+        "name": "金凯蒙国际亲子游泳俱乐部",
+        "categories": [
+          "休闲娱乐",
+          "亲子"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFFOPZUK",
+        "name": "金太阳婴儿游泳馆(长安大街3号院店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFIKEU0A",
+        "name": "金成快印",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D0W910",
+        "name": "金龙峡风景区",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0GDR5CXGN",
+        "name": "锦博快印(锦业时代B3座店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D064TL",
+        "name": "长乐公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFGA8HB0",
+        "name": "长安公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFI8WN7R",
+        "name": "长安区太阳葡萄小镇",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFJLEK3I",
+        "name": "长安唐村·中国农业公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0K2ZS031C",
+        "name": "长安大牌档之建章宫宴",
+        "categories": [
+          "美食"
+        ],
+        "flags": [
+          "landmark_with_food"
+        ]
+      },
+      {
+        "openshopid": "B0LAZ908M0",
+        "name": "陕西中国旅行社(保利天悦店)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LG97VCIE",
+        "name": "陕西中旅(科技六路门市部)",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0LAXU4E1G",
+        "name": "陕西天美假日国际旅行社有限公司",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0L19RI2OS",
+        "name": "陕西枫畅旅行社有限公司",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0L355F0MQ",
+        "name": "陕西港青旅国际旅行社有限公司碑林分公司",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFKU4015",
+        "name": "飞翔梦航空科技馆",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D006EE",
+        "name": "骊山国家森林公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B001D08XWD",
+        "name": "高冠瀑布",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFFDCW9P",
+        "name": "高家大院",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0FFFCM0OP",
+        "name": "高科·朗山",
+        "categories": [
+          "酒店"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      },
+      {
+        "openshopid": "B0I1P5QEW8",
+        "name": "鸽子侯·礼宴(运动公园店)",
+        "categories": [
+          "美食"
+        ],
+        "flags": [
+          "landmark_with_food"
+        ]
+      },
+      {
+        "openshopid": "B001D15L5M",
+        "name": "鹦鹉寺公园",
+        "categories": [
+          "休闲娱乐"
+        ],
+        "flags": [
+          "too_few_planning_tags"
+        ]
+      }
+    ]
+  }
+}
