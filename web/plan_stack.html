@@ -177,6 +177,29 @@
   }
   .place-card:hover{transform:translateY(-1px);background:var(--parchment)}
   .place-card.active{background:var(--parchment);box-shadow:var(--orange) 0 0 0 1.5px inset}
+  /* v1.9 Stage 3: 换/删 按钮 */
+  .adjust-btns{display:inline-flex;gap:6px;align-items:center;margin-left:8px}
+  .adjust-btn{
+    font-size:11px;padding:3px 8px;border-radius:8px;
+    background:rgba(0,0,0,0.04);color:#666;cursor:pointer;
+    transition:background .15s ease;user-select:none;
+  }
+  .adjust-btn:hover{background:var(--orange);color:#fff}
+  .adjust-btn.adjusting{opacity:0.4;pointer-events:none}
+  .place-card.cache-replaced{box-shadow:#1abc9c 0 0 0 1.5px inset}
+  .day-regen-btn{
+    font-size:12px;padding:4px 10px;border-radius:10px;
+    background:#fff;color:#444;cursor:pointer;border:1px solid #e5e1d8;
+    margin-left:8px;transition:background .15s;
+  }
+  .day-regen-btn:hover{background:var(--orange);color:#fff;border-color:var(--orange)}
+  .variant-chip{
+    display:inline-block;font-size:12px;padding:5px 12px;border-radius:14px;
+    background:#fff;color:#444;cursor:pointer;border:1px solid #e5e1d8;
+    margin:2px 4px 2px 0;transition:all .15s;
+  }
+  .variant-chip:hover{background:var(--parchment)}
+  .variant-chip.active{background:var(--orange);color:#fff;border-color:var(--orange)}
   .place-num{
     width:26px;height:26px;border-radius:50%;flex:0 0 26px;
     background:var(--midnight);color:#fff;display:grid;place-items:center;
@@ -732,9 +755,15 @@ function pushVariantSummary(data) {
       <div style="font-weight:600;margin-bottom:4px">${variantLabel(v)}方案 (备选)</div>
       <div>${items}</div>
       ${data.has_fallback ? '<div class="place-note" style="margin-top:4px;color:#9aa0a6">⚠ 该方案部分 LLM 失败, 走兜底</div>' : ''}
+      <div style="margin-top:8px"><span class="variant-chip" data-variant="${escapeHtml(v)}">切到这个方案 →</span></div>
     </div>`;
   $('messages').appendChild(wrap);
   $('messages').scrollTop = $('messages').scrollHeight;
+  // v1.9 Stage 3: 点 chip 触发 switch_variant
+  const chip = wrap.querySelector('.variant-chip');
+  if (chip) {
+    chip.addEventListener('click', () => triggerAdjust({ operation: 'switch_variant', variant: v }));
+  }
 }
 
 
@@ -745,8 +774,20 @@ async function renderDayDone(day) {
   // 收尾 day_partial 提示气泡 (替换成"已就绪")
   const partialEl = dayPartialMsgByIndex.get(dayIndex);
   if (partialEl) partialEl.textContent = `Day ${dayIndex + 1} 已就绪 ✓`;
-  // small intro for day
-  pushMsg('bot', `Day ${dayIndex + 1} · ${day.anchor_district || ''} 出炉了 📍`);
+  // small intro for day + v1.9 Stage 3 再来一版 按钮
+  const intro = document.createElement('div');
+  intro.className = 'msg bot';
+  intro.innerHTML = `
+    <div class="avatar bot">📍</div>
+    <div class="bubble">
+      Day ${dayIndex + 1} · ${escapeHtml(day.anchor_district || '')} 出炉了
+      <span class="day-regen-btn" data-day="${dayIndex}">↻ 再来一版</span>
+    </div>`;
+  $('messages').appendChild(intro);
+  $('messages').scrollTop = $('messages').scrollHeight;
+  intro.querySelector('.day-regen-btn').addEventListener('click', () => {
+    triggerAdjust({ operation: 'regenerate_day', day_index: dayIndex });
+  });
   // per-day rationale if arrived earlier
   if (pendingRationaleByDay.has(dayIndex)) {
     pushMsg('bot', pendingRationaleByDay.get(dayIndex));
@@ -872,25 +913,42 @@ async function startPolylineWorker() {
 function pushPlaceCard(stop, dayIndex, stopIndex, color) {
   const wrap = document.createElement('div');
   wrap.className = 'msg bot';
+  wrap.dataset.day = dayIndex;
+  wrap.dataset.slot = stop.slot_name || '';
   const num = stopIndex + 1;
   const icon = SLOT_ICON[stop.slot_name] || '📍';
   wrap.innerHTML = `
     <div class="avatar bot" style="background:${color}">
       <svg width="12" height="12" viewBox="0 0 16 16"><path d="M8 1 c-3 0 -5 2.5 -5 5 c0 4 5 9 5 9 s5 -5 5 -9 c0 -2.5 -2 -5 -5 -5 z" fill="#fff"/></svg>
     </div>
-    <button class="place-card" data-poi="${escapeHtml(stop.poi_openshopid || '')}">
+    <button class="place-card" data-poi="${escapeHtml(stop.poi_openshopid || '')}" data-day="${dayIndex}" data-slot="${escapeHtml(stop.slot_name || '')}">
       <span class="place-num" style="background:${color}">${num}</span>
       <div style="flex:1;min-width:0">
         <div class="place-name">${icon} ${escapeHtml(stop.poi_name || '未命名')}</div>
         <div class="place-tag">${(stop.categories || []).join(' · ')} · ${stop.arrival_time || ''} · ★${stop.star ?? '?'} ¥${stop.avgprice ?? '?'}/人</div>
         <div class="place-note">${escapeHtml(stop.slot_name || '')}</div>
       </div>
+      <span class="adjust-btns" onclick="event.stopPropagation()">
+        <span class="adjust-btn" title="换一家" data-op="replace" data-day="${dayIndex}" data-slot="${escapeHtml(stop.slot_name || '')}">换</span>
+        <span class="adjust-btn" title="删除" data-op="remove" data-day="${dayIndex}" data-slot="${escapeHtml(stop.slot_name || '')}">删</span>
+      </span>
     </button>`;
   $('messages').appendChild(wrap);
   $('messages').scrollTop = $('messages').scrollHeight;
   const card = wrap.querySelector('.place-card');
   dayCardsByIndex.set(`${dayIndex}-${stopIndex}`, card);
   card.addEventListener('click', () => focusMarker(dayIndex, stopIndex));
+  // 换/删 按钮事件
+  card.querySelectorAll('.adjust-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const op = btn.dataset.op;
+      const di = parseInt(btn.dataset.day, 10);
+      const sl = btn.dataset.slot;
+      if (op === 'replace') triggerAdjust({ operation: 'replace_stop', day_index: di, slot_name: sl });
+      if (op === 'remove') triggerAdjust({ operation: 'remove_stop', day_index: di, slot_name: sl });
+    });
+  });
 }
 
 function addMarker(stop, dayIndex, stopIndex, color) {
@@ -1122,6 +1180,98 @@ function showError(msg) {
 }
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ============ v1.9 Stage 3: Adjuster (换/删/再来一版/切 variant) ============
+
+async function callAdjust(payload, onEvent) {
+  const resp = await fetch(`/api/plan/${currentTripId}/adjust`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!resp.ok || !resp.body) {
+    pushMsg('bot', `调整失败 (HTTP ${resp.status})`);
+    return;
+  }
+  const reader = resp.body.getReader();
+  const dec = new TextDecoder();
+  let buf = '';
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    const blocks = buf.split('\n\n');
+    buf = blocks.pop() || '';
+    for (const blk of blocks) {
+      let ev = '', dat = null;
+      for (const line of blk.split('\n')) {
+        if (line.startsWith('event:')) ev = line.slice(6).trim();
+        if (line.startsWith('data:')) {
+          try { dat = JSON.parse(line.slice(5).trim()); } catch (_) { }
+        }
+      }
+      if (ev) onEvent(ev, dat);
+    }
+  }
+}
+
+async function triggerAdjust(payload) {
+  if (!currentTripId) {
+    pushMsg('bot', '还没有可调整的方案');
+    return;
+  }
+  pushMsg('bot', '🪄 调整中…');
+  await callAdjust(payload, (ev, dat) => {
+    if (ev === 'adjust.stop_replaced') onStopReplaced(dat);
+    else if (ev === 'adjust.stop_removed') onStopRemoved(dat);
+    else if (ev === 'adjust.day_replaced') onDayReplaced(dat);
+    else if (ev === 'adjust.variant_switched') onVariantSwitched(dat);
+    else if (ev === 'adjust.error') pushMsg('bot', `调整失败: ${dat.reason || ''}`);
+  });
+}
+
+function onStopReplaced(data) {
+  const di = data.day_index;
+  const slot = data.slot_name;
+  // 找老 card
+  const oldCard = document.querySelector(`.place-card[data-day="${di}"][data-slot="${CSS.escape(slot)}"]`);
+  if (!oldCard) {
+    pushMsg('bot', `已替换 ${slot}, 但页面未找到对应卡片`);
+    return;
+  }
+  const newStop = data.new_stop;
+  const poi = newStop.poi;
+  const nameDiv = oldCard.querySelector('.place-name');
+  const tagDiv = oldCard.querySelector('.place-tag');
+  const icon = SLOT_ICON[newStop.slot.name] || '📍';
+  if (nameDiv) nameDiv.textContent = `${icon} ${poi.name}`;
+  if (tagDiv) tagDiv.textContent = `${(poi.categories || []).join(' · ')} · ${newStop.arrival_time || ''} · ★${poi.star ?? '?'} ¥${poi.avgprice ?? '?'}/人`;
+  oldCard.dataset.poi = poi.openshopid;
+  oldCard.classList.add('cache-replaced');
+  pushMsg('bot', `已换成「${poi.name}」${data.source === 'cache' ? '（来自历史 cache 🎯）' : '（来自本地池）'}`);
+}
+
+function onStopRemoved(data) {
+  const di = data.day_index;
+  const slot = data.slot_name;
+  const oldCard = document.querySelector(`.place-card[data-day="${di}"][data-slot="${CSS.escape(slot)}"]`);
+  if (oldCard) {
+    const wrap = oldCard.closest('.msg');
+    if (wrap) wrap.remove();
+  }
+  pushMsg('bot', `已删除 Day ${di + 1} 的「${slot}」, 时间表已自动重排`);
+}
+
+function onDayReplaced(data) {
+  pushMsg('bot', `Day ${data.day_index + 1} 已整天重排, 刷新页面查看新方案 ↻`);
+}
+
+function onVariantSwitched(data) {
+  pushMsg('bot', `已切换到「${variantLabel(data.variant)}」方案 ${VARIANT_ICONS[data.variant] || ''}`);
+  document.querySelectorAll('.variant-chip').forEach(el => {
+    el.classList.toggle('active', el.dataset.variant === data.variant);
+  });
+}
 
 function escapeHtml(s) {
   return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
