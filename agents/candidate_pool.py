@@ -174,6 +174,23 @@ def score_poi(poi: POI, intent: ParsedIntent, variant: Variant = "main") -> floa
     return score
 
 
+def _infer_role_from_categories(categories: Optional[list[str]]) -> str:
+    """v1.9: 给无 enriched 的 POI 按 categories 兜底 poi_role.
+
+    用于高德 fetch_around 返回的 POI (没经过 mock_dianping enriched 流程).
+    """
+    if not categories:
+        return "fallback"
+    cats = " ".join(categories)
+    if "美食" in cats:
+        return "meal"
+    if "景点" in cats or "历史文化" in cats:
+        return "city_essential"
+    if "购物" in cats or "休闲娱乐" in cats:
+        return "connector"
+    return "fallback"
+
+
 def _bucket_of(poi: POI) -> Optional[str]:
     """Return poi_role bucket name, or None if no enriched."""
     if poi.enriched is None:
