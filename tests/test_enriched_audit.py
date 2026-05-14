@@ -111,3 +111,25 @@ def test_audit_clean_poi_no_flags():
     )
     flags = audit_poi(p)
     assert flags == []
+
+
+def test_build_refix_prompt_includes_name_categories_reviewtags():
+    from scripts.refix_enriched import build_refix_prompt
+
+    poi = {
+        "openshopid": "id1",
+        "name": "西安城墙",
+        "categories": ["美食"],
+        "city": "西安",
+        "star": 4.7,
+        "reviewTags": [
+            {"tag": "历史悠久", "hit": 234},
+            {"tag": "夜景好", "hit": 189},
+        ],
+    }
+    flags = ["landmark_with_food"]
+    prompt = build_refix_prompt(poi, flags)
+    assert "西安城墙" in prompt
+    assert "美食" in prompt
+    assert "历史悠久" in prompt
+    assert "landmark_with_food" in prompt
