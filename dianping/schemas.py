@@ -441,11 +441,20 @@ class UserMarked(BaseModel):
 
 
 class UserProfile(BaseModel):
-    """v3 reserved."""
+    """v1.9 Stage 2 (cookie 级用户偏好持久化, 简化版).
+
+    存 data/user_profiles/{cookie_key}.json. 由 cookie middleware 关联设备.
+    """
 
     cookie_key: str
+    # v1.9 Stage 2: 偏好 (覆盖 Profiler 的 LLM 解析结果)
+    modifiers: dict[ModifierName, bool] = Field(default_factory=dict)
+    interests_text: str = ""  # 自由文本兴趣, 拼到 user_input 前
+    # 老字段保留 (后续 Stage 4 用)
     user_marked: UserMarked = Field(default_factory=UserMarked)
     loved_categories: list[str] = Field(default_factory=list)
     rejected_categories: list[str] = Field(default_factory=list)
     avg_budget_per_day: int = 0
     history: list[dict] = Field(default_factory=list)
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None

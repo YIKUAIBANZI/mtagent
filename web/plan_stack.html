@@ -284,9 +284,77 @@
     .day-tabs{left:auto;right:24px;top:auto;bottom:24px}
     .map-chrome{display:none}
   }
+
+  /* v1.9 Stage 2: preferences modal */
+  .pref-overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:9999;
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;pointer-events:none;transition:opacity .25s ease;
+  }
+  .pref-overlay.show{opacity:1;pointer-events:auto}
+  .pref-modal{
+    background:#fff;border-radius:18px;padding:28px 32px;
+    max-width:480px;width:92%;box-shadow:0 24px 60px rgba(0,0,0,0.18);
+  }
+  .pref-modal h2{font-size:20px;font-weight:600;margin:0 0 6px 0;color:var(--charcoal)}
+  .pref-modal .sub{font-size:13px;color:#888;margin-bottom:16px}
+  .pref-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px dashed #eee}
+  .pref-row:last-of-type{border-bottom:0}
+  .pref-row label{font-size:14px;color:var(--charcoal)}
+  .pref-toggle{
+    width:44px;height:24px;background:#e5e1d8;border-radius:12px;
+    position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;
+  }
+  .pref-toggle.on{background:var(--orange)}
+  .pref-toggle::after{
+    content:'';position:absolute;left:2px;top:2px;
+    width:20px;height:20px;background:#fff;border-radius:50%;
+    transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);
+  }
+  .pref-toggle.on::after{left:22px}
+  .pref-interests{
+    width:100%;padding:10px 12px;border:1px solid #e5e1d8;border-radius:10px;
+    font-size:14px;margin-top:6px;outline:none;box-sizing:border-box;
+  }
+  .pref-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+  .pref-btn{padding:8px 18px;border-radius:10px;font-size:13px;cursor:pointer;border:none}
+  .pref-btn.primary{background:var(--orange);color:#fff}
+  .pref-btn.ghost{background:transparent;color:#666}
 </style>
 </head>
 <body>
+
+<!-- v1.9 Stage 2: preferences modal (首次访问弹) -->
+<div class="pref-overlay" id="prefOverlay">
+  <div class="pref-modal">
+    <h2>先了解一下你 ✨</h2>
+    <div class="sub">几个偏好, 帮我下次推得更贴, 1 分钟就好</div>
+    <div class="pref-row">
+      <label>👣 轻量体力 (少走路)</label>
+      <div class="pref-toggle" data-pref="轻量体力"></div>
+    </div>
+    <div class="pref-row">
+      <label>🏯 重文化 (历史 / 博物馆)</label>
+      <div class="pref-toggle" data-pref="重文化"></div>
+    </div>
+    <div class="pref-row">
+      <label>🥢 重美食</label>
+      <div class="pref-toggle" data-pref="重美食"></div>
+    </div>
+    <div class="pref-row">
+      <label>😬 怕排队</label>
+      <div class="pref-toggle" data-pref="怕排队"></div>
+    </div>
+    <div style="margin-top:14px">
+      <label style="font-size:13px;color:#666">还想要点啥? (可不填)</label>
+      <input class="pref-interests" id="prefInterests" placeholder="拍照 / 小众 / 咖啡馆 / 夜景…" />
+    </div>
+    <div class="pref-actions">
+      <button class="pref-btn ghost" onclick="closePrefModal(true)">跳过</button>
+      <button class="pref-btn primary" onclick="savePrefModal()">保存</button>
+    </div>
+  </div>
+</div>
 
 <header class="nav">
   <div class="brand"><div class="brand-mark">m</div><span>mtagent</span></div>
@@ -1272,6 +1340,59 @@ function onVariantSwitched(data) {
     el.classList.toggle('active', el.dataset.variant === data.variant);
   });
 }
+
+// ============ v1.9 Stage 2: preferences modal ============
+
+const PREF_KEYS = ['轻量体力', '重文化', '重美食', '怕排队'];
+
+async function initPrefModal() {
+  try {
+    const resp = await fetch('/api/user/profile');
+    const profile = await resp.json();
+    if (profile === null) {
+      // 没 profile → 弹 modal
+      document.getElementById('prefOverlay').classList.add('show');
+    }
+  } catch (_) { /* 失败不阻塞 */ }
+  // 绑定 toggle click
+  document.querySelectorAll('.pref-toggle').forEach(el => {
+    el.addEventListener('click', () => el.classList.toggle('on'));
+  });
+}
+
+function closePrefModal(skip) {
+  document.getElementById('prefOverlay').classList.remove('show');
+  if (skip) {
+    // 跳过也写一个空 profile, 避免下次再弹
+    fetch('/api/user/profile', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ modifiers: {}, interests_text: '' }),
+    }).catch(() => { });
+  }
+}
+
+async function savePrefModal() {
+  const mods = {};
+  document.querySelectorAll('.pref-toggle').forEach(el => {
+    mods[el.dataset.pref] = el.classList.contains('on');
+  });
+  const interests = document.getElementById('prefInterests').value.trim();
+  try {
+    await fetch('/api/user/profile', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ modifiers: mods, interests_text: interests }),
+    });
+    pushMsg('bot', `偏好已记住 ✓ ${interests ? `(${interests})` : ''}`);
+  } catch (e) {
+    pushMsg('bot', `保存偏好失败: ${e.message}`);
+  }
+  document.getElementById('prefOverlay').classList.remove('show');
+}
+
+// 页面加载完触发
+window.addEventListener('DOMContentLoaded', () => { initPrefModal(); });
 
 function escapeHtml(s) {
   return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));

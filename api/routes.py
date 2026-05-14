@@ -9,7 +9,7 @@ import traceback
 from datetime import datetime, time as dt_time, timedelta
 from typing import AsyncIterator, Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
@@ -49,13 +49,20 @@ class StreamRequest(BaseModel):
 @router.post("/plan/stream")
 async def plan_stream(
     body: StreamRequest,
+    request: Request,
     client: DianpingClient = Depends(deps.get_client),
 ):
     """Run the full pipeline (Profiler → Planner → Critic) emitting SSE events
     per spec §5.2."""
+    # v1.9 Stage 2: 注入 cookie 关联的 UserProfile (没有则 None, 走老路径)
+    from agents.user_profile_store import get_profile
+
+    cookie_key = _cookie_key(request)
+    loaded_profile = get_profile(cookie_key) if cookie_key else None
 
     async def event_stream() -> AsyncIterator[str]:
         ctx = TripContext.create(user_input=UserInput(free_text=body.free_text))
+        ctx.profile = loaded_profile
         start_time = time.time()
         t0 = time.perf_counter()
         phases: dict[str, float] = {}
@@ -452,6 +459,45 @@ async def get_trip(trip_id: str):
         return ctx.model_dump(mode="json")
     except FileNotFoundError:
         raise HTTPException(404, f"trip not found: {trip_id}")
+
+
+# v1.9 Stage 2: UserProfile endpoints ---------------------------------------
+
+
+def _cookie_key(request) -> str:
+    return getattr(request.state, "cookie_key", "") or request.cookies.get(
+        "mtagent_cid", ""
+    )
+
+
+@router.get("/user/profile")
+async def get_user_profile(request: Request):
+    """Return current cookie's UserProfile, or null if first visit."""
+    from agents.user_profile_store import get_profile
+
+    cookie_key = _cookie_key(request)
+    profile = get_profile(cookie_key)
+    return profile.model_dump(mode="json") if profile else None
+
+
+class _UpdateProfileBody(BaseModel):
+    modifiers: Optional[dict[str, bool]] = None
+    interests_text: Optional[str] = None
+
+
+@router.put("/user/profile")
+async def update_user_profile(body: _UpdateProfileBody, request: Request):
+    from agents.user_profile_store import upsert_profile
+
+    cookie_key = _cookie_key(request)
+    if not cookie_key:
+        raise HTTPException(400, "no cookie_key — middleware not active?")
+    profile = upsert_profile(
+        cookie_key,
+        modifiers=body.modifiers,
+        interests_text=body.interests_text,
+    )
+    return profile.model_dump(mode="json")
 
 
 # v1.9 Stage 3: Adjuster v1 SSE endpoint -----------------------------------

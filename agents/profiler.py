@@ -227,6 +227,23 @@ class Profiler:
         ):
             understood.trip_mode = "landmark_must"
 
+        # v1.9 Stage 2: 若有 user_profile, 用偏好覆盖 modifiers + 拼 interests_text
+        if ctx.profile is not None:
+            if ctx.profile.modifiers:
+                # 硬覆盖: profile 显式表达的偏好优先于 LLM 解析
+                for k, v in ctx.profile.modifiers.items():
+                    understood.modifiers[k] = bool(v)
+            if ctx.profile.interests_text:
+                # 拼到 interests 末尾 (去重)
+                tokens = [
+                    t.strip()
+                    for t in ctx.profile.interests_text.replace(",", "，").split("，")
+                    if t.strip()
+                ]
+                for t in tokens:
+                    if t not in understood.interests:
+                        understood.interests.append(t)
+
         ctx.intent = understood
         ctx.log_event(
             "Profiler",
@@ -239,6 +256,7 @@ class Profiler:
                 "estimated_hours": understood.estimated_hours,
                 "weather_hint": understood.weather_hint,
                 "weather_raw": understood.weather_raw,
+                "profile_applied": ctx.profile is not None,
             },
         )
         ctx.save()

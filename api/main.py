@@ -60,6 +60,29 @@ app.add_middleware(
 )
 
 
+# v1.9 Stage 2: cookie_key 中间件 — 首访签 httponly cookie 'mtagent_cid' (设备级 ID)
+@app.middleware("http")
+async def ensure_cookie(request, call_next):
+    from agents.user_profile_store import new_cookie_key
+
+    cookie_key = request.cookies.get("mtagent_cid")
+    set_new = False
+    if not cookie_key:
+        cookie_key = new_cookie_key()
+        set_new = True
+    request.state.cookie_key = cookie_key
+    response = await call_next(request)
+    if set_new:
+        response.set_cookie(
+            key="mtagent_cid",
+            value=cookie_key,
+            httponly=True,
+            samesite="lax",
+            max_age=60 * 60 * 24 * 365,  # 1 年
+        )
+    return response
+
+
 @app.get("/api/health")
 async def health():
     return {
