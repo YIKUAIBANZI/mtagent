@@ -27,22 +27,6 @@ DEFAULT_POOL_CAPS = {
     "connector": 12,
 }
 
-# 兴趣关键词 → planning_tag 映射
-INTEREST_TO_TAG = {
-    "拍照": "photo_friendly",
-    "出片": "photo_friendly",
-    "美食": "food_quality",
-    "吃": "food_quality",
-    "文化": "culture_friendly",
-    "历史": "culture_friendly",
-    "购物": "shopping_friendly",
-    "展览": "culture_friendly",
-    "自然": "rest_friendly",
-    "夜景": "night_friendly",
-    "亲子": "family_friendly",
-    "约会": "couple_friendly",
-}
-
 
 class CandidatePool(BaseModel):
     """4 桶候选池. 每桶是按 score 排好序的 POI 列表."""
@@ -59,16 +43,6 @@ class CandidatePool(BaseModel):
             + len(self.meal)
             + len(self.connector)
         )
-
-
-def _interest_tags(intent: ParsedIntent) -> set[str]:
-    """Map intent.interests + intent.preferences (legacy) to planning_tag set."""
-    tags: set[str] = set()
-    for it in list(intent.interests) + list(intent.preferences):
-        tag = INTEREST_TO_TAG.get(it)
-        if tag:
-            tags.add(tag)
-    return tags
 
 
 def score_poi(poi: POI, intent: ParsedIntent, variant: Variant = "main") -> float:
@@ -93,11 +67,16 @@ def score_poi(poi: POI, intent: ParsedIntent, variant: Variant = "main") -> floa
     if intent.traveler_type in enriched.traveler_types:
         score += 20.0
 
-    # interest match
-    want_tags = _interest_tags(intent)
+    # v1.9: interest + constraint via tag_mapping (替代硬编码 INTEREST_TO_TAG)
+    from agents.tag_mapping import expand_user_signals
+
+    positive, negative = expand_user_signals(intent)
     for t in enriched.planning_tags:
-        if t in want_tags:
+        if t in positive:
             score += 10.0
+    for t in enriched.risk_tags:
+        if t in negative:
+            score -= 25.0
 
     # planning_tag bonus (有 landmark / photo_friendly 等 +5 (不命中也加))
     POSITIVE_TAGS = {"landmark", "photo_friendly", "first_visit_friendly", "atmosphere"}
@@ -108,33 +87,20 @@ def score_poi(poi: POI, intent: ParsedIntent, variant: Variant = "main") -> floa
     # star
     score += float(poi.star or 0) * 4.0
 
-    # risk penalty
-    avoid_queue = intent.constraints.get("avoid_queue", False)
-    avoid_walking = intent.constraints.get("avoid_walking", False)
-    queue_heavy = "queue_heavy" in enriched.risk_tags
-    walk_heavy = "walk_heavy" in enriched.risk_tags
-    crowded = "crowded_weekend" in enriched.risk_tags
-
-    # variant-specific penalty (B4 起作用)
+    # variant-specific risk penalty (low_queue 不依赖用户 constraint, 强扣 risk_tags)
     if variant == "low_queue":
-        # low_queue 强惩罚 queue_heavy + walk_heavy + crowded
-        if queue_heavy:
+        if "queue_heavy" in enriched.risk_tags:
             score -= 50.0
-        if walk_heavy:
+        if "walk_heavy" in enriched.risk_tags:
             score -= 30.0
-        if crowded:
+        if "crowded_weekend" in enriched.risk_tags:
             score -= 20.0
-    else:
-        # main / interest_first 用用户 constraint 加正常惩罚
-        if avoid_queue and queue_heavy:
-            score -= 30.0
-        if avoid_walking and walk_heavy:
-            score -= 20.0
+    # main / interest_first 的 constraint 惩罚已被 negative set 覆盖
 
     # interest_first variant: 用户兴趣命中再加权
     if variant == "interest_first":
         for t in enriched.planning_tags:
-            if t in want_tags:
+            if t in positive:
                 score += 15.0  # 再叠加
 
     # v1.7.2 天气感知: 雨/雪/极端温度 → 户外类 walk_heavy 惩罚, rain_friendly 加分
@@ -145,7 +111,7 @@ def score_poi(poi: POI, intent: ParsedIntent, variant: Variant = "main") -> floa
         rules = WEATHER_PENALTY_RULES.get(hint, {})
         if "rain_friendly" in enriched.planning_tags:
             score += rules.get("rain_friendly_bonus", 0)
-        if walk_heavy:
+        if "walk_heavy" in enriched.risk_tags:
             score += rules.get("walk_heavy_penalty", 0)
         # landmark + 户外 (无 rain_friendly 标签) 视为户外景点, 惩罚 outdoor
         is_outdoor_landmark = (
