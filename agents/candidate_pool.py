@@ -192,10 +192,14 @@ def _infer_role_from_categories(categories: Optional[list[str]]) -> str:
 
 
 def _bucket_of(poi: POI) -> Optional[str]:
-    """Return poi_role bucket name, or None if no enriched."""
-    if poi.enriched is None:
-        return None
-    return poi.enriched.poi_role
+    """Return poi_role bucket name, or None if no enriched + categories 也推不出.
+
+    v1.9: 无 enriched 时按 categories 兜底 (高德 around POI 用).
+    """
+    if poi.enriched is not None:
+        return poi.enriched.poi_role
+    role = _infer_role_from_categories(poi.categories)
+    return role if role != "fallback" else None
 
 
 def build_candidate_pool(
