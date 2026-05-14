@@ -22,6 +22,66 @@ from agents.anchor import _norm_name
 _CACHE_PATH = Path("data/poi_cache.json")
 CACHE_VERSION = "v1.9.1"
 
+# A 线判别 (Phase B 用; Phase A 不区分但提前实现规则)
+_A_LINE_KEYWORDS = (
+    "城墙",
+    "古城",
+    "塔",
+    "寺",
+    "博物馆",
+    "宫",
+    "陵",
+    "园",
+    "故居",
+    "老字号",
+    "百年",
+    "世界之窗",
+)
+_A_LINE_TYPECODE_PREFIX = ("11", "15")  # 11 景点 / 15 交通设施
+
+# 词表 (跟 scripts/refix_enriched.py 同源, Phase C 抽到 data/tag_mapping.json reverse)
+_PLANNING_TAGS_VOCAB = [
+    "food_quality",
+    "local_food",
+    "snack_friendly",
+    "coffee_friendly",
+    "photo_friendly",
+    "culture_friendly",
+    "museum_friendly",
+    "history_friendly",
+    "shopping_friendly",
+    "night_friendly",
+    "family_friendly",
+    "couple_friendly",
+    "elderly_friendly",
+    "solo_friendly",
+    "business_friendly",
+    "rest_friendly",
+    "citywalk_friendly",
+    "rainy_day_friendly",
+    "transit_friendly",
+    "low_budget_friendly",
+    "premium_friendly",
+    "landmark",
+    "first_visit_friendly",
+    "atmosphere",
+    "lunch_friendly",
+    "dinner_friendly",
+    "rain_friendly",
+]
+_RISK_TAGS_VOCAB = [
+    "queue_heavy",
+    "crowded_weekend",
+    "walk_heavy",
+    "far_from_anchor",
+    "hard_to_find",
+    "pricey",
+    "reservation_needed",
+    "unstable_opening",
+    "weather_sensitive",
+]
+_POI_ROLES = ["city_essential", "persona_preferred", "meal", "connector", "fallback"]
+
 
 def cache_key(name: str, lng: float, lat: float) -> str:
     """跨源去重 key. norm_name + 4 位坐标 (~11m) 视为同 POI."""
@@ -83,3 +143,77 @@ def upsert_entry(
     existing["seen_count"] = int(existing.get("seen_count", 0)) + 1
     existing["enriched"] = enriched
     existing["source"] = source
+
+
+def classify_line(name: str, typecode: str) -> Literal["A", "B"]:
+    """A 线 (固定 POI) vs B 线 (动态 POI). Phase B 决定 enrich model 强度."""
+    if any(kw in name for kw in _A_LINE_KEYWORDS):
+        return "A"
+    if typecode[:2] in _A_LINE_TYPECODE_PREFIX:
+        return "A"
+    return "B"
+
+
+def build_enrich_prompt(poi: dict) -> str:
+    """单个新 POI 的 enrich prompt. 输入只有 name + city + typecode + categories."""
+    return f"""你是本地路线规划数据校对专家. 给定一个高德新拉到的 POI, 生成 EnrichedLabel 用于路线规划.
+
+## POI 信息
+- 名字: {poi.get("name")}
+- 城市: {poi.get("city")}
+- 高德 typecode: {poi.get("typecode")}
+- categories: {poi.get("categories")}
+
+## 任务
+1. 选合适的 poi_role: {", ".join(_POI_ROLES)}
+   - 餐饮 → meal; 景点/历史 → city_essential; 购物/休闲 → connector;
+     传统型景点 + 用户兴趣强 → persona_preferred
+2. 从词表选 planning_tags (≥ 2 个, 不能自造):
+   {", ".join(_PLANNING_TAGS_VOCAB)}
+3. 从词表选 risk_tags (可空):
+   {", ".join(_RISK_TAGS_VOCAB)}
+4. 推断 city_zone (区域名, 例 "万象天地 / 科技园" / "钟楼-鼓楼")
+5. manual_priority 0-100, city_essential 通常 80+
+6. min_stay_minutes / max_stay_minutes (景点 60-180, 餐饮 45-90, 购物 60-150)
+
+## 输出严格 JSON
+{{
+  "poi_role": "city_essential",
+  "planning_tags": ["landmark", "history_friendly", "photo_friendly"],
+  "risk_tags": ["crowded_weekend"],
+  "city_zone": "罗湖钟楼街",
+  "manual_priority": 90,
+  "min_stay_minutes": 60,
+  "max_stay_minutes": 120
+}}
+"""
+
+
+async def _enrich_via_qwen(poi: dict) -> dict:
+    """调 qwen-plus 给单个 POI 打 EnrichedLabel.
+
+    Caller 责任: 失败处理 (try/except)、并发限流.
+    """
+    from openai import AsyncOpenAI
+
+    client = AsyncOpenAI(
+        api_key=os.environ.get("DASHSCOPE_API_KEY", ""),
+        base_url=os.environ.get(
+            "QWEN_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1"
+        ),
+    )
+    prompt = build_enrich_prompt(poi)
+    resp = await client.chat.completions.create(
+        model=os.environ.get("QWEN_MODEL", "qwen-plus"),
+        messages=[
+            {
+                "role": "system",
+                "content": "你是路线规划数据校对专家. 严格按 JSON schema 输出.",
+            },
+            {"role": "user", "content": prompt},
+        ],
+        response_format={"type": "json_object"},
+        temperature=0.2,
+        extra_body={"enable_thinking": False},
+    )
+    return json.loads(resp.choices[0].message.content or "{}")

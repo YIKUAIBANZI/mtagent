@@ -1,6 +1,5 @@
 """v1.9 Stage 1.5: POI Cache 骨架 — cache_key + load/save + upsert."""
 
-
 from agents.poi_cache import (
     cache_key,
     load_cache,
@@ -95,6 +94,56 @@ def test_upsert_new_entry_sets_seen_count_one(tmp_path):
     assert cache[key]["name"] == "新店"
     assert "created_at" in cache[key]
     assert "last_seen" in cache[key]
+
+
+def test_build_enrich_prompt_includes_name_categories_typecode():
+    from agents.poi_cache import build_enrich_prompt
+
+    poi = {
+        "name": "钟楼景区",
+        "city": "深圳",
+        "typecode": "110200",
+        "categories": ["景点", "历史文化"],
+    }
+    prompt = build_enrich_prompt(poi)
+    assert "钟楼景区" in prompt
+    assert "深圳" in prompt
+    assert "110200" in prompt
+    assert "景点" in prompt
+
+
+def test_build_enrich_prompt_lists_vocab():
+    """prompt 应列出词表防 LLM 自造 tag."""
+    from agents.poi_cache import build_enrich_prompt
+
+    poi = {"name": "X", "city": "X", "typecode": "050000", "categories": ["美食"]}
+    prompt = build_enrich_prompt(poi)
+    assert "food_quality" in prompt or "planning_tags" in prompt
+    assert "queue_heavy" in prompt or "risk_tags" in prompt
+    assert "poi_role" in prompt
+
+
+def test_classify_line_a_for_landmark_keywords():
+    from agents.poi_cache import classify_line
+
+    assert classify_line("西安城墙", "110000") == "A"
+    assert classify_line("故宫博物院", "110000") == "A"
+    assert classify_line("百年老字号店", "050000") == "A"
+
+
+def test_classify_line_a_for_transit_typecode():
+    from agents.poi_cache import classify_line
+
+    assert classify_line("市民中心地铁站", "150500") == "A"
+    assert classify_line("世界之窗", "110000") == "A"
+
+
+def test_classify_line_b_for_food_and_shopping():
+    from agents.poi_cache import classify_line
+
+    assert classify_line("某网红咖啡", "050000") == "B"
+    assert classify_line("万象天地", "060000") == "B"
+    assert classify_line("某酒吧", "080000") == "B"
 
 
 def test_upsert_existing_entry_increments_seen_count(tmp_path):
