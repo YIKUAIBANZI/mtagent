@@ -63,6 +63,14 @@ _ANCHOR_PATS = [
 _HOURS_PAT = re.compile(r"(\d+)\s*(?:个)?小时")
 _INTEREST_TOKENS = ["拍照", "美食", "文化", "购物", "展览", "自然", "夜景"]
 
+# v1.9.2: must_visit 抽取 — 必去/一定要去/不可错过/想去 后接 2-15 字中文/英文
+_MUST_VISIT_PATS = [
+    re.compile(
+        r"(?:必去|一定要去|不可错过|不能错过|要去)([一-龥A-Za-z]{2,15}?)(?=[,，。\s!！?？]|$|必去|一定要去)"
+    ),
+    re.compile(r"([一-龥A-Za-z]{2,15}?)(?:是必去|是一定要去|不可错过)"),
+]
+
 
 async def stub_profiler_llm(system: str, user: str) -> str:
     """Pattern-match the user text into a ParsedIntent JSON.
@@ -155,6 +163,14 @@ async def stub_profiler_llm(system: str, user: str) -> str:
     if hours_match:
         estimated_hours = int(hours_match.group(1))
 
+    # v1.9.2: must_visit 抽取 (多个匹配都收)
+    must_visit: list[str] = []
+    for pat in _MUST_VISIT_PATS:
+        for m in pat.finditer(user):
+            cand = m.group(1).strip()
+            if len(cand) >= 2 and cand not in must_visit:
+                must_visit.append(cand)
+
     out = {
         "city": city,
         "days": days,
@@ -162,7 +178,7 @@ async def stub_profiler_llm(system: str, user: str) -> str:
         "budget_level": budget_level,
         "pace": None,
         "preferences": preferences,
-        "must_visit": [],
+        "must_visit": must_visit,
         "avoid": [],
         "start_date": None,
         # v1.7 字段 (Profiler 还会做 server-time 注入 + constraint defaults)
