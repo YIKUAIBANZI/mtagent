@@ -199,14 +199,15 @@ async def plan_one_variant(
     from agents.planner import PlannerLLMError, _synthesize_fallback_route
     from api.routes import _compute_day_transits
 
-    # v1.9: anchor 模式下拉高德周边 POI 合进本地池 (扩 pool)
+    # v1.9 / v1.9.1: anchor 模式下拉高德周边 POI → cache 层 → 合进本地池 (扩 pool)
     if (
         intent.anchor_lng is not None
         and intent.anchor_lat is not None
         and intent.trip_mode in ("anchor_explore", "layover_eat", "layover_explore")
     ):
         from agents import anchor as _anchor_mod
-        from agents.anchor import AnchorResolution, merge_with_local_pool
+        from agents import poi_cache as _poi_cache
+        from agents.anchor import _haversine_km, _norm_name
 
         types = (
             "050000"
@@ -225,21 +226,54 @@ async def plan_one_variant(
         except Exception:
             around = []
         if around:
-            anchor_obj = AnchorResolution(
-                text=intent.start_location_text or "",
-                name=intent.anchor_resolved_name or "",
-                lng=intent.anchor_lng,
-                lat=intent.anchor_lat,
-                adcode="",
-                formatted_address="",
-                confidence="medium",
+            # v1.9.1: cache 层 — 高德 POI 进 cache 命中复用 / miss 并发 enrich + 写回
+            try:
+                amap_enriched = await _poi_cache.lookup_and_enrich(
+                    around, city=intent.city
+                )
+            except Exception:
+                amap_enriched = []
+
+            # 半径过滤 + 与 local_pois 去重 (替代 merge_with_local_pool 老路径)
+            anchor_pt = (intent.anchor_lng, intent.anchor_lat)
+            radius_km = radius_m / 1000.0
+            kept_local: list[POI] = []
+            seen_keys: set[tuple[str, int, int]] = set()
+            for lp in pois:
+                if _haversine_km(anchor_pt, (lp.longitude, lp.latitude)) > radius_km:
+                    continue
+                k = (
+                    _norm_name(lp.name),
+                    round(lp.latitude, 3),
+                    round(lp.longitude, 3),
+                )
+                if k in seen_keys:
+                    continue
+                seen_keys.add(k)
+                kept_local.append(lp)
+            kept_amap: list[POI] = []
+            for ap in amap_enriched:
+                if _haversine_km(anchor_pt, (ap.longitude, ap.latitude)) > radius_km:
+                    continue
+                k = (
+                    _norm_name(ap.name),
+                    round(ap.latitude, 3),
+                    round(ap.longitude, 3),
+                )
+                if k in seen_keys:
+                    continue
+                seen_keys.add(k)
+                kept_amap.append(ap)
+            kept_local.sort(
+                key=lambda p: (
+                    -(p.enriched.manual_priority if p.enriched else 0),
+                    _haversine_km(anchor_pt, (p.longitude, p.latitude)),
+                )
             )
-            pois = merge_with_local_pool(
-                amap_pois=around,
-                local_pois=pois,
-                anchor=anchor_obj,
-                radius_m=radius_m,
+            kept_amap.sort(
+                key=lambda p: _haversine_km(anchor_pt, (p.longitude, p.latitude))
             )
+            pois = kept_local + kept_amap
 
     template = make_instant_template(intent.time_window)
     flat_pois = flatten_candidate_pool(intent, variant, pois)

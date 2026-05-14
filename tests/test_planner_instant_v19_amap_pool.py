@@ -84,6 +84,12 @@ async def test_plan_one_variant_calls_fetch_around_when_anchor_set(monkeypatch):
     monkeypatch.setattr("api.routes._compute_day_transits", _no_transit)
     monkeypatch.setattr("agents.anchor.fetch_around", fetch_mock)
 
+    # v1.9.1: cache 层 mock 防止真 LLM 调用
+    async def _stub_cache(around, *, city, cache_path=None):
+        return []
+
+    monkeypatch.setattr("agents.poi_cache.lookup_and_enrich", _stub_cache)
+
     class _FakeAmap:
         pass
 
@@ -99,7 +105,7 @@ async def test_plan_one_variant_calls_fetch_around_when_anchor_set(monkeypatch):
         pass
 
     fetch_mock.assert_awaited_once()
-    # 合并后 pool ≥ 本地 1 + 高德 1
+    # 合并后 pool ≥ 本地 1 (cache mock 返空, 仅本地保留)
     assert captured["pool_size"] >= 1
 
 
@@ -166,6 +172,11 @@ async def test_plan_one_variant_layover_eat_uses_food_types(monkeypatch):
         return []
 
     monkeypatch.setattr("agents.anchor.fetch_around", _fake_fetch)
+
+    async def _stub_cache(around, *, city, cache_path=None):
+        return []
+
+    monkeypatch.setattr("agents.poi_cache.lookup_and_enrich", _stub_cache)
 
     class _FakePlanner:
         async def compose_one_day(self, **kw):
