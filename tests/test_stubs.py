@@ -16,15 +16,6 @@ async def test_critic_stub_returns_empty_patches():
     assert patches == []
 
 
-@pytest.mark.asyncio
-async def test_adjuster_stub_raises_not_implemented():
-    from agents.adjuster import Adjuster
-    from agents.context import TripContext
-    from dianping.schemas import Feedback, UserInput
-
-    adjuster = Adjuster()
-    ctx = TripContext.create(user_input=UserInput(free_text="x"))
-    feedback = Feedback(action="replace_stop", target_day=0, target_stop_idx=0)
-
-    with pytest.raises(NotImplementedError):
-        await adjuster.run(ctx, feedback)
+# v1.9 Stage 3: Adjuster v0 stub removed.
+# v1 contract uses replace_stop / remove_stop / regenerate_day / switch_variant
+# named methods — see tests/test_adjuster_v1.py for the new coverage.

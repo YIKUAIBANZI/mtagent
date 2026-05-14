@@ -454,6 +454,109 @@ async def get_trip(trip_id: str):
         raise HTTPException(404, f"trip not found: {trip_id}")
 
 
+# v1.9 Stage 3: Adjuster v1 SSE endpoint -----------------------------------
+
+
+@router.post("/plan/{trip_id}/adjust")
+async def adjust_trip(trip_id: str, body: dict):
+    """Adjust an existing trip: replace_stop / remove_stop / regenerate_day / switch_variant.
+
+    Stream SSE: adjust.thinking → adjust.<op>_xxx → adjust.done.
+    """
+    from dianping.schemas import AdjustRequest
+    from agents.adjuster import Adjuster, AdjusterError
+
+    try:
+        req = AdjustRequest.model_validate(body)
+    except Exception as e:
+        raise HTTPException(400, f"invalid adjust request: {e}")
+
+    try:
+        ctx = TripContext.load(trip_id)
+    except FileNotFoundError:
+        raise HTTPException(404, f"trip not found: {trip_id}")
+
+    async def _gen():
+        yield format_event(
+            "adjust.thinking",
+            {"operation": req.operation, "day_index": req.day_index},
+        )
+        adjuster = Adjuster(llm_call=resolve_planner_llm())
+        try:
+            if req.operation == "replace_stop":
+                result = await adjuster.replace_stop(
+                    ctx,
+                    day_index=req.day_index,
+                    slot_name=req.slot_name,
+                    user_hint=req.user_hint,
+                )
+                yield format_event(
+                    "adjust.stop_replaced",
+                    {
+                        "day_index": req.day_index,
+                        "slot_name": req.slot_name,
+                        "old_oid": result["old_oid"],
+                        "source": result["source"],
+                        "new_stop": result["new_stop"].model_dump(mode="json"),
+                    },
+                )
+            elif req.operation == "remove_stop":
+                day_plan = await adjuster.remove_stop(
+                    ctx, day_index=req.day_index, slot_name=req.slot_name
+                )
+                yield format_event(
+                    "adjust.stop_removed",
+                    {
+                        "day_index": req.day_index,
+                        "slot_name": req.slot_name,
+                        "new_day_plan": day_plan.model_dump(mode="json"),
+                    },
+                )
+            elif req.operation == "regenerate_day":
+                from agents.amap import AmapClient as _AmapClient
+                from agents.planner import Planner as _Planner
+
+                amap = _AmapClient(key=os.environ.get("AMAP_KEY", ""))
+                planner = _Planner(
+                    client=None,
+                    llm_call=resolve_planner_llm(),
+                    llm_call_stream=resolve_planner_llm_stream(),
+                )
+                day_plan = await adjuster.regenerate_day(
+                    ctx,
+                    day_index=req.day_index,
+                    planner=planner,
+                    amap=amap,
+                    user_hint=req.user_hint,
+                )
+                yield format_event(
+                    "adjust.day_replaced",
+                    {
+                        "day_index": req.day_index,
+                        "new_day_plan": day_plan.model_dump(mode="json"),
+                    },
+                )
+            elif req.operation == "switch_variant":
+                await adjuster.switch_variant(ctx, variant=req.variant)
+                yield format_event(
+                    "adjust.variant_switched",
+                    {"variant": req.variant},
+                )
+            else:
+                yield format_event(
+                    "adjust.error",
+                    {"reason": f"unknown operation: {req.operation}"},
+                )
+                return
+            ctx.save()
+        except AdjusterError as e:
+            yield format_event("adjust.error", {"reason": str(e)})
+            return
+        yield format_event("adjust.done", {"trip_id": ctx.trip_id})
+
+    return StreamingResponse(_gen(), media_type="text/event-stream")
+
+
 async def _compute_day_transits(day_plan, intent, amap):
     """Compute 4-mode transit for each consecutive stop pair in a day."""
     segments = []

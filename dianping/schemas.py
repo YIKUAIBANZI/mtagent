@@ -401,6 +401,28 @@ class Feedback(BaseModel):
     reason: str = ""
 
 
+# v1.9 Stage 3: Adjuster v1 request schema
+AdjustOperation = Literal[
+    "replace_stop", "remove_stop", "regenerate_day", "switch_variant"
+]
+
+
+class AdjustRequest(BaseModel):
+    """POST /api/plan/{trip_id}/adjust request body.
+
+    target 字段按 operation 不同含义:
+    - replace_stop / remove_stop: day_index + slot_name
+    - regenerate_day: day_index
+    - switch_variant: variant
+    """
+
+    operation: AdjustOperation
+    day_index: int = 0
+    slot_name: str = ""  # SlotName 文本, replace/remove 用
+    variant: str = ""  # switch_variant 用 (main / low_queue / interest_first)
+    user_hint: str = ""  # 自由文本 "想换辣一点的"
+
+
 class Event(BaseModel):
     """TripContext trace event."""
 

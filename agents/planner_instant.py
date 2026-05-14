@@ -191,10 +191,14 @@ async def plan_one_variant(
     amap,
     pois: list[POI],
     on_partial: Optional[Callable[[int, list[str]], Awaitable[None]]] = None,
+    excluded_oids: Optional[set[str]] = None,
 ) -> VariantPlan:
     """Run one variant end-to-end: pool → compose_one_day → DayPlan + segments.
 
     On compose_one_day failure (PlannerLLMError) → fallback synth using top-N pool POIs.
+
+    v1.9 Stage 3: `excluded_oids` 用于 regenerate_day — flatten 后过滤掉这批 POI,
+    避免新一天又出现旧 stops 的 POI. 默认 None / 空 = 兼容老调用.
     """
     from agents.planner import PlannerLLMError, _synthesize_fallback_route
     from api.routes import _compute_day_transits
@@ -277,6 +281,8 @@ async def plan_one_variant(
 
     template = make_instant_template(intent.time_window)
     flat_pois = flatten_candidate_pool(intent, variant, pois)
+    if excluded_oids:
+        flat_pois = [p for p in flat_pois if p.openshopid not in excluded_oids]
     # v1.8: 优先用 intent.anchor_lng/lat (来自高德 geocode); 兜底 POI[0]
     if intent.anchor_lng is not None and intent.anchor_lat is not None:
         anchor_name = (
