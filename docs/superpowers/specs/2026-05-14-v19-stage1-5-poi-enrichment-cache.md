@@ -1,6 +1,32 @@
 # v1.9 Stage 1.5: POI Enrichment Cache Spec
 
-> 用户拍板想法 (2026-05-14): "根据接口搜索信息, 并发吃喝玩信息分析 agent 多线分析, 在线整理 POI → 被收集过的信息固定到本地, 下一次再被搜索到 → 更新信息. 古迹/博物馆/百年老店/公交地铁站/商圈/山水 等固定信息收集本地后台 POI."
+> 用户拍板想法 (2026-05-14):
+> 1. "根据接口搜索信息, 并发吃喝玩信息分析 agent 多线分析, 在线整理 POI → 被收集过的信息固定到本地."
+> 2. "主要两条线就是: 直接搜 POI / 搜本地内置 POI 数据."
+> 3. "直接搜到的 POI 数据用得多可以内置到本地 POI 然后定期一起 RAG 固化."
+
+## 双线含义 (用户澄清, 按数据来源分, 非按 POI 性质分)
+
+```
+┌─────────────────────┐         ┌─────────────────────┐
+│  线 ① 实时搜索       │         │  线 ② 本地内置库      │
+│  (live fetch)        │         │  (local POI store)   │
+│  ─────────────────   │         │  ─────────────────   │
+│  agents.anchor.       │         │  data/mock_dianping/ │
+│  fetch_around 高德    │         │  *.json (2400 POI)   │
+│  每次 query 即拉       │         │  + enriched_labels   │
+│  快 + 全 + LLM 贵     │         │  + (晋升来的 POI)     │
+└──────────┬──────────┘         └──────────▲──────────┘
+           │                                │
+           ▼                                │
+     poi_cache.json                          │  ← Promotion (Phase B)
+     ─────────────────                       │  seen_count ≥ 5
+     seen_count++                            │  → 复制本地表
+     last_seen 刷                            │
+                                             │
+                                             │
+   三池合并 → embedding → 向量库 → RAG (Phase C)
+```
 
 ## Problem
 
@@ -33,12 +59,13 @@ v1.9 Stage 1 把 `fetch_around` 接进 candidate_pool 后, **POI pool 包含问�
                   attach EnrichedLabel 进 pool
 ```
 
-### 双线 (Phase B 实现)
+### 分 Phase 落地
 
-- **A 线 固定 POI**: 名字含 `城墙 / 古城 / 塔 / 寺 / 博物馆 / 宫 / 陵 / 园 / 故居 / 老字号 / 百年` 或高德 typecode `11xxxx` (景点) / `15xxxx` (交通设施 — 地铁/公交) — 一次 enrich, 长期不变. **用 qwen-max + 长 prompt 高质量打标**.
-- **B 线 动态 POI**: 餐饮 (05) / 购物 (06) / 休闲娱乐 (08) — 标签变化快 (新店开 / 老店倒). **用 qwen-plus + 短 prompt 快速打标**, 加 `last_seen` 字段, 超过 N 天复核.
+- **Phase A** (本 Stage 1.5 已 ship): cache 骨架, 实时搜索 → enrich → 写 cache. 不做晋升 / 不做 RAG.
+- **Phase B** (后续): **Promotion 晋升机制** — cache 中 `seen_count ≥ 5` 的 entry 复制进本地 POI 库, 之后规划时走本地零成本路径.
+- **Phase C** (远期): cache + 本地 + 晋升后的合并库 → embedding → chromadb 向量库 → planner/chat/critic 共用的 RAG 知识源.
 
-Phase A (本 Stage 1.5 范围) **不区分 A/B 线**, 全用 qwen-plus 同一个 prompt; Phase B 留到 v1.9 Stage 2+.
+注: 早期 spec 提过 "A 线固定 POI / B 线动态 POI" 的按性质分线 — **此版本以用户 2026-05-14 澄清为准, 双线指数据来源而非 POI 性质**. `agents/poi_cache.py:classify_line` 函数 (识别 城墙/塔/博物馆/typecode 11/15) 仍保留, 但只作为 Promotion 优先级提示 (A 类景点优先晋升), 不再作为分流 model 强度的依据.
 
 ## Cache Schema
 
@@ -152,85 +179,133 @@ if intent.anchor_lng and intent.trip_mode in (...):
 - ✅ 写入后 candidate_pool 的 amap POI 进 city_essential/persona_preferred/meal/connector 比例正确
 - ✅ 累计 ≥ 255 测试 (新增 ~6 个 cache 单测)
 
-## 不在 Stage 1.5 范围 (推到 Stage 1.6 / 2)
+## 不在 Stage 1.5 范围 (推到 Phase B / C)
 
-- ❌ A/B 线区分 (qwen-max vs qwen-plus)
-- ❌ 老 cache entry 复核 / 失效机制
-- ❌ Cross-city cache merge / cache 备份到 git
+- ❌ Promotion 晋升机制 (Phase B)
+- ❌ 三池合并 → embedding → 向量库 RAG (Phase C)
+- ❌ 老 cache entry 复核 / 失效机制 (Phase C 配套)
 - ❌ UI 暴露 "本次新 enrich 了 N 个 POI" (Stage 3 Adjuster 一起做)
 
 ---
 
-## Phase C — Cache 增量更新 + RAG 化 (用户拍板远期目标, v1.9 Stage 2+)
+## Phase B — Promotion 晋升机制 (用户拍板, 2026-05-14)
 
-> 用户原话: "固定 POI 不是一直是会随着使用更新的吗, 然后后续定期 RAG 存的本地作为 LLM 知识库."
+> 用户原话: "直接搜到的 POI 数据用得多可以内置到本地 POI 然后定期一起 RAG 固化."
 
-### 增量更新 (Phase A 已部分实现, Phase C 完善)
+### 触发条件
 
-A 线"固定 POI" **基础结构稳定** (name / lng / lat / typecode / categories / min_max_stay), 但下列字段**每次被搜到都会更新**:
+cache entry 满足 **seen_count ≥ 5** 即晋升 (用户拍板的阈值, 简单可调).
 
-- `last_seen` / `seen_count` / `popularity_score` (= 滑动窗口 30 天 seen_count)
-- `risk_tags` (新 reviewTags 命中 "等位久 / 价格偏贵" 等 → EMA 累加)
-- `planning_tags` 微调 (季节性, 例 春天樱花 → photo_friendly 强化)
-- `recent_review_summary` (LLM 抽样 5 条新 review 提炼一句话, 给 chat agent 用)
-
-B 线"动态 POI" 全字段可换 (新店开 / 老店关; 价格区间变化大). `last_seen` 超 90 天的 entry 标记为 stale, 下次搜到时强制重 enrich.
-
-### RAG 化 (Phase C 核心)
-
-POI cache 不只是 candidate_pool 的"快照库", 而是 **项目级 LLM 知识源**:
-
-```
-data/poi_cache.json  ──批量 embedding──→  data/vector_store/{city}.index
-                                                  │
-                            ┌─────────────────────┼──────────────────────┐
-                            ▼                      ▼                       ▼
-                    planner.compose_one_day   chat agent              critic.review_route
-                    (规划时 retrieve 相似 POI)   ("这店周末排队吗"     (检查路线时
-                                              → retrieve POI cache    引用 cache 知识)
-                                              → 自然语言回答)
-```
-
-**实现路径**:
-1. 选 embedding model: `text-embedding-v3` (qwen, 1024 维) 或 `bge-large-zh-v1.5` (本地, 1024 维)
-2. 选向量库: `chromadb` (Python 进程内, 简单) 或 `faiss` (大规模快)
-3. 索引粒度: 每 POI 一个 vector, payload 含 name + planning_tags + risk_tags + city_zone + recent_review_summary
-4. 触发更新: cache upsert 时 enqueue embedding 任务 (异步), 或每天 cron 扫 stale entries 批量 rebuild
-5. 接入点: 在 `agents/poi_cache.py` 加 `retrieve_similar(query: str, city: str, k: int) -> list[POI]`
-
-**收益**:
-- chat agent 回答"附近哪里能吃到本地特色"不需要每次重新调 LLM 推断, 直接 retrieve cache top-k
-- planner 给 LLM 喂候选池时, 可以从 cache 里 retrieve 跟 user query 语义相近的 POI (不止靠 anchor 半径)
-- critic 检查路线时能引用 cache 里的 `recent_review_summary` (例 "这家店最近差评开始堆积")
-
-**不做**:
-- ❌ 跨用户共享 cache (cache 是项目级, 不分用户)
-- ❌ Real-time 抓大众点评 review (mock_dianping 那 800 条作为 reviewTags 来源)
-
-### A/B 双线在 Phase C 的角色 (用户图示落地)
-
-```
-┌────────────────────────────────┐    ┌────────────────────────────────┐
-│  A 线 - 基础结构稳定             │    │  B 线 - 动态短周期               │
-│  古迹/博物馆/老字号/地铁/商圈/山水  │    │  餐饮/咖啡/小店/网红打卡         │
-│                                │    │                                │
-│  enrich: qwen-max + 长 prompt   │    │  enrich: qwen-plus + 短 prompt   │
-│  更新: planning_tags 微调       │    │  更新: 90 天 stale → 强制重打     │
-│  RAG: 长期高权重 (城市骨架)      │    │  RAG: 时效权重 (recent_review)   │
-└────────────────────────────────┘    └────────────────────────────────┘
-```
-
-判别规则 (在 `agents/poi_cache.py:classify_line` 实现):
+### 实施: `scripts/promote_cache.py` (独立脚本, 手动 / cron 跑)
 
 ```python
-A_LINE_KEYWORDS = ("城墙", "古城", "塔", "寺", "博物馆", "宫", "陵", "园",
-                   "故居", "老字号", "百年")
-A_LINE_TYPECODE_PREFIX = ("11", "15")  # 11 景点 / 15 交通设施
+"""Promote cache entries with seen_count >= 5 into local POI store.
 
-def classify_line(name: str, typecode: str) -> Literal["A", "B"]:
-    if any(kw in name for kw in A_LINE_KEYWORDS):
-        return "A"
-    if typecode[:2] in A_LINE_TYPECODE_PREFIX:
-        return "A"
-    return "B"
+把 data/poi_cache.json 中常被搜到的 entry 复制进:
+- data/mock_dianping/{city}.json (POI 主表追加)
+- data/poi_enriched_labels.json (EnrichedLabel 追加)
+
+复制后 cache entry 加 `promoted: true` 标记, lookup 时优先走本地路径.
+本地有副本的 cache entry 不再被晋升 (跳过).
+"""
+
+def promote_cache(
+    *,
+    min_seen_count: int = 5,
+    cities: list[str] = ["深圳", "上海", "西安"],
+    dry_run: bool = False,
+) -> dict:
+    """返回 {city: {promoted_count, skipped_already_local, ...}}.
+
+    步骤:
+    1. load data/poi_cache.json
+    2. 对每个 entry, 检查 seen_count >= min_seen_count AND not promoted
+    3. classify_line() 优先 A 类景点 (城墙/塔/博物馆/typecode 11/15)
+    4. 转 POI dict + EnrichedLabel dict
+    5. 追加到 mock_dianping/{city}.json (去重: openshopid 不重复)
+    6. 追加到 poi_enriched_labels.json[city][openshopid]
+    7. cache entry 标记 promoted=true
+    """
 ```
+
+### 触发方式
+
+```bash
+# 手动跑 (推荐 hackathon demo 前预热)
+PYTHONPATH=. venv/bin/python scripts/promote_cache.py --dry-run
+PYTHONPATH=. venv/bin/python scripts/promote_cache.py
+
+# 或加 cron (远期):
+# 0 3 * * * cd /path/to/mtagent && venv/bin/python scripts/promote_cache.py
+```
+
+### Acceptance (Phase B)
+
+- ✅ cache 中 seen_count ≥ 5 的 entry 被复制进本地表
+- ✅ 同 openshopid 重复时跳过 (幂等)
+- ✅ 下次 `lookup_and_enrich` 走本地路径不再调 LLM
+- ✅ 单测覆盖: 阈值过滤 / 幂等 / cache 标记 promoted
+
+---
+
+## Phase C — RAG 化 (用户拍板, 远期目标 v2.0+)
+
+> 用户原话: "然后定期一起 RAG 固化."
+
+### 数据流
+
+```
+线 ① cache  ────┐
+线 ② 本地 POI ──┼──→ 合并去重 ──→ 批量 embedding ──→ chromadb 向量库
+晋升来的 POI ──┘                  (qwen text-embedding-v3, 1024 维)
+                                          │
+                                          ▼
+                          ┌───────────────┼───────────────┐
+                          ▼               ▼               ▼
+                  planner.compose_   chat agent      critic.review_route
+                    one_day            ("这店周末排队")  (引用 recent_review)
+                  (语义相近 POI top-k)
+```
+
+### 技术栈 (用户拍板)
+
+- **Embedding**: `text-embedding-v3` (qwen via DashScope, 1024 维) — 复用 DASHSCOPE_API_KEY
+- **向量库**: `chromadb` — Python 进程内, 零部署, 数据存 `data/vector_store/{city}.chromadb/`
+- **更新策略**: cache `upsert` / 本地 POI 追加时 enqueue embedding 任务 (异步, 不阻塞规划); 或日级 cron `scripts/rebuild_index.py` 批量重建.
+
+### 统一接入接口
+
+```python
+# agents/poi_cache.py 新增
+async def retrieve_similar(
+    query: str,
+    city: str,
+    k: int = 10,
+    *,
+    sources: list[Literal["cache", "local", "promoted"]] = ["cache", "local", "promoted"],
+) -> list[POI]:
+    """语义相近 POI top-k. 各 agent (planner/chat/critic) 共用."""
+```
+
+### 接入点
+
+- **planner.compose_one_day**: 给 LLM 喂候选池前, 先 `retrieve_similar(user.free_text, city, k=20)` 拿语义相关 POI 补进 candidate_pool (不止靠 anchor 半径)
+- **chat agent** (v2 Stage 3+ 落地时): 用户问"这店周末排队吗" → retrieve → 拿 risk_tags + recent_review_summary → 自然语言答
+- **critic.review_route** (v2+): 检查路线时引用 cache 里的 `recent_review_summary` (例 "这家店最近差评堆积")
+
+### Phase C 不做
+
+- ❌ 跨用户共享 (cache 是项目级)
+- ❌ Real-time 抓大众点评 review (用 mock_dianping 那 800 条做 reviewTags 来源)
+- ❌ 多模态 embedding (图像/位置 graph) — v3+
+
+### Phase A/B 留下的钩子已具备
+
+| Phase C 需要 | Phase A/B 是否已有 |
+|---|---|
+| cache entry 含基础字段 | ✅ name/lng/lat/typecode/enriched 都有 |
+| cache entry 含热度信号 | ✅ seen_count / last_seen / created_at |
+| 本地 POI 库可追加 | ✅ mock_dianping/*.json 格式标准 |
+| 本地 enriched 可追加 | ✅ poi_enriched_labels.json 按 city.openshopid 索引 |
+| classify_line (A 类优先) | ✅ Phase A 已实现 (复用作 Promotion 优先级) |
+| 跨 agent 共用接口 | ❌ retrieve_similar 待 Phase C 实现 |
