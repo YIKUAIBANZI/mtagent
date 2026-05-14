@@ -1,0 +1,45 @@
+{
+  "user_interest_to_planning_tags": {
+    "拍照": ["photo_friendly", "citywalk_friendly"],
+    "出片": ["photo_friendly"],
+    "美食": ["food_quality", "local_food"],
+    "吃": ["food_quality", "local_food"],
+    "咖啡": ["coffee_friendly", "rest_friendly"],
+    "下午茶": ["coffee_friendly"],
+    "文化": ["culture_friendly", "museum_friendly", "history_friendly"],
+    "历史": ["culture_friendly", "history_friendly"],
+    "展览": ["museum_friendly", "culture_friendly"],
+    "购物": ["shopping_friendly"],
+    "夜景": ["night_friendly"],
+    "夜生活": ["night_friendly"],
+    "亲子": ["family_friendly"],
+    "约会": ["couple_friendly"],
+    "citywalk": ["citywalk_friendly"],
+    "休闲": ["rest_friendly"],
+    "自然": ["rest_friendly"],
+    "打卡": ["photo_friendly", "first_visit_friendly"]
+  },
+  "user_constraints_to_risk_tags": {
+    "avoid_queue": ["queue_heavy", "crowded_weekend"],
+    "avoid_walking": ["walk_heavy"],
+    "avoid_cross_district": ["far_from_anchor"],
+    "need_meal": []
+  },
+  "review_tag_to_planning_tags": {
+    "环境优雅": ["rest_friendly", "couple_friendly"],
+    "适合约会": ["couple_friendly"],
+    "出片漂亮": ["photo_friendly"],
+    "本地特色": ["local_food"],
+    "服务周到": ["rest_friendly"],
+    "性价比高": ["low_budget_friendly"],
+    "亲子友好": ["family_friendly"],
+    "交通方便": ["transit_friendly"]
+  },
+  "review_tag_to_risk_tags": {
+    "等位久": ["queue_heavy"],
+    "价格偏贵": ["pricey"],
+    "位置难找": ["hard_to_find"],
+    "停车难": ["hard_to_find"],
+    "上菜慢": ["queue_heavy"]
+  }
+}
