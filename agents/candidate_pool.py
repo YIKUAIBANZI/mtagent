@@ -250,6 +250,31 @@ def build_candidate_pool(
         s = score_poi(poi, intent, variant=variant)
         buckets[bucket].append((s, poi))
 
+    # v1.9.2: diversity second-pass — 同 (city_zone, categories[0]) 第 2 起 -10
+    # must_visit (score=999) 豁免, low_queue/interest_first 老 variant 排序不动
+    DIVERSITY_PENALTY = 10.0
+    for bucket_name, items in buckets.items():
+        # 按 score desc 排, 再扫一遍累计同 (zone, cat0) 次数
+        items.sort(key=lambda x: x[0], reverse=True)
+        seen: dict[tuple[str, str], int] = {}
+        new_items: list[tuple[float, POI]] = []
+        for score, poi in items:
+            if score >= 999.0:
+                # must_visit, 直接保留不扣
+                new_items.append((score, poi))
+                continue
+            zone = poi.enriched.city_zone if poi.enriched else ""
+            cat0 = poi.categories[0] if poi.categories else ""
+            key = (zone, cat0)
+            count = seen.get(key, 0)
+            if count >= 1:
+                # 同 zone 同 cat 第 2 个起扣分
+                new_items.append((score - DIVERSITY_PENALTY * count, poi))
+            else:
+                new_items.append((score, poi))
+            seen[key] = count + 1
+        buckets[bucket_name] = new_items
+
     # sort desc by score, take top N
     def _top(bucket: str) -> list[POI]:
         items = sorted(buckets[bucket], key=lambda x: x[0], reverse=True)
