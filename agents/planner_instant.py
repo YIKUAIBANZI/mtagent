@@ -146,6 +146,54 @@ def load_city_pois_from_mock(city: str) -> list[POI]:
     return pois
 
 
+# v1.9 meal anchor 距离过滤: 防止跨城吃饭 (用户没指定 anchor 时, day-anchor 取
+# flat_pois[0], 但 build_candidate_pool 的距离过滤要求 intent.anchor_lng 不为 None
+# 才生效, 漏过远 meal POI. 这个 helper 在 plan_one_variant 内 anchor 选定后, 对
+# meal-role POI 强制半径过滤, 非 meal POI 不动)
+MEAL_ANCHOR_RADIUS_KM = 5.0
+
+
+def _is_meal_poi(poi: POI) -> bool:
+    """meal 判定: 任一信号命中即视为 meal.
+
+    用 OR 逻辑而非"enriched 优先" — 数据底座中部分餐厅被错标成 city_essential
+    (例如建章宫宴), 但 categories='美食' 是可靠的硬证据.
+    """
+    if poi.enriched is not None and poi.enriched.poi_role == "meal":
+        return True
+    if poi.categories and any("美食" in c for c in poi.categories):
+        return True
+    return False
+
+
+def _filter_meal_by_anchor_distance(
+    pois: list[POI],
+    anchor_lat: float,
+    anchor_lng: float,
+    radius_km: float = MEAL_ANCHOR_RADIUS_KM,
+) -> list[POI]:
+    """删除 meal POI 中距 anchor > radius_km 的. 严格过滤, 无兜底.
+
+    设计选择: 数据稀疏 (例: 西安 mock 食店全在城北) 时 meal 候选会被全部过滤,
+    LLM 会跳过午饭 slot — 这跟用户的反馈 "跨城吃饭不好" 一致 (删 stop 比远跑好).
+
+    非 meal POI 不动. anchor 坐标为 0 (无效) 时直接返回原列表.
+    """
+    if not anchor_lat or not anchor_lng:
+        return pois
+    from agents.anchor import _haversine_km
+
+    kept: list[POI] = []
+    for p in pois:
+        if not _is_meal_poi(p):
+            kept.append(p)
+            continue
+        d = _haversine_km((anchor_lng, anchor_lat), (p.longitude, p.latitude))
+        if d <= radius_km:
+            kept.append(p)
+    return kept
+
+
 def flatten_candidate_pool(
     intent: ParsedIntent, variant: Variant, pois: list[POI]
 ) -> list[POI]:
@@ -297,6 +345,10 @@ async def plan_one_variant(
         anchor_lat = flat_pois[0].latitude if flat_pois else 0.0
         anchor_lng = flat_pois[0].longitude if flat_pois else 0.0
     anchor = (anchor_name, anchor_lat, anchor_lng)
+
+    # v1.9 meal anchor 距离过滤: 防止跨城吃饭. 老 anchor_explore 路径 (上面 if 块)
+    # 已对全 pool 过滤; 这里覆盖 landmark_must / 无 anchor 路径.
+    flat_pois = _filter_meal_by_anchor_distance(flat_pois, anchor_lat, anchor_lng)
 
     try:
         _, day_plan, segments = await planner.compose_one_day(
