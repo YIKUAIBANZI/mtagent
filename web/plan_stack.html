@@ -546,7 +546,11 @@ $('panelForm').addEventListener('submit', (e) => {
   if (!v) return;
   $('panelInput').value = '';
   pushMsg('user', v);
-  setTimeout(() => pushMsg('bot', '收到！迭代功能马上来 ✨ 暂时这一版先用着。'), 600);
+  if (!currentTripId) {
+    pushMsg('bot', '还没生成行程，先在上面发起规划吧');
+    return;
+  }
+  triggerRefine(v);
 });
 
 // ============ Start trip ============
@@ -1339,6 +1343,63 @@ function onVariantSwitched(data) {
   document.querySelectorAll('.variant-chip').forEach(el => {
     el.classList.toggle('active', el.dataset.variant === data.variant);
   });
+}
+
+// ============ v1.9 Refine: 自由文本路由 (panelInput 入口) ============
+
+async function triggerRefine(userText) {
+  pushTyping();
+  const resp = await fetch(`/api/plan/${currentTripId}/refine`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ user_text: userText }),
+  });
+  removeTyping();
+  if (!resp.ok || !resp.body) {
+    pushMsg('bot', `没读懂这句 (HTTP ${resp.status})`);
+    return;
+  }
+  const reader = resp.body.getReader();
+  const dec = new TextDecoder();
+  let buf = '';
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    const blocks = buf.split('\n\n');
+    buf = blocks.pop() || '';
+    for (const blk of blocks) {
+      let ev = '', dat = null;
+      for (const line of blk.split('\n')) {
+        if (line.startsWith('event:')) ev = line.slice(6).trim();
+        if (line.startsWith('data:')) {
+          try { dat = JSON.parse(line.slice(5).trim()); } catch (_) { }
+        }
+      }
+      if (!ev) continue;
+      // 复用 adjust.* handler
+      if (ev === 'adjust.stop_replaced') onStopReplaced(dat);
+      else if (ev === 'adjust.stop_removed') onStopRemoved(dat);
+      else if (ev === 'adjust.day_replaced') onDayReplaced(dat);
+      else if (ev === 'adjust.variant_switched') onVariantSwitched(dat);
+      else if (ev === 'adjust.error') pushMsg('bot', `调整失败: ${dat.reason || ''}`);
+      // refine 专属
+      else if (ev === 'refine.thinking') {
+        if (dat && dat.reasoning) pushMsg('bot', `💭 ${dat.reasoning}`);
+      }
+      else if (ev === 'refine.profile_updated') {
+        const mods = Object.keys(dat.modifiers || {}).filter(k => dat.modifiers[k]).join('、');
+        const interests = dat.interests_text || '';
+        pushMsg('bot', `偏好已更新${mods ? `（${mods}）` : ''}${interests ? `，兴趣：${interests}` : ''} ✓`);
+      }
+      else if (ev === 'refine.chat_reply') {
+        pushMsg('bot', dat.text || '');
+      }
+      else if (ev === 'refine.error') {
+        pushMsg('bot', `出错: ${dat.reason || ''}`);
+      }
+    }
+  }
 }
 
 // ============ v1.9 Stage 2: preferences modal ============
