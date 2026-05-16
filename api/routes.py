@@ -510,7 +510,6 @@ async def adjust_trip(trip_id: str, body: dict):
     Stream SSE: adjust.thinking → adjust.<op>_xxx → adjust.done.
     """
     from dianping.schemas import AdjustRequest
-    from agents.adjuster import Adjuster, AdjusterError
 
     try:
         req = AdjustRequest.model_validate(body)
@@ -527,80 +526,211 @@ async def adjust_trip(trip_id: str, body: dict):
             "adjust.thinking",
             {"operation": req.operation, "day_index": req.day_index},
         )
-        adjuster = Adjuster(llm_call=resolve_planner_llm())
-        try:
-            if req.operation == "replace_stop":
-                result = await adjuster.replace_stop(
-                    ctx,
-                    day_index=req.day_index,
-                    slot_name=req.slot_name,
-                    user_hint=req.user_hint,
-                )
-                yield format_event(
-                    "adjust.stop_replaced",
-                    {
-                        "day_index": req.day_index,
-                        "slot_name": req.slot_name,
-                        "old_oid": result["old_oid"],
-                        "source": result["source"],
-                        "new_stop": result["new_stop"].model_dump(mode="json"),
-                    },
-                )
-            elif req.operation == "remove_stop":
-                day_plan = await adjuster.remove_stop(
-                    ctx, day_index=req.day_index, slot_name=req.slot_name
-                )
-                yield format_event(
-                    "adjust.stop_removed",
-                    {
-                        "day_index": req.day_index,
-                        "slot_name": req.slot_name,
-                        "new_day_plan": day_plan.model_dump(mode="json"),
-                    },
-                )
-            elif req.operation == "regenerate_day":
-                from agents.amap import AmapClient as _AmapClient
-                from agents.planner import Planner as _Planner
-
-                amap = _AmapClient(key=os.environ.get("AMAP_KEY", ""))
-                planner = _Planner(
-                    client=None,
-                    llm_call=resolve_planner_llm(),
-                    llm_call_stream=resolve_planner_llm_stream(),
-                )
-                day_plan = await adjuster.regenerate_day(
-                    ctx,
-                    day_index=req.day_index,
-                    planner=planner,
-                    amap=amap,
-                    user_hint=req.user_hint,
-                )
-                yield format_event(
-                    "adjust.day_replaced",
-                    {
-                        "day_index": req.day_index,
-                        "new_day_plan": day_plan.model_dump(mode="json"),
-                    },
-                )
-            elif req.operation == "switch_variant":
-                await adjuster.switch_variant(ctx, variant=req.variant)
-                yield format_event(
-                    "adjust.variant_switched",
-                    {"variant": req.variant},
-                )
-            else:
-                yield format_event(
-                    "adjust.error",
-                    {"reason": f"unknown operation: {req.operation}"},
-                )
-                return
-            ctx.save()
-        except AdjusterError as e:
-            yield format_event("adjust.error", {"reason": str(e)})
-            return
+        async for ev in _stream_adjust_events(ctx, req):
+            yield ev
         yield format_event("adjust.done", {"trip_id": ctx.trip_id})
 
     return StreamingResponse(_gen(), media_type="text/event-stream")
+
+
+async def _stream_adjust_events(ctx: TripContext, req) -> AsyncIterator[str]:
+    """Yield `adjust.*` SSE events for one AdjustRequest.
+
+    不包含 adjust.thinking / adjust.done 包裹 — 调用方负责.
+    refine endpoint 复用同一 generator.
+    """
+    from agents.adjuster import Adjuster, AdjusterError
+
+    adjuster = Adjuster(llm_call=resolve_planner_llm())
+    try:
+        if req.operation == "replace_stop":
+            result = await adjuster.replace_stop(
+                ctx,
+                day_index=req.day_index,
+                slot_name=req.slot_name,
+                user_hint=req.user_hint,
+            )
+            yield format_event(
+                "adjust.stop_replaced",
+                {
+                    "day_index": req.day_index,
+                    "slot_name": req.slot_name,
+                    "old_oid": result["old_oid"],
+                    "source": result["source"],
+                    "new_stop": result["new_stop"].model_dump(mode="json"),
+                },
+            )
+        elif req.operation == "remove_stop":
+            day_plan = await adjuster.remove_stop(
+                ctx, day_index=req.day_index, slot_name=req.slot_name
+            )
+            yield format_event(
+                "adjust.stop_removed",
+                {
+                    "day_index": req.day_index,
+                    "slot_name": req.slot_name,
+                    "new_day_plan": day_plan.model_dump(mode="json"),
+                },
+            )
+        elif req.operation == "regenerate_day":
+            from agents.amap import AmapClient as _AmapClient
+            from agents.planner import Planner as _Planner
+
+            amap = _AmapClient(key=os.environ.get("AMAP_KEY", ""))
+            planner = _Planner(
+                client=None,
+                llm_call=resolve_planner_llm(),
+                llm_call_stream=resolve_planner_llm_stream(),
+            )
+            day_plan = await adjuster.regenerate_day(
+                ctx,
+                day_index=req.day_index,
+                planner=planner,
+                amap=amap,
+                user_hint=req.user_hint,
+            )
+            yield format_event(
+                "adjust.day_replaced",
+                {
+                    "day_index": req.day_index,
+                    "new_day_plan": day_plan.model_dump(mode="json"),
+                },
+            )
+        elif req.operation == "switch_variant":
+            await adjuster.switch_variant(ctx, variant=req.variant)
+            yield format_event(
+                "adjust.variant_switched",
+                {"variant": req.variant},
+            )
+        else:
+            yield format_event(
+                "adjust.error",
+                {"reason": f"unknown operation: {req.operation}"},
+            )
+            return
+        ctx.save()
+    except AdjusterError as e:
+        yield format_event("adjust.error", {"reason": str(e)})
+
+
+# v1.9 Refine: 自由文本意图路由 SSE endpoint ----------------------------
+
+
+class _RefineBody(BaseModel):
+    user_text: str
+
+
+@router.post("/plan/{trip_id}/refine")
+async def refine_trip(trip_id: str, body: _RefineBody, request: Request):
+    """自由文本 → A 偏好/B 调整/C 同句 路由.
+
+    Stream SSE:
+      refine.thinking → refine.routed
+        → [refine.profile_updated]
+        → [adjust.* 复用]
+        → [refine.chat_reply]
+      → refine.done
+    """
+    from agents.refiner import Refiner, build_trip_summary
+    from agents.user_profile_store import get_profile, upsert_profile
+
+    try:
+        ctx = TripContext.load(trip_id)
+    except FileNotFoundError:
+        raise HTTPException(404, f"trip not found: {trip_id}")
+
+    cookie_key = _cookie_key(request)
+    user_text = (body.user_text or "").strip()
+    if not user_text:
+        raise HTTPException(400, "user_text empty")
+
+    async def _gen():
+        yield format_event("refine.thinking", {"phase": "解析中..."})
+
+        # Read current profile (best-effort)
+        current_profile = get_profile(cookie_key) if cookie_key else None
+        trip_summary = build_trip_summary(ctx)
+
+        refiner = Refiner(llm_call=resolve_profiler_llm())
+        try:
+            action = await refiner.run(
+                user_text=user_text,
+                trip_summary=trip_summary,
+                current_profile=current_profile,
+            )
+        except Exception as e:
+            yield format_event("refine.error", {"reason": f"refiner failed: {e}"})
+            yield format_event("refine.done", {"trip_id": ctx.trip_id})
+            return
+
+        yield format_event("refine.thinking", {"reasoning": action.reasoning})
+
+        routed = []
+        if action.profile_update is not None:
+            routed.append("profile")
+        if action.adjust is not None:
+            routed.append("adjust")
+        if action.chat_reply and not routed:
+            routed.append("chat")
+        yield format_event(
+            "refine.routed",
+            {"actions": routed, "summary": action.reasoning},
+        )
+
+        # 1) profile update
+        if action.profile_update is not None and cookie_key:
+            mods = action.profile_update.modifiers_set or {}
+            new_interest = action.profile_update.interests_text_append or ""
+            # 拼到现有 interests_text 后 (去重)
+            existing_text = (
+                current_profile.interests_text
+                if current_profile and current_profile.interests_text
+                else ""
+            )
+            merged_text = _merge_interest_text(existing_text, new_interest)
+            # 合并 modifiers (true 覆盖, false 也保留)
+            merged_mods = dict(
+                (current_profile.modifiers if current_profile else {}) or {}
+            )
+            merged_mods.update(mods)
+
+            profile = upsert_profile(
+                cookie_key,
+                modifiers=merged_mods,
+                interests_text=merged_text,
+            )
+            yield format_event(
+                "refine.profile_updated",
+                {
+                    "modifiers": dict(profile.modifiers),
+                    "interests_text": profile.interests_text,
+                },
+            )
+
+        # 2) adjust path (复用 adjust.* 事件)
+        if action.adjust is not None:
+            async for ev in _stream_adjust_events(ctx, action.adjust):
+                yield ev
+
+        # 3) chat reply 兜底
+        if action.chat_reply:
+            yield format_event("refine.chat_reply", {"text": action.chat_reply})
+
+        yield format_event("refine.done", {"trip_id": ctx.trip_id})
+
+    return StreamingResponse(_gen(), media_type="text/event-stream")
+
+
+def _merge_interest_text(existing: str, addition: str) -> str:
+    """合并 interests_text — 用中文逗号分隔, 去重."""
+    if not addition:
+        return existing
+    tokens: list[str] = []
+    for chunk in (existing + "，" + addition).replace(",", "，").split("，"):
+        t = chunk.strip()
+        if t and t not in tokens:
+            tokens.append(t)
+    return "，".join(tokens)
 
 
 async def _compute_day_transits(day_plan, intent, amap):
