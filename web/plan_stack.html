@@ -142,7 +142,49 @@
     overflow:hidden;
   }
   .mapview.on .panel{transform:translateX(0);opacity:1}
-  .panel-head{padding:18px 20px 14px 20px;border-bottom:1px solid var(--stone);display:flex;align-items:center;justify-content:space-between}
+  .panel-head{padding:14px 20px 10px 20px;border-bottom:none;display:flex;align-items:center;justify-content:space-between}
+
+  /* ── 对话 / 行程 切换 tab ── */
+  .view-tabs{
+    display:flex;border-bottom:1px solid var(--stone);padding:0 20px;flex-shrink:0;
+  }
+  .view-tab{
+    flex:1;padding:8px 0;font-size:13px;font-weight:500;letter-spacing:-0.16px;
+    color:var(--ash);border-bottom:2px solid transparent;text-align:center;
+    transition:color .15s,border-color .15s;
+  }
+  .view-tab.active{color:var(--orange);border-bottom-color:var(--orange)}
+  .view-tab:hover:not(.active){color:var(--graphite)}
+
+  /* ── 行程视图 ── */
+  .plan-view{
+    flex:1;overflow-y:auto;padding:18px 20px 12px;
+    display:none;flex-direction:column;
+    scrollbar-width:thin;scrollbar-color:var(--fog) transparent;
+  }
+  .plan-view::-webkit-scrollbar{width:6px}
+  .plan-view::-webkit-scrollbar-thumb{background:var(--fog);border-radius:6px}
+  .plan-view.active{display:flex}
+  .plan-day-label{
+    font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;
+    color:var(--ash);margin:0 0 14px;padding-bottom:8px;border-bottom:1px solid var(--stone);
+  }
+  .plan-stop{display:flex;gap:10px;padding-bottom:0;position:relative;margin-bottom:4px}
+  .plan-time{flex:0 0 44px;font-size:12px;font-weight:600;color:var(--orange);padding-top:5px;letter-spacing:-.1px}
+  .plan-pin{
+    flex:0 0 24px;height:24px;border-radius:50%;display:grid;place-items:center;
+    font-size:11px;font-weight:700;color:#fff;margin-top:3px;flex-shrink:0;
+  }
+  .plan-stop-body{flex:1;min-width:0;padding:4px 0 16px}
+  .plan-stop-name{font-size:13.5px;font-weight:600;color:var(--charcoal);letter-spacing:-.18px}
+  .plan-stop-meta{font-size:11.5px;color:var(--ash);margin-top:2px;letter-spacing:-.14px}
+  .plan-stop-slot{font-size:12px;color:var(--graphite);margin-top:3px}
+  .plan-connector{
+    display:flex;align-items:center;gap:8px;padding:0 0 12px 54px;
+  }
+  .plan-connector-line{width:1px;height:16px;background:var(--stone);margin-right:6px}
+  .plan-connector-text{font-size:11px;color:var(--fog)}
+  .plan-empty{padding:32px 0;text-align:center;color:var(--ash);font-size:13px}
   .trip-title{font-family:var(--display);font-weight:500;font-size:23px;line-height:1.2;letter-spacing:-0.44px;color:var(--charcoal);margin:0}
   .trip-meta{font-size:13px;color:var(--ash);margin-top:2px;letter-spacing:-0.17px}
   .panel-head .reset{
@@ -187,6 +229,41 @@
   .adjust-btn:hover{background:var(--orange);color:#fff}
   .adjust-btn.adjusting{opacity:0.4;pointer-events:none}
   .place-card.cache-replaced{box-shadow:#1abc9c 0 0 0 1.5px inset}
+
+/* ── Day group card ── */
+.day-group{background:#fff;border-radius:20px;box-shadow:var(--shadow-inset),rgba(0,0,0,0.04) 0 4px 20px;overflow:hidden;animation:rise .45s cubic-bezier(0.19,1,0.22,1) both}
+.day-group-header{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;user-select:none}
+.day-num-badge{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-family:var(--display);font-size:20px;font-weight:500;color:var(--orange);background:#fff5f2;flex-shrink:0;letter-spacing:-1px}
+.day-group-info{flex:1;min-width:0}
+.day-group-title{font-weight:600;font-size:13.5px;color:var(--charcoal);letter-spacing:-.18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.day-group-sub{font-size:11.5px;color:var(--ash);margin-top:1px}
+.day-swatches{display:flex;gap:3px;flex-wrap:wrap;max-width:84px;justify-content:flex-end;flex-shrink:0}
+.day-swatch{width:16px;height:16px;border-radius:5px;flex-shrink:0}
+.day-group:not(.collapsed) .day-swatches{opacity:0;pointer-events:none}
+.day-group-content{padding:0 10px 10px;display:flex;flex-direction:column;gap:6px}
+.day-group.collapsed .day-group-content{display:none}
+.day-group-footer{padding:0 10px 10px}
+
+/* ── Stop card v2 ── */
+.stop-card-v2{display:flex;gap:10px;align-items:flex-start;padding:10px;border-radius:14px;background:var(--parchment);cursor:pointer;border:none;width:100%;text-align:left;transition:background .15s;font-family:inherit}
+.stop-card-v2:hover{background:#f0ede9}
+.stop-card-v2.active{background:#fde8e3;box-shadow:var(--orange) 0 0 0 1.5px inset}
+.stop-thumb-wrap{position:relative;flex-shrink:0}
+.stop-thumb{width:50px;height:50px;border-radius:10px;display:block}
+.stop-num-badge{position:absolute;top:-5px;left:-5px;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:700;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.stop-body{flex:1;min-width:0}
+.stop-name-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.stop-name{font-size:13.5px;font-weight:600;color:var(--charcoal);letter-spacing:-.18px}
+.stop-cat-tag{font-size:10.5px;padding:1px 7px;border-radius:6px;font-weight:500;white-space:nowrap;color:#fff}
+.stop-desc{font-size:11.5px;color:var(--ash);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:-.1px}
+.stop-meta-row{font-size:11px;color:var(--ash);margin-top:4px;display:flex;align-items:center;gap:8px}
+.stop-transit-tag{font-size:10.5px;color:var(--fog);display:flex;align-items:center;gap:2px}
+.stop-adj-row{display:flex;gap:4px;margin-top:6px}
+.stop-adj-btn{font-size:11px;padding:2px 8px;border-radius:6px;background:rgba(0,0,0,.05);color:var(--ash);cursor:pointer;border:none;font-family:inherit;transition:all .15s}
+.stop-adj-btn:hover{background:var(--orange);color:#fff}
+.day-regen-mini{font-size:11px;padding:3px 9px;border-radius:8px;background:var(--stone);color:var(--graphite);cursor:pointer;border:none;font-family:inherit;transition:background .15s;margin-left:6px}
+.day-regen-mini:hover{background:var(--orange);color:#fff}
+
   .day-regen-btn{
     font-size:12px;padding:4px 10px;border-radius:10px;
     background:#fff;color:#444;cursor:pointer;border:1px solid #e5e1d8;
@@ -208,6 +285,21 @@
   .place-name{font-size:14px;font-weight:600;letter-spacing:-0.18px;color:var(--charcoal);margin:0}
   .place-tag{font-size:12px;color:var(--ash);letter-spacing:-0.14px;margin-top:1px}
   .place-note{font-size:12.5px;color:var(--graphite);letter-spacing:-0.15px;margin-top:6px;line-height:1.45}
+
+  /* Agent 精选过程 — 思考流 */
+  .day-partial .bubble{font-size:12px;color:var(--ash);border:1px dashed var(--stone);background:transparent}
+  .thinking-dots{display:inline-flex;gap:2px;align-items:center;margin-left:4px;vertical-align:middle}
+  .thinking-dots span{width:4px;height:4px;border-radius:50%;background:var(--ash);animation:tt 1.1s infinite}
+  .thinking-dots span:nth-child(2){animation-delay:.2s}
+  .thinking-dots span:nth-child(3){animation-delay:.4s}
+  /* 折叠候选池 */
+  .candidates-summary{padding:0}
+  .candidates-summary summary{cursor:pointer;font-size:12px;color:var(--ash);user-select:none;list-style:none;display:flex;align-items:center;gap:6px}
+  .candidates-summary summary::-webkit-details-marker{display:none}
+  .candidates-summary .ti{font-size:9px;transition:transform .2s;display:inline-block}
+  details[open].candidates-summary .ti{transform:rotate(90deg)}
+  .candidates-summary .poi-list{margin-top:8px;display:flex;flex-wrap:wrap;gap:4px}
+  .candidates-summary .poi-item{font-size:11.5px;padding:2px 8px;border-radius:10px;background:var(--parchment);color:var(--graphite)}
 
   .typing{display:inline-flex;gap:4px;align-items:center}
   .typing span{width:5px;height:5px;border-radius:50%;background:var(--ash);animation:tt 1.1s infinite}
@@ -320,6 +412,29 @@
   .pref-btn{padding:8px 18px;border-radius:10px;font-size:13px;cursor:pointer;border:none}
   .pref-btn.primary{background:var(--orange);color:#fff}
   .pref-btn.ghost{background:transparent;color:#666}
+
+  /* v1.10 Clarify Round chips */
+  .clarify-question-wrap { margin-bottom: 8px; }
+  .clarify-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .clarify-chip {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1.5px solid #e8632a;
+    background: #fff;
+    color: #e8632a;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .clarify-chip:hover:not(:disabled) { background: #e8632a; color: #fff; }
+  .clarify-chip:disabled { opacity: 0.5; cursor: default; }
+  .clarify-skip { border-color: #aaa; color: #888; }
+  .clarify-skip:hover:not(:disabled) { background: #aaa; color: #fff; }
+  .clarify-custom-input { display: flex; gap: 6px; margin-top: 6px; }
+  .clarify-custom-text {
+    flex: 1; padding: 6px 10px; border-radius: 16px;
+    border: 1.5px solid #ddd; font-size: 13px;
+  }
 </style>
 </head>
 <body>
@@ -474,7 +589,12 @@
           <svg width="14" height="14" viewBox="0 0 16 16"><path d="M3 8 a5 5 0 1 0 1.4 -3.5 M3 3 v3 h3" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
+      <div class="view-tabs" id="viewTabs">
+        <button class="view-tab active" data-view="chat">对话</button>
+        <button class="view-tab" data-view="plan">行程</button>
+      </div>
       <div class="messages" id="messages"></div>
+      <div class="plan-view" id="planView"></div>
       <form class="panel-input" id="panelForm" onsubmit="return false;">
         <div class="field">
           <svg width="14" height="14" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.5" stroke="#848281" stroke-width="1.6" fill="none"/><path d="M11 11 l3 3" stroke="#848281" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -539,6 +659,70 @@ $('prompt').addEventListener('keydown', (e) => {
 });
 
 $('resetBtn').addEventListener('click', () => location.reload());
+
+// ── 对话 / 行程 切换 ──
+let currentPanelView = 'chat';
+$('viewTabs').addEventListener('click', (e) => {
+  const tab = e.target.closest('.view-tab');
+  if (!tab) return;
+  const view = tab.dataset.view;
+  if (view === currentPanelView) return;
+  currentPanelView = view;
+  document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t.dataset.view === view));
+  if (view === 'plan') {
+    $('messages').style.display = 'none';
+    $('planView').classList.add('active');
+    renderPlanView();
+  } else {
+    $('messages').style.display = '';
+    $('planView').classList.remove('active');
+  }
+});
+
+async function renderPlanView() {
+  const el = $('planView');
+  if (!currentTripId) {
+    el.innerHTML = '<div class="plan-empty">先对话生成路线，再来这里查看行程</div>';
+    return;
+  }
+  el.innerHTML = '<div class="plan-empty">加载中…</div>';
+  const trip = await fetch(`/api/plan/${currentTripId}`).then(r => r.json()).catch(() => null);
+  const days = trip?.draft_route?.days;
+  if (!days?.length) {
+    el.innerHTML = '<div class="plan-empty">行程还未生成，稍后再来</div>';
+    return;
+  }
+  let html = '';
+  days.forEach((day, di) => {
+    const color = DAY_COLORS[di] || '#ff3e00';
+    const district = day.anchor_district ? ` · ${escapeHtml(day.anchor_district)}` : '';
+    html += `<div class="plan-day-label">Day ${di + 1}${district}</div>`;
+    const stops = day.stops || [];
+    stops.forEach((stop, i) => {
+      const name   = stop.poi_name || stop.poi?.name || '未命名';
+      const cats   = (stop.categories || stop.poi?.categories || []).join(' · ');
+      const star   = stop.star ?? stop.poi?.star ?? '?';
+      const price  = stop.avgprice ?? stop.poi?.avgprice ?? '?';
+      const time   = stop.arrival_time || '';
+      const slot   = stop.slot_name || '';
+      const icon   = SLOT_ICON[slot] || '📍';
+      html += `<div class="plan-stop">
+        <div class="plan-time">${escapeHtml(time)}</div>
+        <div class="plan-pin" style="background:${color}">${i + 1}</div>
+        <div class="plan-stop-body">
+          <div class="plan-stop-name">${icon} ${escapeHtml(name)}</div>
+          <div class="plan-stop-meta">${escapeHtml(cats)} · ★${star} · ¥${price}/人</div>
+          <div class="plan-stop-slot">${escapeHtml(slot)}</div>
+        </div>
+      </div>`;
+      if (i < stops.length - 1) {
+        html += `<div class="plan-connector"><div class="plan-connector-line"></div><div class="plan-connector-text">↓</div></div>`;
+      }
+    });
+    if (di < days.length - 1) html += '<div style="height:20px"></div>';
+  });
+  el.innerHTML = html;
+}
 
 $('panelForm').addEventListener('submit', (e) => {
   e.preventDefault();
@@ -654,10 +838,26 @@ function parseEvent(block) {
   return event ? { event, data } : null;
 }
 
+// ── v1.10: shared SSE dispatcher (plan_stream + answer endpoint) ──────────────
+function handleSSEEvent(ev, dat) {
+  handleEvent({ event: ev, data: dat });
+}
+
 async function handleEvent({ event, data }) {
   switch (event) {
     case 'trip.started':
       currentTripId = data.trip_id;
+      break;
+
+    case 'clarify.question':
+      removeTyping();
+      renderClarifyQuestion(data, currentTripId);
+      break;
+
+    case 'clarify.done':
+      removeTyping();
+      pushMsg('bot', '好，正在为你规划… ✨');
+      pushTyping();
       break;
 
     case 'profiler.understood': {
@@ -747,7 +947,7 @@ async function handleEvent({ event, data }) {
         await renderDayDone(data);
       } else {
         // 暂存到 variantStops, 等 variant.branch_done 统一 push (避免半数据 chat)
-        variantStops[data.variant] = data.stops || [];
+        variantStops[data.variant] = { day_index: data.day_index, stops: data.stops || [] };
       }
       pushTyping();
       break;
@@ -820,22 +1020,69 @@ function pushVariantSummary(data) {
   }
   const wrap = document.createElement('div');
   wrap.className = 'msg bot';
-  const items = names.map((n, i) => `<span class="place-tag" style="display:inline-block;margin:2px 4px 2px 0">${i + 1}. ${escapeHtml(n)}</span>`).join('');
+  const nameList = names.map((n, i) => `${i + 1}. ${escapeHtml(n)}`).join(' · ');
   wrap.innerHTML = `
     <div class="avatar bot">${VARIANT_ICONS[v] || '📋'}</div>
-    <div class="bubble">
-      <div style="font-weight:600;margin-bottom:4px">${variantLabel(v)}方案 (备选)</div>
-      <div>${items}</div>
-      ${data.has_fallback ? '<div class="place-note" style="margin-top:4px;color:#9aa0a6">⚠ 该方案部分 LLM 失败, 走兜底</div>' : ''}
-      <div style="margin-top:8px"><span class="variant-chip" data-variant="${escapeHtml(v)}">切到这个方案 →</span></div>
+    <div class="bubble" style="padding:10px 12px">
+      <div class="vs-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <div>
+          <span style="font-weight:600">${variantLabel(v)}方案</span>
+          <span style="font-size:12px;color:var(--ash);margin-left:6px">${nameList}</span>
+        </div>
+        <span class="vs-toggle" style="font-size:11px;color:var(--orange);white-space:nowrap;flex-shrink:0">展开 ▶</span>
+      </div>
+      <div class="vs-detail" style="display:none;margin-top:10px"></div>
+      ${data.has_fallback ? '<div style="font-size:11px;color:#9aa0a6;margin-top:4px">⚠ 部分LLM失败，走兜底</div>' : ''}
     </div>`;
   $('messages').appendChild(wrap);
   $('messages').scrollTop = $('messages').scrollHeight;
-  // v1.9 Stage 3: 点 chip 触发 switch_variant
-  const chip = wrap.querySelector('.variant-chip');
-  if (chip) {
-    chip.addEventListener('click', () => triggerAdjust({ operation: 'switch_variant', variant: v }));
+
+  const header = wrap.querySelector('.vs-header');
+  const detail = wrap.querySelector('.vs-detail');
+  const toggle = wrap.querySelector('.vs-toggle');
+  header.addEventListener('click', () => {
+    const expanded = detail.style.display !== 'none';
+    if (!expanded) {
+      detail.style.display = 'block';
+      toggle.textContent = '收起 ▼';
+      if (!detail.dataset.rendered) {
+        _renderVariantDetail(v, detail);
+        detail.dataset.rendered = '1';
+      }
+    } else {
+      detail.style.display = 'none';
+      toggle.textContent = '展开 ▶';
+    }
+    $('messages').scrollTop = $('messages').scrollHeight;
+  });
+}
+
+function _renderVariantDetail(variant, container) {
+  const vd = variantStops[variant];
+  const stops = vd?.stops || [];
+  const di = vd?.day_index ?? 0;
+  const color = DAY_COLORS[di] || '#ff3e00';
+  if (!stops.length) {
+    container.innerHTML = '<div style="color:var(--ash);font-size:12px">暂无路线数据</div>';
+    return;
   }
+  let html = '';
+  stops.forEach((stop, i) => {
+    const icon = SLOT_ICON[stop.slot_name] || '📍';
+    html += `<div class="place-card" style="margin-bottom:6px" data-variant-stop>
+      <span class="place-num" style="background:${color}">${i + 1}</span>
+      <div style="flex:1;min-width:0">
+        <div class="place-name">${icon} ${escapeHtml(stop.poi_name || '未命名')}</div>
+        <div class="place-tag">${escapeHtml((stop.categories || []).join(' · '))} · ${escapeHtml(stop.arrival_time || '')} · ★${stop.star ?? '?'} ¥${stop.avgprice ?? '?'}/人</div>
+        <div class="place-note">${escapeHtml(stop.slot_name || '')}</div>
+      </div>
+    </div>`;
+  });
+  html += `<div style="margin-top:10px"><span class="variant-chip" data-variant="${escapeHtml(variant)}">切到这个方案 →</span></div>`;
+  container.innerHTML = html;
+  container.querySelector('.variant-chip')?.addEventListener('click', () =>
+    triggerAdjust({ operation: 'switch_variant', variant })
+  );
 }
 
 
@@ -843,37 +1090,79 @@ function pushVariantSummary(data) {
 async function renderDayDone(day) {
   const dayIndex = day.day_index;
   const color = DAY_COLORS[dayIndex] || '#ff3e00';
-  // 收尾 day_partial 提示气泡 (替换成"已就绪")
+
+  // Collapse thinking stream bubble
   const partialEl = dayPartialMsgByIndex.get(dayIndex);
-  if (partialEl) partialEl.textContent = `Day ${dayIndex + 1} 已就绪 ✓`;
-  // small intro for day + v1.9 Stage 3 再来一版 按钮
-  const intro = document.createElement('div');
-  intro.className = 'msg bot';
-  intro.innerHTML = `
-    <div class="avatar bot">📍</div>
-    <div class="bubble">
-      Day ${dayIndex + 1} · ${escapeHtml(day.anchor_district || '')} 出炉了
-      <span class="day-regen-btn" data-day="${dayIndex}">↻ 再来一版</span>
-    </div>`;
-  $('messages').appendChild(intro);
-  $('messages').scrollTop = $('messages').scrollHeight;
-  intro.querySelector('.day-regen-btn').addEventListener('click', () => {
-    triggerAdjust({ operation: 'regenerate_day', day_index: dayIndex });
-  });
-  // per-day rationale if arrived earlier
+  if (partialEl) {
+    partialEl.closest('.msg')?.classList.remove('day-partial');
+    const stopsSnap = day.stops || [];
+    const poiItems = stopsSnap.map(s => `<span class="poi-item">📍 ${escapeHtml(s.poi_name||'')}</span>`).join('');
+    partialEl.innerHTML = `<details class="candidates-summary">
+      <summary>精选了 ${stopsSnap.length} 个地点 <span class="ti">▶</span> 查看候选</summary>
+      <div class="poi-list">${poiItems}</div>
+    </details>`;
+  }
+
   if (pendingRationaleByDay.has(dayIndex)) {
     pushMsg('bot', pendingRationaleByDay.get(dayIndex));
     pendingRationaleByDay.delete(dayIndex);
   }
-  markersByDay[dayIndex] = [];
-  // each stop: place-card slide-in + marker drop, paced 350ms apart
+
   const stops = day.stops || [];
-  for (let i = 0; i < stops.length; i++) {
-    pushPlaceCard(stops[i], dayIndex, i, color);
-    if (map && SVC.drive) addMarker(stops[i], dayIndex, i, color);
-    await sleep(350);
+
+  // Build transit map: stopIndex → segment arriving at that stop
+  const transitTo = {};
+  for (const seg of day.transit_segments || []) {
+    transitTo[seg.to_index] = seg;
   }
-  // v1.6: day_done 现在含 transit_segments — 立即画该天 polyline
+
+  // Build category swatches HTML for header (for collapsed state)
+  const swatchHtml = stops.map(s => {
+    const c = _catColor(s.categories || []);
+    return `<div class="day-swatch" style="background:${c}" title="${escapeHtml((s.categories||[])[0]||'')}"></div>`;
+  }).join('');
+
+  // Create day-group card
+  const dayGroup = document.createElement('div');
+  dayGroup.className = `day-group${dayIndex > 0 ? ' collapsed' : ''}`;
+  dayGroup.dataset.dayGroup = dayIndex;
+
+  dayGroup.innerHTML = `
+    <div class="day-group-header">
+      <div class="day-num-badge">${dayIndex + 1}</div>
+      <div class="day-group-info">
+        <div class="day-group-title">${escapeHtml(day.anchor_district || `Day ${dayIndex + 1}`)}</div>
+        <div class="day-group-sub">${stops.length} 个地点</div>
+      </div>
+      <div class="day-swatches">${swatchHtml}</div>
+      <button class="day-regen-mini" data-day="${dayIndex}">↻</button>
+    </div>
+    <div class="day-group-content" id="day-content-${dayIndex}"></div>`;
+
+  $('messages').appendChild(dayGroup);
+  $('messages').scrollTop = $('messages').scrollHeight;
+
+  dayGroup.querySelector('.day-group-header').addEventListener('click', (e) => {
+    if (e.target.classList.contains('day-regen-mini')) return;
+    dayGroup.classList.toggle('collapsed');
+    $('messages').scrollTop = $('messages').scrollHeight;
+  });
+  dayGroup.querySelector('.day-regen-mini').addEventListener('click', () => {
+    triggerAdjust({ operation: 'regenerate_day', day_index: dayIndex });
+  });
+
+  const dayContent = dayGroup.querySelector(`#day-content-${dayIndex}`);
+  dayGroupContentByIndex[dayIndex] = dayContent;
+
+  // Render stops into day-group-content
+  markersByDay[dayIndex] = [];
+  for (let i = 0; i < stops.length; i++) {
+    pushPlaceCard(stops[i], dayIndex, i, color, dayContent, transitTo[i]);
+    if (map && SVC.drive) addMarker(stops[i], dayIndex, i, color);
+    await sleep(300);
+    $('messages').scrollTop = $('messages').scrollHeight;
+  }
+
   if (map && SVC.drive && Array.isArray(day.transit_segments) && day.transit_segments.length > 0) {
     drawDayPolylineFromStreamPayload(stops, day.transit_segments, dayIndex, color);
   }
@@ -982,37 +1271,59 @@ async function startPolylineWorker() {
   }
 }
 
-function pushPlaceCard(stop, dayIndex, stopIndex, color) {
+function pushPlaceCard(stop, dayIndex, stopIndex, color, container, transitLeg) {
+  const num = stopIndex + 1;
+  const cats = stop.categories || [];
+  const thumbColor = _catColor(cats);
+  const catLabel = cats[0] || stop.slot_name || '';
+  const desc = (stop.reviewTags || []).slice(0,2).map(t=>t.tag).join('·') || stop.slot_name || '';
+  const arrTime = stop.arrival_time || '';
+  const leaveTime = stop.leave_time || stop.leaveTime || '';
+  let durText = '';
+  if (arrTime && leaveTime) {
+    const [ah,am] = arrTime.split(':').map(Number);
+    const [lh,lm] = leaveTime.split(':').map(Number);
+    const mins = (lh*60+lm)-(ah*60+am);
+    if (mins > 0) durText = `${mins}m`;
+  }
+  const transitText = _fmtTransit(transitLeg);
+
   const wrap = document.createElement('div');
-  wrap.className = 'msg bot';
   wrap.dataset.day = dayIndex;
   wrap.dataset.slot = stop.slot_name || '';
-  const num = stopIndex + 1;
-  const icon = SLOT_ICON[stop.slot_name] || '📍';
-  wrap.innerHTML = `
-    <div class="avatar bot" style="background:${color}">
-      <svg width="12" height="12" viewBox="0 0 16 16"><path d="M8 1 c-3 0 -5 2.5 -5 5 c0 4 5 9 5 9 s5 -5 5 -9 c0 -2.5 -2 -5 -5 -5 z" fill="#fff"/></svg>
+
+  wrap.innerHTML = `<button class="stop-card-v2 place-card" data-poi="${escapeHtml(stop.poi_openshopid||'')}" data-day="${dayIndex}" data-slot="${escapeHtml(stop.slot_name||'')}">
+    <div class="stop-thumb-wrap">
+      <div class="stop-thumb" style="background:linear-gradient(135deg,${thumbColor}dd,${thumbColor}88)"></div>
+      <div class="stop-num-badge" style="background:${color}">${num}</div>
     </div>
-    <button class="place-card" data-poi="${escapeHtml(stop.poi_openshopid || '')}" data-day="${dayIndex}" data-slot="${escapeHtml(stop.slot_name || '')}">
-      <span class="place-num" style="background:${color}">${num}</span>
-      <div style="flex:1;min-width:0">
-        <div class="place-name">${icon} ${escapeHtml(stop.poi_name || '未命名')}</div>
-        <div class="place-tag">${(stop.categories || []).join(' · ')} · ${stop.arrival_time || ''} · ★${stop.star ?? '?'} ¥${stop.avgprice ?? '?'}/人</div>
-        <div class="place-note">${escapeHtml(stop.slot_name || '')}</div>
+    <div class="stop-body">
+      <div class="stop-name-row">
+        <span class="stop-name">${escapeHtml(stop.poi_name||'未命名')}</span>
+        ${catLabel ? `<span class="stop-cat-tag" style="background:${thumbColor}">${escapeHtml(catLabel)}</span>` : ''}
       </div>
-      <span class="adjust-btns" onclick="event.stopPropagation()">
-        <span class="adjust-btn" title="换一家" data-op="replace" data-day="${dayIndex}" data-slot="${escapeHtml(stop.slot_name || '')}">换</span>
-        <span class="adjust-btn" title="删除" data-op="remove" data-day="${dayIndex}" data-slot="${escapeHtml(stop.slot_name || '')}">删</span>
-      </span>
-    </button>`;
-  $('messages').appendChild(wrap);
-  $('messages').scrollTop = $('messages').scrollHeight;
-  const card = wrap.querySelector('.place-card');
+      ${desc ? `<div class="stop-desc">${escapeHtml(desc)}</div>` : ''}
+      <div class="stop-meta-row">
+        ${arrTime ? `<span>${escapeHtml(arrTime)}</span>` : ''}
+        ${durText ? `<span>· ${durText}</span>` : ''}
+        ${transitText ? `<span class="stop-transit-tag">· ${escapeHtml(transitText)}</span>` : ''}
+      </div>
+      <div class="stop-adj-row" onclick="event.stopPropagation()">
+        <button class="stop-adj-btn" data-op="replace" data-day="${dayIndex}" data-slot="${escapeHtml(stop.slot_name||'')}">换</button>
+        <button class="stop-adj-btn" data-op="remove" data-day="${dayIndex}" data-slot="${escapeHtml(stop.slot_name||'')}">删</button>
+      </div>
+    </div>
+  </button>`;
+
+  const target = container || $('messages');
+  target.appendChild(wrap);
+  if (container) { $('messages').scrollTop = $('messages').scrollHeight; }
+
+  const card = wrap.querySelector('.stop-card-v2');
   dayCardsByIndex.set(`${dayIndex}-${stopIndex}`, card);
   card.addEventListener('click', () => focusMarker(dayIndex, stopIndex));
-  // 换/删 按钮事件
-  card.querySelectorAll('.adjust-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
+  card.querySelectorAll('.stop-adj-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
       e.stopPropagation();
       const op = btn.dataset.op;
       const di = parseInt(btn.dataset.day, 10);
@@ -1049,18 +1360,17 @@ function renderDayPartial(data) {
   const dayIndex = data.day_index;
   const names = data.names || [];
   if (names.length === 0) return;
-  const text = `Day ${dayIndex + 1} 编排中…  ${names.map((n, i) => `${i + 1}. ${n}`).join('  ·  ')}`;
   let el = dayPartialMsgByIndex.get(dayIndex);
   if (!el) {
     const wrap = document.createElement('div');
     wrap.className = 'msg bot day-partial';
-    wrap.innerHTML = `<div class="avatar bot">⋯</div><div class="bubble" data-day-partial="${dayIndex}">${escapeHtml(text)}</div>`;
+    wrap.innerHTML = `<div class="avatar bot">⋯</div><div class="bubble" data-day-partial="${dayIndex}"></div>`;
     $('messages').appendChild(wrap);
     el = wrap.querySelector('.bubble');
     dayPartialMsgByIndex.set(dayIndex, el);
-  } else {
-    el.textContent = text;
   }
+  const nameList = names.map((n, i) => `${i + 1}. ${escapeHtml(n)}`).join('  ·  ');
+  el.innerHTML = `精选中 <span class="thinking-dots"><span></span><span></span><span></span></span><br><span style="opacity:.65">${nameList}</span>`;
   $('messages').scrollTop = $('messages').scrollHeight;
 }
 
@@ -1292,7 +1602,7 @@ async function triggerAdjust(payload) {
     pushMsg('bot', '还没有可调整的方案');
     return;
   }
-  pushMsg('bot', '🪄 调整中…');
+  // 静默调整，不在 chat 里显示"调整中"
   await callAdjust(payload, (ev, dat) => {
     if (ev === 'adjust.stop_replaced') onStopReplaced(dat);
     else if (ev === 'adjust.stop_removed') onStopRemoved(dat);
@@ -1326,12 +1636,33 @@ function onStopReplaced(data) {
 function onStopRemoved(data) {
   const di = data.day_index;
   const slot = data.slot_name;
-  const oldCard = document.querySelector(`.place-card[data-day="${di}"][data-slot="${CSS.escape(slot)}"]`);
-  if (oldCard) {
-    const wrap = oldCard.closest('.msg');
-    if (wrap) wrap.remove();
+  const targetCard = document.querySelector(`.place-card[data-day="${di}"][data-slot="${CSS.escape(slot)}"]`);
+
+  // 找到被删 stop 的序号，用于移除对应地图 marker
+  const allDayCards = [...document.querySelectorAll(`.place-card[data-day="${di}"]`)];
+  const stopIndex = targetCard ? allDayCards.indexOf(targetCard) : -1;
+  if (stopIndex >= 0) {
+    const m = markersByDay[di]?.[stopIndex];
+    if (m) { m.setMap(null); markersByDay[di][stopIndex] = null; }
   }
-  pushMsg('bot', `已删除 Day ${di + 1} 的「${slot}」, 时间表已自动重排`);
+
+  if (targetCard) targetCard.remove();
+
+  // 剩余卡片 badge 重新编号
+  document.querySelectorAll(`.place-card[data-day="${di}"]`).forEach((card, newIdx) => {
+    const badge = card.querySelector('.stop-num-badge');
+    if (badge) badge.textContent = newIdx + 1;
+  });
+
+  // 剩余地图 pin 重新编号
+  const color = DAY_COLORS[di] || '#ff3e00';
+  let counter = 0;
+  (markersByDay[di] || []).forEach(m => {
+    if (m) m.setContent(`<div class="pin-wrap" style="background:${color}"><span>${++counter}</span></div>`);
+  });
+
+  pushMsg('bot', `已删除 Day ${di + 1} 的「${slot}」，时间表已自动重排`);
+  if (currentPanelView === 'plan') renderPlanView();
 }
 
 function onDayReplaced(data) {
@@ -1339,10 +1670,49 @@ function onDayReplaced(data) {
 }
 
 function onVariantSwitched(data) {
-  pushMsg('bot', `已切换到「${variantLabel(data.variant)}」方案 ${VARIANT_ICONS[data.variant] || ''}`);
+  const v = data.variant;
+  // 静默切换，仅更新地图和卡片，不推 chat 消息
   document.querySelectorAll('.variant-chip').forEach(el => {
-    el.classList.toggle('active', el.dataset.variant === data.variant);
+    el.classList.toggle('active', el.dataset.variant === v);
   });
+
+  // 重渲染切换后方案的路线卡片 + 地图
+  const vd = variantStops[v];
+  if (!vd?.stops?.length) return;
+  const { day_index: di, stops } = vd;
+  const color = DAY_COLORS[di] || '#ff3e00';
+
+  // Clear day group content
+  const dayContent = dayGroupContentByIndex[di] || document.getElementById(`day-content-${di}`);
+  if (dayContent) {
+    dayContent.innerHTML = '';
+  } else {
+    document.querySelectorAll(`.place-card[data-day="${di}"]`).forEach(c => c.closest('div[data-day]')?.remove());
+  }
+  (markersByDay[di] || []).forEach(m => m?.setMap(null));
+  markersByDay[di] = [];
+  (polylinesByDay[di] || []).forEach(p => p?.setMap?.(null));
+  polylinesByDay[di] = [];
+
+  stops.forEach((stop, i) => {
+    pushPlaceCard(stop, di, i, color, dayContent);
+    if (map && SVC.drive) addMarker(stop, di, i, color);
+  });
+
+  // 画估算虚线连接各 stop（variant 切换时没有 transit_segments，用估算线代替）
+  if (map) {
+    for (let i = 0; i < stops.length - 1; i++) {
+      const a = stops[i], b = stops[i + 1];
+      if (typeof a.longitude === 'number' && typeof b.longitude === 'number') {
+        polylineQueue.push({ o: [a.longitude, a.latitude], d: [b.longitude, b.latitude], dayIndex: di, isEstimated: true });
+      }
+    }
+    startPolylineWorker();
+  }
+
+  const all = (markersByDay[di] || []).filter(Boolean);
+  if (all.length) map?.setFitView(all, false, [60, 60, 60, 420]);
+  if (currentPanelView === 'plan') renderPlanView();
 }
 
 // ============ v1.9 Refine: 自由文本路由 (panelInput 入口) ============
@@ -1459,6 +1829,31 @@ function escapeHtml(s) {
   return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
+// ── Day group containers (dayIndex → content div) ──
+const dayGroupContentByIndex = {};
+
+// Category → thumbnail color
+function _catColor(cats) {
+  const c = (cats || []).join(' ');
+  if (/咖啡|茶|甜品|奶茶/.test(c)) return '#8b6f47';
+  if (/自然|公园/.test(c)) return '#6b9e6b';
+  if (/购物|商场/.test(c)) return '#9b7ed4';
+  if (/文化|历史|博物/.test(c)) return '#7a8fc7';
+  if (/美食|餐|饭/.test(c)) return '#c49b6b';
+  return '#d4916a';
+}
+
+// Transit segment → short text like "步行 8m" / "地铁 25m"
+function _fmtTransit(seg) {
+  if (!seg) return '';
+  const mode = seg.recommended || 'walk';
+  const opt = seg.options?.[mode];
+  if (!opt?.distance_m) return '';
+  const label = {walk:'步行',taxi:'打车',transit:'地铁',drive:'驾车'}[mode] || '步行';
+  const d = opt.distance_m;
+  return d < 1000 ? `${label} ${d}m` : `${label} ${(d/1000).toFixed(1)}km`;
+}
+
 const SLOT_ICON = {
   '上午景点': '🗺️', '午餐': '🥢', '下午活动': '🎒', '晚餐': '🍜', '夜景': '🌃',
   '出发': '🚄', '住宿': '🏠', '咖啡': '☕', '休闲': '🌿',
@@ -1503,6 +1898,105 @@ function drawAnchorCircle(lng, lat, radius_m, name) {
   });
   map.add(anchorCircle);
   map.add(anchorMarker);
+}
+
+// ── v1.10 Clarify Round ──────────────────────────────────────────────────────
+function renderClarifyQuestion(data, tripId) {
+  const { idx, text, options } = data;
+  const wrap = document.createElement('div');
+  wrap.className = 'chat-msg bot clarify-question-wrap';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.textContent = text;
+  wrap.appendChild(bubble);
+
+  const chips = document.createElement('div');
+  chips.className = 'clarify-chips';
+
+  const allOptions = [...options, '自定义…'];
+  allOptions.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'clarify-chip';
+    btn.textContent = (i < options.length ? String.fromCharCode(65 + i) + ' ' : 'D ') + opt;
+    btn.addEventListener('click', () => {
+      if (opt === '自定义…') {
+        _showCustomInput(wrap, idx, tripId);
+      } else {
+        _submitAnswer(idx, opt, false, tripId, wrap);
+      }
+    });
+    chips.appendChild(btn);
+  });
+
+  const skipBtn = document.createElement('button');
+  skipBtn.className = 'clarify-chip clarify-skip';
+  skipBtn.textContent = '跳过 →';
+  skipBtn.addEventListener('click', () => _submitAnswer(idx, null, true, tripId, wrap));
+  chips.appendChild(skipBtn);
+
+  wrap.appendChild(chips);
+  $('messages').appendChild(wrap);
+  $('messages').scrollTop = $('messages').scrollHeight;
+
+  const timeout = setTimeout(() => _submitAnswer(idx, null, true, tripId, wrap), 30000);
+  wrap._clarifyTimeout = timeout;
+}
+
+function _showCustomInput(wrap, idx, tripId) {
+  if (wrap.querySelector('.clarify-custom-input')) return;
+  const row = document.createElement('div');
+  row.className = 'clarify-custom-input';
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.placeholder = '输入你的想法…';
+  inp.className = 'clarify-custom-text';
+  const confirmBtn = document.createElement('button');
+  confirmBtn.textContent = '确认';
+  confirmBtn.className = 'clarify-chip';
+  confirmBtn.addEventListener('click', () => {
+    if (inp.value.trim()) _submitAnswer(idx, inp.value.trim(), false, tripId, wrap);
+  });
+  row.appendChild(inp);
+  row.appendChild(confirmBtn);
+  wrap.appendChild(row);
+  inp.focus();
+}
+
+async function _submitAnswer(idx, choice, skipped, tripId, wrap) {
+  if (wrap._clarifyTimeout) clearTimeout(wrap._clarifyTimeout);
+  wrap.querySelectorAll('.clarify-chip').forEach(b => b.disabled = true);
+
+  if (!skipped && choice) pushMsg('user', choice);
+
+  const resp = await fetch(`/api/plan/${tripId}/answer`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ idx, choice: skipped ? null : choice, skipped }),
+  });
+  if (!resp.ok || !resp.body) return;
+
+  const reader = resp.body.getReader();
+  const dec = new TextDecoder();
+  let buf = '';
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    const blocks = buf.split('\n\n');
+    buf = blocks.pop() || '';
+    for (const blk of blocks) {
+      let ev = '', dat = null;
+      for (const line of blk.split('\n')) {
+        if (line.startsWith('event:')) ev = line.slice(6).trim();
+        if (line.startsWith('data:')) {
+          try { dat = JSON.parse(line.slice(5).trim()); } catch (_) {}
+        }
+      }
+      if (!ev) continue;
+      handleSSEEvent(ev, dat);
+    }
+  }
 }
 </script>
 </body>
