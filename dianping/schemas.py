@@ -295,6 +295,22 @@ TripMode = Literal[
 HubType = Literal["train", "highspeed", "airport", "bus"]
 
 
+class RequiredSlot(BaseModel):
+    """用户在初始查询里明确指定的 slot 类型约束, 例如 '下午要喝下午茶' / '晚上想吃西餐'."""
+
+    slot_name: str  # 对应 _SLOT_DEFS 的 key, 例 "下午茶" / "晚饭"
+    categories: list[str] = Field(default_factory=list)  # 用户指定的口味/类型
+
+
+class WaypointResolution(BaseModel):
+    """Geocoded result for a single user-specified waypoint."""
+
+    text: str  # original user text
+    name: str  # Amap-resolved name
+    lng: float
+    lat: float
+
+
 class ParsedIntent(BaseModel):
     city: str
     days: int
@@ -327,6 +343,13 @@ class ParsedIntent(BaseModel):
     anchor_lng: Optional[float] = None  # 高德 geocode 解析后的坐标
     anchor_lat: Optional[float] = None
     anchor_resolved_name: Optional[str] = None  # 高德标准化地名
+    # v1.9.2 用户在初始查询里指定的 slot 类型约束 ("下午茶" / "西餐" 等)
+    required_slots: list[RequiredSlot] = Field(default_factory=list)
+    # v1.9.3 multi-waypoint corridor search
+    waypoints: list[str] = Field(default_factory=list)  # raw names from LLM
+    geocoded_waypoints: list[WaypointResolution] = Field(
+        default_factory=list
+    )  # resolved
 
 
 class ProfilerOutput(BaseModel):
@@ -458,3 +481,19 @@ class UserProfile(BaseModel):
     history: list[dict] = Field(default_factory=list)
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
+
+class ClarifyQuestion(BaseModel):
+    """一个澄清问题，由 QuestionGenerator 生成。"""
+
+    idx: int
+    text: str
+    options: list[str]  # 3 个预设选项；前端自动追加"自定义"和"跳过"
+
+
+class ClarifyAnswer(BaseModel):
+    """用户对一个澄清问题的回答。"""
+
+    idx: int
+    choice: Optional[str] = None  # 选项文字 or 用户自定义输入
+    skipped: bool = False
