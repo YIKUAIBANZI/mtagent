@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+from collections import Counter
 from dataclasses import dataclass, field
 from datetime import time as _t
 
@@ -28,6 +29,7 @@ _DINNER_WINDOW = (_t(18, 0), _t(20, 0))
 _CLUSTER_KM_DEFAULT = 5.0
 _CLUSTER_KM_CROSS_DISTRICT = 10.0
 _TRANSIT_MAX_MIN = 30
+_MAX_SAME_ROLE = 2
 
 
 @dataclass(frozen=True)
@@ -130,8 +132,47 @@ def _check_transit(day: DayPlan, intent: ParsedIntent) -> CheckResult:
     return CheckResult(name="transit_ok", passed=passed, detail=detail)
 
 
+def _role_of(stop: Stop) -> str:
+    return _infer_role_from_categories(stop.poi.categories)
+
+
+def _check_type_diversity(day: DayPlan, intent: ParsedIntent) -> CheckResult:
+    counts = Counter(_role_of(s) for s in day.stops)
+    over = [(r, n) for r, n in counts.items() if n > _MAX_SAME_ROLE]
+    passed = not over
+    detail = (
+        "" if passed else "role over cap: " + ", ".join(f"{r}={n}" for r, n in over)
+    )
+    return CheckResult(name="type_diversity", passed=passed, detail=detail)
+
+
+def _check_no_lunch_skipped(day: DayPlan, intent: ParsedIntent) -> CheckResult:
+    """如果午餐窗口内没有餐饮 stop，且有非餐饮 stop 与窗口重叠，视为跳餐。
+
+    使用重叠判断 (arrive <= hi AND leave >= lo) 而非完全覆盖判断，
+    原因：测试用例 museum 12:00-14:00 vs window 11:30-13:30，
+    arrive=12:00 > lo=11:30，完全覆盖条件不满足，但确实占据了午餐时段。
+    """
+    lo, hi = _LUNCH_WINDOW
+    has_meal = any(_is_meal_stop(s) and _arrival_in(s, lo, hi) for s in day.stops)
+    if has_meal:
+        return CheckResult(name="no_lunch_skipped", passed=True)
+    blockers = [
+        s
+        for s in day.stops
+        if not _is_meal_stop(s) and s.arrival_time <= hi and s.leave_time >= lo
+    ]
+    passed = not blockers
+    detail = (
+        ""
+        if passed
+        else f"non-meal stop '{blockers[0].poi.name}' occupies lunch window"
+    )
+    return CheckResult(name="no_lunch_skipped", passed=passed, detail=detail)
+
+
 def validate_day(day: DayPlan, intent: ParsedIntent) -> ValidationReport:
-    """运行规则集. Task 4: stop_count + meal windows + cluster + transit."""
+    """运行 7 条规则 (Task 5 完成全部规则集)."""
     return ValidationReport(
         checks=[
             _check_stop_count(day, intent),
@@ -139,5 +180,7 @@ def validate_day(day: DayPlan, intent: ParsedIntent) -> ValidationReport:
             _check_has_meal(day, _DINNER_WINDOW, "has_dinner"),
             _check_cluster(day, intent),
             _check_transit(day, intent),
+            _check_type_diversity(day, intent),
+            _check_no_lunch_skipped(day, intent),
         ]
     )

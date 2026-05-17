@@ -260,3 +260,71 @@ def test_transit_ok_fails_when_a_leg_exceeds_30min():
     chk = next(c for c in validate_day(day, _intent()).checks if c.name == "transit_ok")
     assert not chk.passed
     assert "45" in chk.detail
+
+
+def test_type_diversity_passes_with_mixed_roles():
+    from agents.route_validator import validate_day
+
+    day = _day(
+        [
+            _stop("上午景点", 9, 12, poi=_poi("a", cats=["景点"])),
+            _stop("午饭", 12, 13, poi=_poi("b", cats=["美食"])),
+            _stop("下午", 13, 17, poi=_poi("c", cats=["购物"])),
+            _stop("晚饭", 18, 19, poi=_poi("d", cats=["美食"])),
+        ]
+    )
+    assert next(
+        c for c in validate_day(day, _intent()).checks if c.name == "type_diversity"
+    ).passed
+
+
+def test_type_diversity_fails_when_3_same_role():
+    """3 个景点 (→role city_essential) -> 队友规律: 立即疲劳."""
+    from agents.route_validator import validate_day
+
+    day = _day(
+        [
+            _stop("上午景点", 9, 12, poi=_poi("a", cats=["景点"])),
+            _stop("午饭", 12, 13, poi=_poi("b", cats=["美食"])),
+            _stop("下午", 13, 17, poi=_poi("c", cats=["景点"])),
+            _stop("晚饭", 18, 19, poi=_poi("d", cats=["景点"])),
+        ]
+    )
+    chk = next(
+        c for c in validate_day(day, _intent()).checks if c.name == "type_diversity"
+    )
+    assert not chk.passed
+    # _infer_role_from_categories(['景点']) returns 'city_essential'
+    assert "city_essential" in chk.detail
+
+
+def test_no_lunch_skipped_passes_when_meal_in_window():
+    from agents.route_validator import validate_day
+
+    day = _day(
+        [
+            _stop("上午景点", 9, 12, poi=_poi("a", cats=["景点"])),
+            _stop("午饭", 12, 13, poi=_poi("b", cats=["美食"])),
+            _stop("晚饭", 18, 19, poi=_poi("d", cats=["美食"])),
+        ]
+    )
+    assert next(
+        c for c in validate_day(day, _intent()).checks if c.name == "no_lunch_skipped"
+    ).passed
+
+
+def test_no_lunch_skipped_fails_when_attraction_occupies_lunch_slot():
+    from agents.route_validator import validate_day
+
+    # 12:00-13:30 全段被景点占据, 且无餐饮在此窗口 → 跳餐
+    day = _day(
+        [
+            _stop("上午景点", 9, 11, poi=_poi("a", cats=["景点"])),
+            _stop("午饭", 12, 14, poi=_poi("museum", cats=["景点"])),
+            _stop("晚饭", 18, 19, poi=_poi("d", cats=["美食"])),
+        ]
+    )
+    chk = next(
+        c for c in validate_day(day, _intent()).checks if c.name == "no_lunch_skipped"
+    )
+    assert not chk.passed
