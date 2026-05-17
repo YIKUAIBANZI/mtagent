@@ -97,6 +97,70 @@ class PlannerLLMError(Exception):
         super().__init__(f"day {day_idx} LLM failed: {original!r}")
 
 
+def _build_must_visit_slot_hints(
+    must_visit: list[str],
+    day_cluster_pois: list,
+    template,
+) -> str:
+    """Pre-assign must_visit POIs to best-matching slots, return a compact LLM hint.
+
+    Example output:
+      "故宫→上午景点(poi_openshopid=oid_gugong, name=故宫博物院); 长城→下午(poi_openshopid=oid_changcheng, name=长城景区)"
+
+    Returns empty string when must_visit is empty or no matching POI found.
+    """
+    if not must_visit:
+        return ""
+
+    scenic_slots = [s for s in template.slots if not s.is_meal and not s.optional]
+    meal_slots = [s for s in template.slots if s.is_meal and not s.optional]
+
+    hints = []
+    used_slots: set[str] = set()
+    used_oids: set[str] = set()
+
+    for must_name in must_visit:
+        poi = next(
+            (
+                p
+                for p in day_cluster_pois
+                if p.openshopid not in used_oids
+                and (must_name in p.name or p.name in must_name)
+            ),
+            None,
+        )
+        if poi is None:
+            continue
+
+        is_food = any(
+            kw in " ".join(poi.categories or []) for kw in ["美食", "餐", "food"]
+        )
+        slot_pool = meal_slots if is_food else scenic_slots
+
+        slot = next(
+            (s for s in slot_pool if s.name not in used_slots),
+            None,
+        )
+        if slot is None:
+            continue
+
+        used_slots.add(slot.name)
+        used_oids.add(poi.openshopid)
+        hints.append(
+            f"{must_name}→{slot.name}(poi_openshopid={poi.openshopid}, name={poi.name})"
+        )
+
+    if not hints:
+        return ""
+
+    return (
+        "【硬约束·必须遵守】以下 must_visit 地点已预分配到指定 slot，"
+        "必须使用这些 poi_openshopid，不得替换或省略：\n"
+        + "; ".join(hints)
+        + "。其余 slot 从 candidates 自由选。"
+    )
+
+
 class Planner:
     def __init__(
         self,
@@ -442,12 +506,10 @@ class Planner:
                     '"slot_name": "<slots 中的 name>", "arrival_time": "HH:MM", "leave_time": "HH:MM"}\n'
                     "]}\n"
                     "每个 slot 填一个 POI（optional 时段可空）。poi_openshopid 必须来自 candidates 列表。"
-                    + (
-                        f"【硬约束】intent.must_visit={intent.must_visit}，"
-                        "其中每个地名必须出现在 stops 中（名字子串匹配即可，如'长城'≈'八达岭长城'）。"
-                        "如有多个 must_visit，分配到不同 slot。漏掉任何一个视为输出无效。"
-                        if intent.must_visit
-                        else ""
+                    + _build_must_visit_slot_hints(
+                        must_visit=list(intent.must_visit or []),
+                        day_cluster_pois=day_cluster_pois,
+                        template=template,
                     )
                     + (
                         "【重要】用户指定了以下 slot 的口味/类型约束，必须优先从 categories 匹配的 POI 中选取："
