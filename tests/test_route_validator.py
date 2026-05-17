@@ -35,7 +35,7 @@ def test_validation_report_score_basic():
 
 from datetime import time as _t
 
-from dianping.schemas import DayPlan, ParsedIntent, POI, Stop, TimeSlot
+from dianping.schemas import DayPlan, ParsedIntent, POI, RouteDraft, Stop, TimeSlot
 
 
 def _poi(
@@ -330,7 +330,6 @@ def test_no_lunch_skipped_fails_when_attraction_occupies_lunch_slot():
     assert not chk.passed
 
 
-from dianping.schemas import RouteDraft
 
 
 def test_validate_route_returns_one_report_per_day():

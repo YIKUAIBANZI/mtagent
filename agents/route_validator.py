@@ -13,7 +13,7 @@ from datetime import time as _t
 from agents.anchor import _haversine_km
 from agents.candidate_pool import _infer_role_from_categories
 from agents.tools import default_pace_for_traveler
-from dianping.schemas import DayPlan, PaceLevel, ParsedIntent, Stop
+from dianping.schemas import DayPlan, PaceLevel, ParsedIntent, RouteDraft, Stop
 
 
 # 队友调研: 一天 stops 数 = 节奏档位
