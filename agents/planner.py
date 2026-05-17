@@ -442,7 +442,24 @@ class Planner:
                     '"slot_name": "<slots 中的 name>", "arrival_time": "HH:MM", "leave_time": "HH:MM"}\n'
                     "]}\n"
                     "每个 slot 填一个 POI（optional 时段可空）。poi_openshopid 必须来自 candidates 列表。"
-                    "返回必须是合法 JSON，stops 数组不能为空。"
+                    + (
+                        f"【硬约束】intent.must_visit={intent.must_visit}，"
+                        "其中每个地名必须出现在 stops 中（名字子串匹配即可，如'长城'≈'八达岭长城'）。"
+                        "如有多个 must_visit，分配到不同 slot。漏掉任何一个视为输出无效。"
+                        if intent.must_visit
+                        else ""
+                    )
+                    + (
+                        "【重要】用户指定了以下 slot 的口味/类型约束，必须优先从 categories 匹配的 POI 中选取："
+                        + "；".join(
+                            f"{rs.slot_name}→{'、'.join(rs.categories)}"
+                            for rs in intent.required_slots
+                        )
+                        + "。若 candidates 中无完全匹配，选最接近的。"
+                        if getattr(intent, "required_slots", None)
+                        else ""
+                    )
+                    + "返回必须是合法 JSON，stops 数组不能为空。"
                 ),
                 "intent": {
                     "city": intent.city,
@@ -451,6 +468,10 @@ class Planner:
                     "preferences": intent.preferences,
                     "must_visit": intent.must_visit,
                     "avoid": intent.avoid,
+                    "required_slots": [
+                        {"slot_name": rs.slot_name, "categories": rs.categories}
+                        for rs in getattr(intent, "required_slots", [])
+                    ],
                 },
                 "day_index": day_idx,
                 "anchor_district": anchor[0],
@@ -537,29 +558,88 @@ def _parse_time(s: Optional[str], default: time) -> time:
 def _synthesize_fallback_route(
     templates,
     anchors,
-    ranked_clusters,
-    intent,
+    day_clusters=None,
+    intent=None,
+    # legacy alias kept for call-sites that haven't been updated yet
+    ranked_clusters=None,
 ) -> list[DayPlan]:
     """When LLM returned empty (e.g., test stub), build a deterministic fallback.
 
     Pick the top-ranked candidate per slot from the day's cluster.
+    Must-visit POIs (intent.must_visit) are pre-assigned to their best matching
+    slot before the regular category-pool pass runs.
     """
+    clusters = day_clusters if day_clusters is not None else (ranked_clusters or [])
+    must_visit_names: list[str] = list(getattr(intent, "must_visit", None) or [])
+
     days_out: list[DayPlan] = []
-    for d, (tmpl, anchor, cluster) in enumerate(
-        zip(templates, anchors, ranked_clusters)
-    ):
+    for d, (tmpl, anchor, cluster) in enumerate(zip(templates, anchors, clusters)):
         used: set[str] = set()
+        # slot_name -> POI pre-assignments from must_visit
+        slot_assignments: dict[str, POI] = {}
+
+        # --- pre-assign must_visit POIs to best matching slots ---
+        for must_name in must_visit_names:
+            # find matching POI in this day's cluster (substring match)
+            matched_poi: Optional[POI] = None
+            for p in cluster:
+                if p.openshopid in used:
+                    continue
+                if must_name in p.name or p.name in must_name:
+                    matched_poi = p
+                    break
+            if matched_poi is None:
+                continue
+
+            is_food = matched_poi.categories and any(
+                c in ("美食", "中餐厅", "西餐厅", "火锅", "烧烤")
+                for c in matched_poi.categories
+            )
+
+            # find best unoccupied slot: prefer meal slots for food, scenic slots otherwise
+            best_slot = None
+            for slot in tmpl.slots:
+                if slot.optional:
+                    continue
+                if slot.name in slot_assignments:
+                    continue
+                slot_is_meal = slot.is_meal
+                if is_food and slot_is_meal:
+                    best_slot = slot
+                    break
+                if not is_food and not slot_is_meal:
+                    if any(c in slot.category_pool for c in matched_poi.categories):
+                        best_slot = slot
+                        break
+
+            if best_slot is None:
+                # fallback: any unoccupied slot whose category_pool matches
+                for slot in tmpl.slots:
+                    if slot.optional:
+                        continue
+                    if slot.name in slot_assignments:
+                        continue
+                    if any(c in slot.category_pool for c in matched_poi.categories):
+                        best_slot = slot
+                        break
+
+            if best_slot is not None:
+                slot_assignments[best_slot.name] = matched_poi
+                used.add(matched_poi.openshopid)
+
+        # --- fill all slots (use pre-assignment or category-pool match) ---
         stops: list[Stop] = []
         for slot in tmpl.slots:
             if slot.optional:
                 continue
-            picked: Optional[POI] = None
-            for p in cluster:
-                if p.openshopid in used:
-                    continue
-                if any(c in slot.category_pool for c in p.categories):
-                    picked = p
-                    break
+            picked: Optional[POI] = slot_assignments.get(slot.name)
+            if picked is None:
+                for p in cluster:
+                    if p.openshopid in used:
+                        continue
+                    if any(c in slot.category_pool for c in p.categories):
+                        picked = p
+                        break
             if picked is None:
                 continue
             used.add(picked.openshopid)
