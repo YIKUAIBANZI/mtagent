@@ -123,7 +123,11 @@ async def plan_stream(
             )
             prefetch_task = asyncio.create_task(_prefetch_amap_pois(ctx.intent, []))
 
-            questions = await q_task
+            try:
+                questions = await q_task
+            except Exception:
+                prefetch_task.cancel()
+                questions = []
             ctx.clarify_questions = questions
 
             pre_pois_result = await prefetch_task
@@ -511,8 +515,6 @@ class ClarifyAnswerRequest(BaseModel):
 async def submit_clarify_answer(
     trip_id: str,
     body: ClarifyAnswerRequest,
-    request: Request,
-    client: DianpingClient = Depends(deps.get_client),
 ):
     """接收一条澄清回答。还有问题则返回下一条；全答完则触发 variant 生成。"""
     from agents.amap import AmapClient as _AmapClient
@@ -878,8 +880,6 @@ async def _run_variants(
 
     ctx.pre_fetched_pois 不为空时跳过重复 Amap 抓取。
     """
-    import asyncio as _asyncio
-
     _start_time = time.time()
 
     variant_routes: dict[str, RouteDraft] = {}
@@ -919,7 +919,7 @@ async def _run_variants(
         )
 
         # 启动所有 3 个任务并行
-        main_task = _asyncio.create_task(
+        main_task = asyncio.create_task(
             _plan_one_variant(
                 intent=intent,
                 variant="main",
@@ -931,7 +931,7 @@ async def _run_variants(
             )
         )
         alt_tasks = {
-            v: _asyncio.create_task(
+            v: asyncio.create_task(
                 _plan_one_variant(
                     intent=intent,
                     variant=v,
@@ -1049,6 +1049,9 @@ async def _run_variants(
                 },
             )
     finally:
+        if "alt_tasks" in locals():
+            for t in alt_tasks.values():
+                t.cancel()
         await amap._client.aclose()
 
     yield format_event("planner.compose_done", {})
