@@ -16,6 +16,8 @@ from typing import Optional
 from pydantic import BaseModel, Field
 
 from dianping.schemas import (
+    ClarifyAnswer,
+    ClarifyQuestion,
     Event,
     Feedback,
     ParsedIntent,
@@ -45,6 +47,10 @@ class TripContext(BaseModel):
     # key 是 variant 名 (main / low_queue / interest_first), value 是该方案完整 RouteDraft.
     # draft_route 仍存 main, 保证 GET /api/plan/{trip_id} 老前端兼容.
     variants: Optional[dict[str, RouteDraft]] = None
+    # v1.10 澄清对话轮
+    clarify_questions: list[ClarifyQuestion] = Field(default_factory=list)
+    clarify_answers: list[ClarifyAnswer] = Field(default_factory=list)
+    pre_fetched_pois: list[POI] = Field(default_factory=list)
     critic_patches: list[Patch] = Field(default_factory=list)
     user_feedback: list[Feedback] = Field(default_factory=list)
     trace: list[Event] = Field(default_factory=list)
