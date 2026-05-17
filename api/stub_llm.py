@@ -236,3 +236,19 @@ def resolve_planner_llm_stream():
 
         return _default_qwen_stream
     return stub_planner_llm_stream
+
+
+def resolve_questioner_llm() -> Callable[[str, str], Awaitable[str]]:
+    """QuestionGenerator LLM resolver.
+
+    优先用 QUESTIONER_API_KEY（DeepSeek/Kimi），回退到 Qwen，无 key 时返回 stub（空问题）。
+    """
+    if os.environ.get("QUESTIONER_API_KEY") or os.environ.get("DASHSCOPE_API_KEY"):
+        from agents.questioner import _default_llm_call
+
+        return _default_llm_call
+
+    async def _stub(system: str, user: str) -> str:
+        return '{"questions": []}'
+
+    return _stub
