@@ -110,6 +110,46 @@ async def plan_stream(
                 return
 
             yield format_event("profiler.ready", {})
+
+            # ── v1.10 Clarify Round ──────────────────────────────────────────
+            from agents.questioner import QuestionGenerator
+            from api.stub_llm import resolve_questioner_llm
+
+            qg = QuestionGenerator(llm_call=resolve_questioner_llm())
+
+            # 并行：生成问题 + 预取 POI
+            q_task = asyncio.create_task(
+                qg.generate(intent=ctx.intent, user_input=body.free_text)
+            )
+            prefetch_task = asyncio.create_task(_prefetch_amap_pois(ctx.intent, []))
+
+            questions = await q_task
+            ctx.clarify_questions = questions
+
+            pre_pois_result = await prefetch_task
+            if pre_pois_result:
+                ctx.pre_fetched_pois = pre_pois_result
+            ctx.save()
+
+            if questions:
+                yield format_event(
+                    "clarify.question",
+                    {
+                        "idx": 0,
+                        "text": questions[0].text,
+                        "options": questions[0].options,
+                    },
+                )
+                yield format_event(
+                    "trip.complete",
+                    {
+                        "trip_id": ctx.trip_id,
+                        "duration_ms": int((time.time() - start_time) * 1000),
+                        "status": "awaiting_clarification",
+                    },
+                )
+                return  # 等待 POST /answer
+            # ── 无问题：直接进 variant 生成 ──────────────────────────────────
         except Exception as exc:
             yield format_event(
                 "error",
@@ -461,6 +501,80 @@ async def get_trip(trip_id: str):
         raise HTTPException(404, f"trip not found: {trip_id}")
 
 
+class ClarifyAnswerRequest(BaseModel):
+    idx: int
+    choice: Optional[str] = None
+    skipped: bool = False
+
+
+@router.post("/plan/{trip_id}/answer")
+async def submit_clarify_answer(
+    trip_id: str,
+    body: ClarifyAnswerRequest,
+    request: Request,
+    client: DianpingClient = Depends(deps.get_client),
+):
+    """接收一条澄清回答。还有问题则返回下一条；全答完则触发 variant 生成。"""
+    from agents.amap import AmapClient as _AmapClient
+    from agents.planner import Planner as _Planner
+    from dianping.schemas import ClarifyAnswer
+
+    try:
+        ctx = TripContext.load(trip_id)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="trip not found")
+
+    ctx.clarify_answers.append(
+        ClarifyAnswer(idx=body.idx, choice=body.choice, skipped=body.skipped)
+    )
+
+    answered = len(ctx.clarify_answers)
+    total = len(ctx.clarify_questions)
+
+    async def event_stream() -> AsyncIterator[str]:
+        if answered < total:
+            next_q = ctx.clarify_questions[answered]
+            ctx.save()
+            yield format_event(
+                "clarify.question",
+                {"idx": next_q.idx, "text": next_q.text, "options": next_q.options},
+            )
+            return
+
+        yield format_event("clarify.done", {})
+
+        intent = ctx.intent
+        if ctx.clarify_answers:
+            notes = []
+            for ans in ctx.clarify_answers:
+                if not ans.skipped and ans.choice:
+                    q_text = (
+                        ctx.clarify_questions[ans.idx].text
+                        if ans.idx < len(ctx.clarify_questions)
+                        else ""
+                    )
+                    notes.append(f"{q_text}→{ans.choice}")
+            if notes:
+                extra = "【用户补充偏好】" + "；".join(notes)
+                intent = intent.model_copy(update={"extra_clarify_context": extra})
+
+        amap = _AmapClient(key=os.environ.get("AMAP_KEY", ""))
+        planner = _Planner(
+            client=None,
+            llm_call=resolve_planner_llm(),
+            llm_call_stream=resolve_planner_llm_stream(),
+        )
+        ctx.save()
+
+        try:
+            async for chunk in _run_variants(ctx, intent, [], amap, planner):
+                yield chunk
+        except Exception as exc:
+            yield format_event("error", {"phase": "variants", "message": str(exc)})
+
+    return StreamingResponse(event_stream(), media_type="text/event-stream")
+
+
 # v1.9 Stage 2: UserProfile endpoints ---------------------------------------
 
 
@@ -757,6 +871,355 @@ async def _compute_day_transits(day_plan, intent, amap):
     return day_plan.day_index, segments
 
 
+async def _run_variants(
+    ctx: "TripContext", intent, pois: list, amap, planner
+) -> "AsyncIterator[str]":
+    """Variant 生成 SSE 流（plan_stream 和 answer 端点共用）。
+
+    ctx.pre_fetched_pois 不为空时跳过重复 Amap 抓取。
+    """
+    import asyncio as _asyncio
+
+    _start_time = time.time()
+
+    variant_routes: dict[str, RouteDraft] = {}
+
+    # ── 并行规划 3 个 variant (原串行 3×8s → 并行 ~8s) ──────────────────────
+    _VARIANTS = ["main", "low_queue", "interest_first"]
+    partial_bufs: dict[str, list] = {v: [] for v in _VARIANTS}
+
+    def _make_partial_cb(v: str):
+        async def _cb(day_idx: int, names: list[str]) -> None:
+            partial_bufs[v].append((day_idx, names))
+
+        return _cb
+
+    # v1.9.4: 多 waypoint 时扩展 anchor_radius_km，避免 planner 把远处 waypoint 排除
+    _gwps = getattr(intent, "geocoded_waypoints", [])
+    if len(_gwps) >= 2:
+        from agents.anchor import _haversine_km as _hv_pre
+
+        _max_wp_dist = max(
+            _hv_pre((_gwps[0].lng, _gwps[0].lat), (wp.lng, wp.lat)) for wp in _gwps[1:]
+        )
+        if _max_wp_dist > (intent.anchor_radius_km or 3.0):
+            intent = intent.model_copy(update={"anchor_radius_km": _max_wp_dist + 5.0})
+
+    from agents.planner_instant import plan_one_variant as _plan_one_variant
+
+    try:
+        yield format_event("variant.main_started", {"variant": "main", "index": 0})
+
+        # v1.9.4: 预取 Amap POI 一次，避免 3 个并行任务各自重复抓（触发高德 QPS 限速）
+        # ctx.pre_fetched_pois 不为空时复用，否则现抓
+        pre_pois = (
+            ctx.pre_fetched_pois
+            if ctx.pre_fetched_pois
+            else await _prefetch_amap_pois(intent, pois)
+        )
+
+        # 启动所有 3 个任务并行
+        main_task = _asyncio.create_task(
+            _plan_one_variant(
+                intent=intent,
+                variant="main",
+                planner=planner,
+                amap=amap,
+                pois=pois,
+                on_partial=_make_partial_cb("main"),
+                pre_fetched_pois=pre_pois,
+            )
+        )
+        alt_tasks = {
+            v: _asyncio.create_task(
+                _plan_one_variant(
+                    intent=intent,
+                    variant=v,
+                    planner=planner,
+                    amap=amap,
+                    pois=pois,
+                    on_partial=_make_partial_cb(v),
+                    pre_fetched_pois=pre_pois,
+                )
+            )
+            for v in ["low_queue", "interest_first"]
+        }
+
+        def _stops_payload(vp):
+            return [
+                {
+                    "poi_name": s.poi.name,
+                    "poi_openshopid": s.poi.openshopid,
+                    "categories": s.poi.categories,
+                    "slot_name": s.slot.name,
+                    "arrival_time": s.arrival_time.strftime("%H:%M"),
+                    "leave_time": s.leave_time.strftime("%H:%M"),
+                    "avgprice": s.poi.avgprice,
+                    "star": s.poi.star,
+                    "longitude": s.poi.longitude,
+                    "latitude": s.poi.latitude,
+                }
+                for s in vp.day_plan.stops
+            ]
+
+        # ── 等 main 完成，立即 emit ──
+        vp = await main_task
+        for day_idx, names in partial_bufs["main"]:
+            yield format_event(
+                "planner.day_partial",
+                {"day_index": day_idx, "names": names, "variant": "main"},
+            )
+        day = vp.day_plan
+        yield format_event(
+            "planner.day_done",
+            {
+                "day_index": day.day_index,
+                "variant": "main",
+                "anchor_district": day.anchor_district,
+                "stops": _stops_payload(vp),
+                "transit_segments": vp.transit_segments,
+            },
+        )
+        if vp.error:
+            yield format_event(
+                "planner.day_done_fallback",
+                {"day_index": day.day_index, "variant": "main", "reason": vp.error},
+            )
+        day.transit_segments = vp.transit_segments
+        variant_routes["main"] = RouteDraft(days=[day], summary="main variant")
+        ctx.variants = dict(variant_routes)
+        ctx.draft_route = variant_routes["main"]
+        ctx.save()
+        yield format_event(
+            "variant.main_done",
+            {
+                "variant": "main",
+                "stop_count": len(day.stops),
+                "stop_names": [s.poi.name for s in day.stops],
+                "has_fallback": vp.error is not None,
+            },
+        )
+
+        # ── 等备选（此时通常已完成），emit ──
+        for vi, variant in enumerate(["low_queue", "interest_first"], 1):
+            yield format_event(
+                "variant.branch_started", {"variant": variant, "index": vi}
+            )
+            vp = await alt_tasks[variant]
+            for day_idx, names in partial_bufs[variant]:
+                yield format_event(
+                    "planner.day_partial",
+                    {"day_index": day_idx, "names": names, "variant": variant},
+                )
+            day = vp.day_plan
+            yield format_event(
+                "planner.day_done",
+                {
+                    "day_index": day.day_index,
+                    "variant": variant,
+                    "anchor_district": day.anchor_district,
+                    "stops": _stops_payload(vp),
+                    "transit_segments": vp.transit_segments,
+                },
+            )
+            if vp.error:
+                yield format_event(
+                    "planner.day_done_fallback",
+                    {
+                        "day_index": day.day_index,
+                        "variant": variant,
+                        "reason": vp.error,
+                    },
+                )
+            day.transit_segments = vp.transit_segments
+            variant_routes[variant] = RouteDraft(
+                days=[day], summary=f"{variant} variant"
+            )
+            ctx.variants = dict(variant_routes)
+            if "main" in ctx.variants:
+                ctx.draft_route = ctx.variants["main"]
+            ctx.save()
+            yield format_event(
+                "variant.branch_done",
+                {
+                    "variant": variant,
+                    "stop_count": len(day.stops),
+                    "stop_names": [s.poi.name for s in day.stops],
+                    "has_fallback": vp.error is not None,
+                },
+            )
+    finally:
+        await amap._client.aclose()
+
+    yield format_event("planner.compose_done", {})
+    yield format_event(
+        "planner.done",
+        {
+            "summary": "三方案已完成",
+            "variants": {
+                v: r.model_dump(mode="json") for v, r in variant_routes.items()
+            },
+        },
+    )
+    yield format_event(
+        "trip.complete",
+        {
+            "trip_id": ctx.trip_id,
+            "duration_ms": int((time.time() - _start_time) * 1000),
+            "status": "ok",
+            "phases": {},
+            "mode": "instant",
+        },
+    )
+
+
+# v1.9.4: Amap POI 预取 helper — 供并行 variant 共享，避免各自重复抓触发 QPS 限速
+async def _prefetch_amap_pois(intent, base_pois: list) -> list | None:
+    """执行 intent 对应的所有 Amap fetch_around，返回合并后的 pois 列表。
+    仅在 anchor_explore/layover 模式下生效；否则返回 None（plan_one_variant 自行处理）。
+    """
+    from agents.planner_instant import (
+        _slot_typecodes,
+    )
+    from agents.anchor import (
+        _haversine_km,
+        _norm_name,
+        fetch_around,
+        DEFAULT_AROUND_TYPES,
+    )
+    from agents.poi_cache import _around_to_poi
+
+    if (
+        intent.anchor_lng is None
+        or intent.anchor_lat is None
+        or intent.trip_mode not in ("anchor_explore", "layover_eat", "layover_explore")
+    ):
+        return None  # 非 anchor 模式，不预取
+
+    pois = list(base_pois)
+    anchor_pt = (intent.anchor_lng, intent.anchor_lat)
+    radius_m = int((intent.anchor_radius_km or 3.0) * 1000)
+    radius_km = radius_m / 1000.0
+    types = (
+        "050000" if intent.trip_mode == "layover_eat" else "050000|060000|080000|110000"
+    )
+
+    seen_keys: set = set()
+
+    def _key(p):
+        return (_norm_name(p.name), round(p.latitude, 3), round(p.longitude, 3))
+
+    # 主 anchor fetch
+    try:
+        around = await fetch_around(
+            lng=intent.anchor_lng,
+            lat=intent.anchor_lat,
+            radius_m=radius_m,
+            types=types,
+            limit=50,
+        )
+    except Exception:
+        around = []
+    amap_enriched = [_around_to_poi(ap, intent.city, None) for ap in around]
+
+    kept_local = [
+        p
+        for p in pois
+        if _haversine_km(anchor_pt, (p.longitude, p.latitude)) <= radius_km
+    ]
+    for p in kept_local:
+        seen_keys.add(_key(p))
+    kept_amap = [
+        ap
+        for ap in amap_enriched
+        if _haversine_km(anchor_pt, (ap.longitude, ap.latitude)) <= radius_km
+        and _key(ap) not in seen_keys
+    ]
+    for ap in kept_amap:
+        seen_keys.add(_key(ap))
+    pois = kept_local + kept_amap
+
+    # 额外 waypoint fetch + 强制注入 waypoint 本身为高优先级 POI
+    extra_wps = getattr(intent, "geocoded_waypoints", [])
+    if len(extra_wps) >= 2:
+        existing_oids = {p.openshopid for p in pois}
+
+        # 把所有 waypoint 合成 city_essential POI 强制进候选池（无论 mock 有没有）
+        for wp in extra_wps:
+            wp_oid = f"waypoint_{wp.name[:8]}"
+            if wp_oid not in existing_oids:
+                from dianping.schemas import EnrichedLabel, POI as _POI
+
+                wp_poi = _POI(
+                    openshopid=wp_oid,
+                    name=wp.name,
+                    city=intent.city,
+                    latitude=wp.lat,
+                    longitude=wp.lng,
+                    categories=["旅游景点"],
+                    star=4.8,
+                    avgprice=0,
+                    business_hour="09:00-18:00",
+                )
+                wp_poi.enriched = EnrichedLabel(
+                    poi_role="city_essential",
+                    universal_level="high",
+                    must_consider=True,
+                    manual_priority=99,  # 最高优先级，保证进 top-30
+                    planning_tags=["landmark"],
+                    min_stay_minutes=90,
+                    max_stay_minutes=180,
+                )
+                pois.insert(0, wp_poi)  # 顶部插入
+                existing_oids.add(wp_oid)
+
+        for wp in extra_wps[1:]:
+            try:
+                extra = await fetch_around(
+                    lng=wp.lng,
+                    lat=wp.lat,
+                    radius_m=int((intent.anchor_radius_km or 2.0) * 1000),
+                    types=DEFAULT_AROUND_TYPES,
+                    limit=20,
+                )
+            except Exception:
+                extra = []
+            for ap in extra:
+                p = _around_to_poi(ap, intent.city, None)
+                if p.openshopid not in existing_oids:
+                    pois.append(p)
+                    existing_oids.add(p.openshopid)
+        # 扩展 anchor_radius_km 覆盖最远 waypoint，避免 planner 的 anchor 半径硬约束排除远处地点
+        max_wp_dist = max(
+            _haversine_km((extra_wps[0].lng, extra_wps[0].lat), (wp.lng, wp.lat))
+            for wp in extra_wps[1:]
+        )
+        if max_wp_dist > (intent.anchor_radius_km or 3.0):
+            intent = intent.model_copy(update={"anchor_radius_km": max_wp_dist + 5.0})
+
+    # category-targeted fetch
+    target_tc = _slot_typecodes(getattr(intent, "required_slots", []))
+    if target_tc:
+        try:
+            cat_around = await fetch_around(
+                lng=intent.anchor_lng,
+                lat=intent.anchor_lat,
+                radius_m=radius_m,
+                types=target_tc,
+                limit=15,
+            )
+        except Exception:
+            cat_around = []
+        existing_oids = {p.openshopid for p in pois}
+        for ap in cat_around:
+            p = _around_to_poi(ap, intent.city, None)
+            if p.openshopid not in existing_oids:
+                pois.append(p)
+                existing_oids.add(p.openshopid)
+
+    return pois
+
+
 # v1.7 即时出发: 三方案 SSE 流式 ----------------------------------------------------
 
 
@@ -846,119 +1309,5 @@ async def _stream_instant_variants(
         llm_call_stream=resolve_planner_llm_stream(),
     )
 
-    variant_routes: dict[str, RouteDraft] = {}
-
-    try:
-        for vi, variant in enumerate(["main", "low_queue", "interest_first"]):
-            is_main = variant == "main"
-            yield format_event(
-                f"variant.{'main_started' if is_main else 'branch_started'}",
-                {"variant": variant, "index": vi},
-            )
-
-            # on_partial: 转发 day_partial 事件, 带 variant 字段
-            # 用 list 作 buffer (单线程 generator 简化, 不需 Queue)
-            partial_buffer: list[tuple[int, list[str]]] = []
-
-            async def _on_partial(day_idx: int, names: list[str], _v=variant):
-                partial_buffer.append((day_idx, names))
-
-            vp = await plan_one_variant(
-                intent=intent,
-                variant=variant,
-                planner=planner,
-                amap=amap,
-                pois=pois,
-                on_partial=_on_partial,
-            )
-
-            # 把累计的 partials 一次性 emit (v1.7 instant 每 variant 只有单天, partial 顺序无歧义)
-            for day_idx, names in partial_buffer:
-                yield format_event(
-                    "planner.day_partial",
-                    {"day_index": day_idx, "names": names, "variant": variant},
-                )
-
-            # emit day_done with variant tag
-            day = vp.day_plan
-            yield format_event(
-                "planner.day_done",
-                {
-                    "day_index": day.day_index,
-                    "variant": variant,
-                    "anchor_district": day.anchor_district,
-                    "stops": [
-                        {
-                            "poi_name": s.poi.name,
-                            "poi_openshopid": s.poi.openshopid,
-                            "categories": s.poi.categories,
-                            "slot_name": s.slot.name,
-                            "arrival_time": s.arrival_time.strftime("%H:%M"),
-                            "leave_time": s.leave_time.strftime("%H:%M"),
-                            "avgprice": s.poi.avgprice,
-                            "star": s.poi.star,
-                            "longitude": s.poi.longitude,
-                            "latitude": s.poi.latitude,
-                        }
-                        for s in day.stops
-                    ],
-                    "transit_segments": vp.transit_segments,
-                },
-            )
-
-            if vp.error:
-                yield format_event(
-                    "planner.day_done_fallback",
-                    {
-                        "day_index": day.day_index,
-                        "variant": variant,
-                        "reason": vp.error,
-                    },
-                )
-
-            # 保存到 ctx.variants
-            day.transit_segments = vp.transit_segments
-            variant_routes[variant] = RouteDraft(
-                days=[day],
-                summary=f"{variant} variant",
-            )
-
-            yield format_event(
-                f"variant.{'main_done' if is_main else 'branch_done'}",
-                {
-                    "variant": variant,
-                    "stop_count": len(day.stops),
-                    "stop_names": [s.poi.name for s in day.stops],
-                    "has_fallback": vp.error is not None,
-                },
-            )
-            stamp(f"variant_{variant}_done")
-    finally:
-        await amap._client.aclose()
-
-    # 持久化 ctx
-    ctx.variants = variant_routes
-    if "main" in variant_routes:
-        ctx.draft_route = variant_routes["main"]  # GET /api/plan/{id} 老前端兼容
-    ctx.save()
-
-    yield format_event("planner.compose_done", {})
-    yield format_event(
-        "planner.done",
-        {
-            "summary": "三方案已完成",
-            "variants": {
-                v: r.model_dump(mode="json") for v, r in variant_routes.items()
-            },
-        },
-    )
-    yield format_event(
-        "trip.complete",
-        {
-            "trip_id": ctx.trip_id,
-            "duration_ms": int((time.time() - start_time) * 1000),
-            "status": "ok",
-            "phases": phases,
-            "mode": "instant",
-        },
-    )
+    async for chunk in _run_variants(ctx, intent, pois, amap, planner):
+        yield chunk

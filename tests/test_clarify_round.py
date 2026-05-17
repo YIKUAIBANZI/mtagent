@@ -38,3 +38,33 @@ def test_trip_context_clarify_fields():
     ctx.clarify_answers = [ClarifyAnswer(idx=0, choice="A")]
     assert len(ctx.clarify_questions) == 1
     assert ctx.clarify_answers[0].choice == "A"
+
+
+def test_answer_endpoint_emits_next_question(tmp_path, monkeypatch):
+    """POST /answer 还有问题 → emit clarify.question，不触发 variant 生成。"""
+    monkeypatch.setenv("MTAGENT_TRIPS_DIR", str(tmp_path))
+
+    from agents.context import TripContext
+    from dianping.schemas import ClarifyQuestion, ParsedIntent, UserInput
+
+    ctx = TripContext.create(user_input=UserInput(free_text="去北京"))
+    ctx.intent = ParsedIntent(city="北京", days=1, traveler_type="情侣")
+    ctx.clarify_questions = [
+        ClarifyQuestion(idx=0, text="吃什么？", options=["A", "B", "C"]),
+        ClarifyQuestion(idx=1, text="约好了吗？", options=["X", "Y", "Z"]),
+    ]
+    ctx.save()
+
+    from fastapi.testclient import TestClient
+
+    from api.main import app
+
+    with TestClient(app) as tc:
+        resp = tc.post(
+            f"/api/plan/{ctx.trip_id}/answer",
+            json={"idx": 0, "choice": "A"},
+        )
+    assert resp.status_code == 200
+    text = resp.text
+    assert "clarify.question" in text
+    assert "约好了吗" in text

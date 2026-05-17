@@ -342,6 +342,7 @@ class Planner:
         day_cluster_pois: list[POI],
         amap,
         on_partial: Optional[Callable[[int, list[str]], Awaitable[None]]] = None,
+        variant: str = "main",
     ) -> tuple[int, DayPlan, list[dict]]:
         """Single-day LLM compose with char-level streaming and on_partial callback.
 
@@ -358,6 +359,7 @@ class Planner:
             template=template,
             anchor=anchor,
             day_cluster_pois=day_cluster_pois,
+            variant=variant,
         )
 
         # Late-bind: use injected llm_call_stream if provided, else module-level
@@ -457,6 +459,7 @@ class Planner:
         template: DayTemplate,
         anchor: tuple[str, float, float],
         day_cluster_pois: list[POI],
+        variant: str = "main",
     ) -> str:
         """Build a single-day LLM payload (subset of _build_compose_payload).
 
@@ -500,7 +503,12 @@ class Planner:
                     + " 天（day_index="
                     + str(day_idx)
                     + "）。"
-                    "**输出格式必须严格如下**（注意：单天模式不输出 summary / days 数组）：\n"
+                    + {
+                        "low_queue": "【方案风格：少排队】优先选人少、排队短的小众地点，避开热门地标和网红打卡地，同等质量优先冷门。",
+                        "interest_first": "【方案风格：兴趣优先】围绕用户兴趣和个性偏好精选，选最符合用户标签的特色地点，允许牺牲便利性。",
+                        "main": "【方案风格：经典均衡】兼顾热度与质量，覆盖城市代表性景点和招牌美食。",
+                    }.get(variant, "")
+                    + "**输出格式必须严格如下**（注意：单天模式不输出 summary / days 数组）：\n"
                     '{"stops": [\n'
                     '  {"poi_openshopid": "<从 candidates 选一个>", "name": "<对应名字>", '
                     '"slot_name": "<slots 中的 name>", "arrival_time": "HH:MM", "leave_time": "HH:MM"}\n'
@@ -519,6 +527,11 @@ class Planner:
                         )
                         + "。若 candidates 中无完全匹配，选最接近的。"
                         if getattr(intent, "required_slots", None)
+                        else ""
+                    )
+                    + (
+                        intent.extra_clarify_context + " "
+                        if intent.extra_clarify_context
                         else ""
                     )
                     + "返回必须是合法 JSON，stops 数组不能为空。"

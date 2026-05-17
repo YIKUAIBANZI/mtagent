@@ -350,6 +350,7 @@ class ParsedIntent(BaseModel):
     geocoded_waypoints: list[WaypointResolution] = Field(
         default_factory=list
     )  # resolved
+    extra_clarify_context: Optional[str] = None  # v1.10: 澄清对话补充偏好
 
 
 class ProfilerOutput(BaseModel):
