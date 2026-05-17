@@ -112,3 +112,51 @@ def test_stop_count_ok_uses_intent_pace_override():
     report = validate_day(day, _intent(traveler_type="情侣", pace="暴走"))
     chk = next(c for c in report.checks if c.name == "stop_count_ok")
     assert not chk.passed
+
+
+_MEAL_CATS = ["美食"]  # _infer_role_from_categories 会把它判为 meal
+_ATTRACTION_CATS = ["景点"]
+
+
+def test_has_lunch_passes_when_meal_stop_at_noon():
+    from agents.route_validator import validate_day
+
+    day = _day(
+        [
+            _stop("上午景点", 9, 12, poi=_poi("morning", cats=_ATTRACTION_CATS)),
+            _stop("午饭", 12, 13, poi=_poi("lunch", cats=_MEAL_CATS)),
+            _stop("下午", 13, 17, poi=_poi("aft", cats=_ATTRACTION_CATS)),
+            _stop("晚饭", 18, 19, poi=_poi("dinner", cats=_MEAL_CATS)),
+        ]
+    )
+    report = validate_day(day, _intent())
+    assert next(c for c in report.checks if c.name == "has_lunch").passed
+    assert next(c for c in report.checks if c.name == "has_dinner").passed
+
+
+def test_has_lunch_fails_when_only_attractions_at_noon():
+    from agents.route_validator import validate_day
+
+    day = _day(
+        [
+            _stop("上午景点", 9, 12, poi=_poi("a", cats=_ATTRACTION_CATS)),
+            _stop("午饭", 12, 13, poi=_poi("not_meal", cats=_ATTRACTION_CATS)),
+            _stop("下午", 13, 17, poi=_poi("b", cats=_ATTRACTION_CATS)),
+            _stop("晚饭", 18, 19, poi=_poi("dinner", cats=_MEAL_CATS)),
+        ]
+    )
+    report = validate_day(day, _intent())
+    assert not next(c for c in report.checks if c.name == "has_lunch").passed
+
+
+def test_has_dinner_fails_when_no_evening_meal():
+    from agents.route_validator import validate_day
+
+    day = _day(
+        [
+            _stop("上午景点", 9, 12, poi=_poi("a", cats=_ATTRACTION_CATS)),
+            _stop("午饭", 12, 13, poi=_poi("lunch", cats=_MEAL_CATS)),
+        ]
+    )
+    report = validate_day(day, _intent())
+    assert not next(c for c in report.checks if c.name == "has_dinner").passed
