@@ -9,6 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import time as _t
 
+from agents.anchor import _haversine_km
 from agents.candidate_pool import _infer_role_from_categories
 from agents.tools import default_pace_for_traveler
 from dianping.schemas import DayPlan, PaceLevel, ParsedIntent, Stop
@@ -23,6 +24,10 @@ GOAL_STOPS_BY_PACE: dict[PaceLevel, int] = {
 
 _LUNCH_WINDOW = (_t(11, 30), _t(13, 30))
 _DINNER_WINDOW = (_t(18, 0), _t(20, 0))
+
+_CLUSTER_KM_DEFAULT = 5.0
+_CLUSTER_KM_CROSS_DISTRICT = 10.0
+_TRANSIT_MAX_MIN = 30
 
 
 @dataclass(frozen=True)
@@ -85,12 +90,54 @@ def _check_has_meal(day: DayPlan, window: tuple[_t, _t], name: str) -> CheckResu
     return CheckResult(name=name, passed=hit, detail=detail)
 
 
+def _cluster_radius_km(intent: ParsedIntent) -> float:
+    """避免跨区约束 = False 时放宽到 10km, 默认 5km."""
+    constraints = intent.constraints or {}
+    # avoid_cross_district = True means user wants to stay in one district → keep 5km
+    # avoid_cross_district = False (explicitly) means user is OK with multi-district → 10km
+    if constraints.get("avoid_cross_district") is False:
+        return _CLUSTER_KM_CROSS_DISTRICT
+    return _CLUSTER_KM_DEFAULT
+
+
+def _check_cluster(day: DayPlan, intent: ParsedIntent) -> CheckResult:
+    pts = [(s.poi.longitude, s.poi.latitude) for s in day.stops]
+    if len(pts) < 2:
+        return CheckResult(name="cluster_ok", passed=True)
+    max_d = max(
+        _haversine_km(pts[i], pts[j])
+        for i in range(len(pts))
+        for j in range(i + 1, len(pts))
+    )
+    limit = _cluster_radius_km(intent)
+    passed = max_d <= limit
+    detail = "" if passed else f"max pairwise {max_d:.2f} km > {limit} km"
+    return CheckResult(name="cluster_ok", passed=passed, detail=detail)
+
+
+def _check_transit(day: DayPlan, intent: ParsedIntent) -> CheckResult:
+    over = [
+        (i, s.transport_to_next_minutes)
+        for i, s in enumerate(day.stops[:-1])
+        if s.transport_to_next_minutes > _TRANSIT_MAX_MIN
+    ]
+    passed = not over
+    detail = (
+        ""
+        if passed
+        else "legs over 30min: " + ", ".join(f"#{i}={m}min" for i, m in over)
+    )
+    return CheckResult(name="transit_ok", passed=passed, detail=detail)
+
+
 def validate_day(day: DayPlan, intent: ParsedIntent) -> ValidationReport:
-    """运行规则集. 当前 Task 3: stop_count_ok + has_lunch + has_dinner."""
+    """运行规则集. Task 4: stop_count + meal windows + cluster + transit."""
     return ValidationReport(
         checks=[
             _check_stop_count(day, intent),
             _check_has_meal(day, _LUNCH_WINDOW, "has_lunch"),
             _check_has_meal(day, _DINNER_WINDOW, "has_dinner"),
+            _check_cluster(day, intent),
+            _check_transit(day, intent),
         ]
     )

@@ -160,3 +160,103 @@ def test_has_dinner_fails_when_no_evening_meal():
     )
     report = validate_day(day, _intent())
     assert not next(c for c in report.checks if c.name == "has_dinner").passed
+
+
+def test_cluster_ok_passes_within_5km():
+    from agents.route_validator import validate_day
+
+    # 4 个 POI 都在深圳市中心 ~1km 内
+    day = _day(
+        [
+            _stop(
+                "上午景点",
+                9,
+                12,
+                poi=_poi("a", lat=22.5400, lng=114.0500, cats=_ATTRACTION_CATS),
+            ),
+            _stop(
+                "午饭",
+                12,
+                13,
+                poi=_poi("b", lat=22.5405, lng=114.0510, cats=_MEAL_CATS),
+            ),
+            _stop(
+                "下午",
+                13,
+                17,
+                poi=_poi("c", lat=22.5450, lng=114.0480, cats=_ATTRACTION_CATS),
+            ),
+            _stop(
+                "晚饭",
+                18,
+                19,
+                poi=_poi("d", lat=22.5420, lng=114.0530, cats=_MEAL_CATS),
+            ),
+        ]
+    )
+    report = validate_day(day, _intent())
+    assert next(c for c in report.checks if c.name == "cluster_ok").passed
+
+
+def test_cluster_ok_fails_when_max_pairwise_exceeds_5km():
+    from agents.route_validator import validate_day
+
+    # b 跑到 10km 外
+    day = _day(
+        [
+            _stop(
+                "上午景点",
+                9,
+                12,
+                poi=_poi("a", lat=22.5400, lng=114.0500, cats=_ATTRACTION_CATS),
+            ),
+            _stop(
+                "午饭",
+                12,
+                13,
+                poi=_poi("b", lat=22.6400, lng=114.0500, cats=_MEAL_CATS),
+            ),
+            _stop(
+                "下午",
+                13,
+                17,
+                poi=_poi("c", lat=22.5450, lng=114.0480, cats=_ATTRACTION_CATS),
+            ),
+            _stop(
+                "晚饭",
+                18,
+                19,
+                poi=_poi("d", lat=22.5420, lng=114.0530, cats=_MEAL_CATS),
+            ),
+        ]
+    )
+    report = validate_day(day, _intent())
+    chk = next(c for c in report.checks if c.name == "cluster_ok")
+    assert not chk.passed
+    assert "km" in chk.detail
+
+
+def test_transit_ok_passes_when_all_legs_under_30min():
+    from agents.route_validator import validate_day
+
+    day = _day(
+        [
+            _stop("上午景点", 9, 12, poi=_poi("a", cats=_ATTRACTION_CATS)),
+            _stop("午饭", 12, 13, poi=_poi("b", cats=_MEAL_CATS)),
+        ]
+    )
+    # 默认 _stop transport_to_next_minutes=20, 应通过
+    assert next(
+        c for c in validate_day(day, _intent()).checks if c.name == "transit_ok"
+    ).passed
+
+
+def test_transit_ok_fails_when_a_leg_exceeds_30min():
+    from agents.route_validator import validate_day
+
+    s1 = _stop("上午景点", 9, 12, poi=_poi("a", cats=_ATTRACTION_CATS))
+    s1 = s1.model_copy(update={"transport_to_next_minutes": 45})
+    day = _day([s1, _stop("午饭", 12, 13, poi=_poi("b", cats=_MEAL_CATS))])
+    chk = next(c for c in validate_day(day, _intent()).checks if c.name == "transit_ok")
+    assert not chk.passed
+    assert "45" in chk.detail
