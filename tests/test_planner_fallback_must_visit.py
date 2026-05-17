@@ -3,6 +3,7 @@
 import pytest
 from dianping.schemas import ParsedIntent, POI, EnrichedLabel
 from agents.tools import DaySlotSpec, DayTemplate
+from agents.planner import _synthesize_fallback_route
 from datetime import time
 
 
@@ -83,7 +84,6 @@ def template():
 
 def test_fallback_includes_all_must_visit(template):
     """_synthesize_fallback_route must assign must_visit POIs to matching slots."""
-    from agents.planner import _synthesize_fallback_route
 
     gugong = _make_scenic_poi("poi_gugong", "故宫博物院")
     changcheng = _make_scenic_poi("poi_changcheng", "长城")
@@ -114,7 +114,6 @@ def test_fallback_includes_all_must_visit(template):
 
 def test_fallback_must_visit_with_no_match_in_cluster(template):
     """If a must_visit POI is not in cluster, fallback should not crash."""
-    from agents.planner import _synthesize_fallback_route
 
     restaurant = _make_restaurant_poi("poi_rest", "随机餐厅")
 

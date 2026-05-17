@@ -568,6 +568,9 @@ def _synthesize_fallback_route(
     Pick the top-ranked candidate per slot from the day's cluster.
     Must-visit POIs (intent.must_visit) are pre-assigned to their best matching
     slot before the regular category-pool pass runs.
+
+    Note: must_visit pre-assignment is designed for single-day trips (len(templates)==1).
+    Multi-day scenarios may not assign all must_visit items — out of scope for v1.9.
     """
     clusters = day_clusters if day_clusters is not None else (ranked_clusters or [])
     must_visit_names: list[str] = list(getattr(intent, "must_visit", None) or [])
@@ -603,11 +606,10 @@ def _synthesize_fallback_route(
                     continue
                 if slot.name in slot_assignments:
                     continue
-                slot_is_meal = slot.is_meal
-                if is_food and slot_is_meal:
+                if is_food and slot.is_meal:
                     best_slot = slot
                     break
-                if not is_food and not slot_is_meal:
+                if not is_food and not slot.is_meal:
                     if any(c in slot.category_pool for c in matched_poi.categories):
                         best_slot = slot
                         break
