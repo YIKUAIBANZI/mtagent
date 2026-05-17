@@ -328,3 +328,26 @@ def test_no_lunch_skipped_fails_when_attraction_occupies_lunch_slot():
         c for c in validate_day(day, _intent()).checks if c.name == "no_lunch_skipped"
     )
     assert not chk.passed
+
+
+from dianping.schemas import RouteDraft
+
+
+def test_validate_route_returns_one_report_per_day():
+    from agents.route_validator import validate_route
+
+    good_day = _day(
+        [
+            _stop("上午景点", 9, 12, poi=_poi("a", cats=["景点"])),
+            _stop("午饭", 12, 13, poi=_poi("b", cats=["美食"])),
+            _stop("下午", 13, 17, poi=_poi("c", cats=["购物"])),
+            _stop("晚饭", 18, 19, poi=_poi("d", cats=["美食"])),
+        ]
+    )
+    bad_day = _day([_stop("上午景点", 9, 12, poi=_poi("a", cats=["景点"]))])
+
+    route = RouteDraft(days=[good_day, bad_day])
+    reports = validate_route(route, _intent())
+    assert len(reports) == 2
+    assert reports[0].score > reports[1].score
+    assert reports[0].score == 1.0  # all 7 pass for good_day

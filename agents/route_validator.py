@@ -184,3 +184,8 @@ def validate_day(day: DayPlan, intent: ParsedIntent) -> ValidationReport:
             _check_no_lunch_skipped(day, intent),
         ]
     )
+
+
+def validate_route(route: RouteDraft, intent: ParsedIntent) -> list[ValidationReport]:
+    """逐天验证. 返回与 route.days 同序的报告列表."""
+    return [validate_day(day, intent) for day in route.days]
