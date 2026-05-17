@@ -31,3 +31,84 @@ def test_validation_report_score_basic():
     assert r.passed_count == 2
     assert r.score == pytest.approx(2 / 3)
     assert [c.name for c in r.failed] == ["b"]
+
+
+from datetime import time as _t
+
+from dianping.schemas import DayPlan, ParsedIntent, POI, Stop, TimeSlot
+
+
+def _poi(
+    name: str = "x",
+    lat: float = 30.0,
+    lng: float = 120.0,
+    cats: list[str] | None = None,
+) -> POI:
+    return POI(
+        openshopid=f"id_{name}",
+        name=name,
+        city="测试市",
+        latitude=lat,
+        longitude=lng,
+        categories=cats or ["景点"],
+    )
+
+
+def _stop(slot_name: str, start_h: int, end_h: int, poi: POI | None = None) -> Stop:
+    return Stop(
+        poi=poi or _poi(),
+        slot=TimeSlot(name=slot_name, start=_t(start_h, 0), end=_t(end_h, 0)),
+        arrival_time=_t(start_h, 0),
+        leave_time=_t(end_h, 0),
+        transport_to_next_minutes=20,
+    )
+
+
+def _day(stops: list[Stop]) -> DayPlan:
+    return DayPlan(day_index=0, stops=stops)
+
+
+def _intent(traveler_type: str = "情侣", pace=None, **over) -> ParsedIntent:
+    return ParsedIntent(
+        city="测试市",
+        days=1,
+        traveler_type=traveler_type,
+        pace=pace,
+        **over,
+    )
+
+
+def test_stop_count_ok_passes_for_4_stops_balanced_traveler():
+    from agents.route_validator import validate_day
+
+    day = _day(
+        [
+            _stop("上午景点", 9, 12),
+            _stop("午饭", 12, 13),
+            _stop("下午", 13, 17),
+            _stop("晚饭", 18, 19),
+        ]
+    )
+    report = validate_day(day, _intent(traveler_type="情侣"))
+    chk = next(c for c in report.checks if c.name == "stop_count_ok")
+    assert chk.passed, chk.detail
+
+
+def test_stop_count_ok_fails_for_2_stops_balanced_traveler():
+    """当前南昌 bug 的真实形态: 情侣(适中=4) 但只跑出 2-3 stops."""
+    from agents.route_validator import validate_day
+
+    day = _day([_stop("上午景点", 9, 12), _stop("午饭", 12, 13)])
+    report = validate_day(day, _intent(traveler_type="情侣"))
+    chk = next(c for c in report.checks if c.name == "stop_count_ok")
+    assert not chk.passed
+    assert "2" in chk.detail and "4" in chk.detail
+
+
+def test_stop_count_ok_uses_intent_pace_override():
+    from agents.route_validator import validate_day
+
+    day = _day([_stop("上午景点", 9, 12)] * 4)
+    report = validate_day(day, _intent(traveler_type="情侣", pace="暴走"))
+    chk = next(c for c in report.checks if c.name == "stop_count_ok")
+    assert not chk.passed

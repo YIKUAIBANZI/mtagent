@@ -45,3 +45,29 @@ class ValidationReport:
     @property
     def failed(self) -> list[CheckResult]:
         return [c for c in self.checks if not c.passed]
+
+
+from agents.tools import default_pace_for_traveler
+from dianping.schemas import DayPlan, ParsedIntent
+
+
+def _goal_stops(intent: ParsedIntent) -> int:
+    pace: PaceLevel = intent.pace or default_pace_for_traveler(intent.traveler_type)
+    return GOAL_STOPS_BY_PACE.get(pace, 4)
+
+
+def _check_stop_count(day: DayPlan, intent: ParsedIntent) -> CheckResult:
+    goal = _goal_stops(intent)
+    n = len(day.stops)
+    passed = goal <= n <= goal + 1
+    detail = (
+        ""
+        if passed
+        else f"got {n} stops, expect [{goal}, {goal + 1}] for pace={intent.pace or default_pace_for_traveler(intent.traveler_type)}"
+    )
+    return CheckResult(name="stop_count_ok", passed=passed, detail=detail)
+
+
+def validate_day(day: DayPlan, intent: ParsedIntent) -> ValidationReport:
+    """运行 7 条规则. 当前 Task 2: 仅 stop_count_ok."""
+    return ValidationReport(checks=[_check_stop_count(day, intent)])
