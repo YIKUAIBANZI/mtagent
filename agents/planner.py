@@ -22,6 +22,7 @@ from datetime import datetime, time, timedelta
 from pathlib import Path
 from typing import Awaitable, Callable, Optional
 
+from agents.anchor import _haversine_km
 from agents.context import TripContext
 from agents.tools import (
     DayTemplate,
@@ -630,6 +631,42 @@ def _parse_time(s: Optional[str], default: time) -> time:
         return default
 
 
+# Cluster-aware fallback picking: 3-tier distance gate (5km → 8km → any)
+# Graceful degradation to prevent empty slots when no near candidate exists.
+_FALLBACK_CLUSTER_TIERS_KM: tuple[float, ...] = (5.0, 8.0, float("inf"))
+
+
+def _pick_near_centroid(
+    slot,
+    cluster: list[POI],
+    used: set[str],
+    stops_so_far: list[Stop],
+) -> Optional[POI]:
+    """Pick first category-matching POI within distance tiers from the running
+    centroid of stops_so_far. First stop (empty stops_so_far) skips distance.
+    """
+    if not stops_so_far:
+        for p in cluster:
+            if p.openshopid in used:
+                continue
+            if any(c in slot.category_pool for c in p.categories):
+                return p
+        return None
+
+    cx = sum(s.poi.longitude for s in stops_so_far) / len(stops_so_far)
+    cy = sum(s.poi.latitude for s in stops_so_far) / len(stops_so_far)
+    for limit_km in _FALLBACK_CLUSTER_TIERS_KM:
+        for p in cluster:
+            if p.openshopid in used:
+                continue
+            if not any(c in slot.category_pool for c in p.categories):
+                continue
+            d = _haversine_km((cx, cy), (p.longitude, p.latitude))
+            if d <= limit_km:
+                return p
+    return None
+
+
 def _synthesize_fallback_route(
     templates,
     anchors,
@@ -704,19 +741,14 @@ def _synthesize_fallback_route(
                 slot_assignments[best_slot.name] = matched_poi
                 used.add(matched_poi.openshopid)
 
-        # --- fill all slots (use pre-assignment or category-pool match) ---
+        # --- fill all slots (use pre-assignment or cluster-aware match) ---
         stops: list[Stop] = []
         for slot in tmpl.slots:
             if slot.optional:
                 continue
             picked: Optional[POI] = slot_assignments.get(slot.name)
             if picked is None:
-                for p in cluster:
-                    if p.openshopid in used:
-                        continue
-                    if any(c in slot.category_pool for c in p.categories):
-                        picked = p
-                        break
+                picked = _pick_near_centroid(slot, cluster, used, stops)
             if picked is None:
                 continue
             used.add(picked.openshopid)
