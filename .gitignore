@@ -8,6 +8,8 @@ __pycache__/
 
 # Runtime data
 data/trips/
+data/user_profiles/
+data/poi_cache.json
 
 # Env / secrets
 .env
