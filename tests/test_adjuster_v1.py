@@ -387,6 +387,60 @@ async def test_switch_variant_empty_variants_raises():
 
 
 @pytest.mark.asyncio
+async def test_remove_stop_syncs_variants():
+    """v1.10 P0.3 bug: remove_stop 只删 draft_route 不同步 variants → 前端地图
+    markers 从 variants 拿仍显示老 stop 数. 修后所有 variant 同步删同名 slot."""
+    a = _mk_poi("A", "A", role="city_essential")
+    b = _mk_poi("B", "B", role="meal")
+    c = _mk_poi("C", "C", role="connector")
+    d = _mk_poi("D", "D", role="meal")
+
+    ctx = _mk_ctx(stops=[_mk_stop(a, "上午景点", 9, 11)])
+    main_route = RouteDraft(
+        days=[
+            DayPlan(
+                day_index=0,
+                anchor_district="X",
+                stops=[
+                    _mk_stop(a, "上午景点", 9, 11),
+                    _mk_stop(b, "午饭", 12, 13),
+                    _mk_stop(c, "下午", 14, 17),
+                    _mk_stop(d, "晚饭", 18, 19),
+                ],
+            )
+        ]
+    )
+    lq_route = RouteDraft(
+        days=[
+            DayPlan(
+                day_index=0,
+                anchor_district="X",
+                stops=[
+                    _mk_stop(a, "上午景点", 9, 11),
+                    _mk_stop(b, "午饭", 12, 13),
+                    _mk_stop(c, "下午", 14, 17),
+                    _mk_stop(d, "晚饭", 18, 19),
+                ],
+            )
+        ]
+    )
+    ctx.variants = {"main": main_route, "low_queue": lq_route}
+    ctx.draft_route = main_route
+    adj = Adjuster()
+    await adj.remove_stop(ctx, day_index=0, slot_name="下午")
+
+    # draft_route 应该少 1
+    assert len(ctx.draft_route.days[0].stops) == 3
+    # 所有 variant 也应该同步少 1
+    for vname, vp in ctx.variants.items():
+        slot_names = [s.slot.name for s in vp.days[0].stops]
+        assert "下午" not in slot_names, (
+            f"variant {vname} 没同步删'下午' slot: {slot_names}"
+        )
+        assert len(vp.days[0].stops) == 3
+
+
+@pytest.mark.asyncio
 async def test_replace_stop_falls_back_to_amap_text_search(monkeypatch, cache_path):
     """v1.10: cache + pool 都没命中时, 用 user_hint 调 amap text_search 兜底.
 

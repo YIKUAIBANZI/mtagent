@@ -287,6 +287,28 @@ class Adjuster:
             transport_options=old_stop.transport_options,
         )
         day_plan.stops[stop_idx] = new_stop
+
+        # v1.10 P0.3: 同步 variants 里同名 slot 的 stop, 否则前端地图 markers (从
+        # variants 拿) 显示老 POI. 与 remove_stop 同步逻辑配对.
+        for vp in (ctx.variants or {}).values():
+            if vp is None or day_index >= len(vp.days):
+                continue
+            v_day = vp.days[day_index]
+            v_idx = next(
+                (i for i, s in enumerate(v_day.stops) if s.slot.name == slot_name),
+                -1,
+            )
+            if v_idx >= 0:
+                v_day.stops[v_idx] = Stop(
+                    poi=chosen,
+                    slot=v_day.stops[v_idx].slot,
+                    arrival_time=v_day.stops[v_idx].arrival_time,
+                    leave_time=v_day.stops[v_idx].leave_time,
+                    transport_to_next_minutes=v_day.stops[
+                        v_idx
+                    ].transport_to_next_minutes,
+                    transport_options=v_day.stops[v_idx].transport_options,
+                )
         ctx.log_event(
             "Adjuster",
             "stop_replaced",
@@ -352,6 +374,21 @@ class Adjuster:
         removed_oid = day_plan.stops[stop_idx].poi.openshopid
         del day_plan.stops[stop_idx]
         day_plan.transit_segments = self._reflow_transit_segments(day_plan)
+
+        # v1.10 P0.3: 同步删 variants 里同名 slot, 否则前端地图 markers (从 variants
+        # 拿) 不同步, 残留被删 stop 的 pin. 用户痛点: 截图里地图还显示老 stop.
+        for vp in (ctx.variants or {}).values():
+            if vp is None or day_index >= len(vp.days):
+                continue
+            v_day = vp.days[day_index]
+            v_idx = next(
+                (i for i, s in enumerate(v_day.stops) if s.slot.name == slot_name),
+                -1,
+            )
+            if v_idx >= 0:
+                del v_day.stops[v_idx]
+                v_day.transit_segments = self._reflow_transit_segments(v_day)
+
         ctx.log_event(
             "Adjuster",
             "stop_removed",
