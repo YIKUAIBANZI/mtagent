@@ -1,0 +1,187 @@
+{
+  "深圳": {
+    "traveler_types": {
+      "情侣": 510,
+      "家庭亲子": 534,
+      "朋友团": 548,
+      "商务": 495,
+      "银发": 127,
+      "独行": 4
+    },
+    "poi_roles": {
+      "city_essential": 51,
+      "persona_preferred": 240,
+      "meal": 394,
+      "connector": 81,
+      "fallback": 34
+    },
+    "city_zones": {
+      "center": 258,
+      "north": 70,
+      "east": 114,
+      "west": 358
+    },
+    "planning_tags": {
+      "food_quality": 708,
+      "culture_friendly": 692,
+      "photo_friendly": 687,
+      "quiet": 619,
+      "family_friendly": 542,
+      "transit_friendly": 532,
+      "couple_friendly": 510,
+      "fast_service": 501,
+      "atmosphere": 495,
+      "business_friendly": 495,
+      "good_value": 494,
+      "good_service": 493,
+      "group_friendly": 491,
+      "rest_friendly": 405,
+      "food": 400,
+      "private_room": 157,
+      "pet_friendly": 156,
+      "senior_friendly": 127,
+      "rain_friendly": 101,
+      "shopping_friendly": 80,
+      "first_visit_friendly": 51,
+      "landmark": 51,
+      "premium_food": 30,
+      "night_friendly": 5
+    },
+    "risk_tags": {
+      "queue_heavy": 189,
+      "slow_service": 182,
+      "pricey": 172,
+      "hard_to_find": 171,
+      "parking_hard": 170,
+      "facility_old": 169,
+      "smoky": 159,
+      "small_portion": 159,
+      "service_average": 158,
+      "portion_mismatch": 144,
+      "reservation_recommended": 124,
+      "walk_heavy": 56,
+      "crowded_weekend": 5
+    }
+  },
+  "上海": {
+    "traveler_types": {
+      "情侣": 505,
+      "家庭亲子": 528,
+      "朋友团": 567,
+      "商务": 479,
+      "银发": 132,
+      "独行": 6
+    },
+    "poi_roles": {
+      "persona_preferred": 202,
+      "city_essential": 18,
+      "connector": 100,
+      "meal": 400,
+      "fallback": 80
+    },
+    "city_zones": {
+      "center": 470,
+      "west": 82,
+      "north": 82,
+      "east": 166
+    },
+    "planning_tags": {
+      "culture_friendly": 694,
+      "food_quality": 680,
+      "photo_friendly": 673,
+      "quiet": 613,
+      "family_friendly": 542,
+      "atmosphere": 527,
+      "transit_friendly": 522,
+      "group_friendly": 517,
+      "couple_friendly": 505,
+      "fast_service": 500,
+      "good_value": 500,
+      "good_service": 480,
+      "business_friendly": 479,
+      "food": 400,
+      "rest_friendly": 397,
+      "senior_friendly": 132,
+      "rain_friendly": 131,
+      "private_room": 125,
+      "pet_friendly": 124,
+      "shopping_friendly": 80,
+      "premium_food": 30,
+      "first_visit_friendly": 18,
+      "landmark": 18,
+      "night_friendly": 18
+    },
+    "risk_tags": {
+      "queue_heavy": 187,
+      "parking_hard": 179,
+      "slow_service": 168,
+      "service_average": 164,
+      "facility_old": 162,
+      "pricey": 161,
+      "smoky": 151,
+      "hard_to_find": 151,
+      "portion_mismatch": 141,
+      "small_portion": 138,
+      "reservation_recommended": 114,
+      "walk_heavy": 2
+    }
+  },
+  "西安": {
+    "traveler_types": {
+      "情侣": 492,
+      "家庭亲子": 532,
+      "朋友团": 549,
+      "商务": 502,
+      "银发": 118,
+      "独行": 11
+    },
+    "poi_roles": {
+      "meal": 400,
+      "persona_preferred": 229,
+      "connector": 91,
+      "fallback": 80
+    },
+    "city_zones": {
+      "center": 326,
+      "south": 474
+    },
+    "planning_tags": {
+      "food_quality": 708,
+      "photo_friendly": 689,
+      "culture_friendly": 684,
+      "quiet": 613,
+      "family_friendly": 548,
+      "transit_friendly": 546,
+      "good_service": 516,
+      "business_friendly": 502,
+      "group_friendly": 498,
+      "atmosphere": 493,
+      "couple_friendly": 492,
+      "fast_service": 492,
+      "good_value": 480,
+      "rest_friendly": 439,
+      "food": 400,
+      "rain_friendly": 131,
+      "private_room": 118,
+      "senior_friendly": 118,
+      "pet_friendly": 113,
+      "shopping_friendly": 80,
+      "premium_food": 30,
+      "night_friendly": 16
+    },
+    "risk_tags": {
+      "queue_heavy": 196,
+      "small_portion": 171,
+      "parking_hard": 170,
+      "pricey": 165,
+      "smoky": 165,
+      "portion_mismatch": 160,
+      "hard_to_find": 157,
+      "service_average": 150,
+      "facility_old": 141,
+      "slow_service": 140,
+      "reservation_recommended": 130,
+      "walk_heavy": 58
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "schema_version": "user_profile_summary:v1",
+  "updated_at": "2026-05-13T06:52:00Z",
+  "profile_count": 1,
+  "aggregate_preferences": {
+    "photo_friendly": 56,
+    "low_walk": 14,
+    "culture_friendly": 5,
+    "food_quality": 2
+  },
+  "profiles": {
+    "anonymous_demo": {
+      "path": "data/user_profiles/anonymous_demo.json",
+      "evidence_count": 80,
+      "top_preferences": {
+        "photo_friendly": 56,
+        "low_walk": 14,
+        "culture_friendly": 5,
+        "food_quality": 2
+      },
+      "top_cities": {
+        "深圳": 105,
+        "西安": 44,
+        "上海": 4
+      },
+      "top_traveler_types": {
+        "情侣": 119,
+        "家庭亲子": 20,
+        "银发": 13,
+        "独行": 3,
+        "商务": 1
+      }
+    }
+  }
+}

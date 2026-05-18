@@ -1,0 +1,122 @@
+{
+  "schema_version": "poi_agent_label_summary:v1",
+  "label_file": "data/poi_agent_labels.json",
+  "allow_partial": false,
+  "error_count": 0,
+  "errors_sample": [],
+  "cities": {
+    "上海": {
+      "count": 320,
+      "poi_roles": {
+        "persona_preferred": 104,
+        "meal": 99,
+        "fallback": 48,
+        "connector": 47,
+        "city_essential": 22
+      },
+      "planning_tags": {
+        "photo_friendly": 169,
+        "food": 99,
+        "food_quality": 98,
+        "transit_friendly": 65,
+        "family_friendly": 46,
+        "rain_friendly": 26,
+        "first_visit_friendly": 24,
+        "landmark": 24,
+        "culture_friendly": 19,
+        "shopping_friendly": 17,
+        "rest_friendly": 10,
+        "night_friendly": 3,
+        "atmosphere": 2,
+        "good_value": 1
+      },
+      "risk_tags": {
+        "walk_heavy": 57,
+        "crowded_weekend": 6,
+        "queue_heavy": 4,
+        "reservation_recommended": 4
+      },
+      "city_zones": {
+        "center": 176,
+        "east": 68,
+        "southwest": 25,
+        "west": 22,
+        "north_center": 10,
+        "north": 7,
+        "south": 7,
+        "northwest": 4,
+        "far_north": 1
+      }
+    },
+    "深圳": {
+      "count": 300,
+      "poi_roles": {
+        "persona_preferred": 113,
+        "meal": 100,
+        "fallback": 34,
+        "connector": 29,
+        "city_essential": 24
+      },
+      "planning_tags": {
+        "photo_friendly": 154,
+        "food": 100,
+        "food_quality": 97,
+        "transit_friendly": 40,
+        "rain_friendly": 31,
+        "shopping_friendly": 30,
+        "first_visit_friendly": 24,
+        "landmark": 24,
+        "family_friendly": 24,
+        "rest_friendly": 9,
+        "culture_friendly": 9,
+        "night_friendly": 1
+      },
+      "risk_tags": {
+        "walk_heavy": 93,
+        "crowded_weekend": 4
+      },
+      "city_zones": {
+        "center": 144,
+        "west": 87,
+        "east": 52,
+        "north": 17
+      }
+    },
+    "西安": {
+      "count": 314,
+      "poi_roles": {
+        "persona_preferred": 109,
+        "meal": 98,
+        "fallback": 54,
+        "connector": 33,
+        "city_essential": 20
+      },
+      "planning_tags": {
+        "photo_friendly": 141,
+        "food": 98,
+        "food_quality": 98,
+        "rain_friendly": 41,
+        "family_friendly": 35,
+        "shopping_friendly": 34,
+        "transit_friendly": 26,
+        "culture_friendly": 20,
+        "first_visit_friendly": 20,
+        "landmark": 20,
+        "rest_friendly": 5,
+        "atmosphere": 2,
+        "night_friendly": 2
+      },
+      "risk_tags": {
+        "walk_heavy": 55,
+        "crowded_weekend": 6
+      },
+      "city_zones": {
+        "north": 129,
+        "south": 80,
+        "center": 58,
+        "east": 36,
+        "southwest": 11
+      }
+    }
+  }
+}

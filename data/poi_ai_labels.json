@@ -1,0 +1,1915 @@
+{
+  "深圳": {
+    "Wf6TE_PjGkwjKttp": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "4jOhyGZ5UHAJhVTI": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "PtxGYG4y_9bMu2vw": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "1id8oPOpReshmCPH": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "w0-Lq-JfrLdOwl4F": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "YTzq6-_rOVw_Btuv": {
+      "planning_tags": [
+        "night_friendly"
+      ],
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "suggested_slots": [
+        "morning",
+        "afternoon",
+        "evening"
+      ],
+      "confidence": 0.65,
+      "ai_notes": "新增night_friendly:UGC提到夜景/灯光; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi; suggested_slots修正:增加evening(有night_friendly)"
+    },
+    "Pwx_eruor3CzoRVF": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "LIxlqYmCq-PZ90Y5": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "VPSZ_hZmwE0l-gc4": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "3SLLWuJQUCSBpkMn": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.66,
+      "ai_notes": "移除quiet:UGC多次提到吵闹/拥挤; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "8VOi3eNqCkd2PAEY": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "TU4YC5539C3JiCzs": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "aRBPnRj6uLKR8iDy": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "qFGnjdbNaWDStei4": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "j_WvReo9tnKSY4ky": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "bAtruOaOKHKQe57N": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "cCNFZ43-_OXzK9WQ": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "Iy45BBUAb9uXFBRv": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "P_ypBsZ7wNTyuCWl": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "PoYS18AOsrRvQUxV": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "0MdYQvDHnz63YsbT": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "QhiPTUiSZ6xmO1mL": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "dAGmJOdycpLf0WVJ": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "u0uL6pzzfJTTA1E9": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "LAu-mVGflA5Hi5GO": {
+      "risk_tags": [
+        "queue_heavy"
+      ],
+      "confidence": 0.7,
+      "ai_notes": "新增queue_heavy:UGC多次提到排队"
+    },
+    "CnTRg4a2tAJbZXHk": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "NikH_gtZz8vXbfQb": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "confidence": 0.72,
+      "ai_notes": "移除quiet:UGC多次提到吵闹/拥挤"
+    },
+    "s_kzsor-Rq9PzoK8": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "YogDa8PV2b5fU_PV": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "g58KUqe-jgaYC7-n": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "confidence": 0.72,
+      "ai_notes": "移除quiet:UGC多次提到吵闹/拥挤"
+    },
+    "t7KwkdZ2POZS-JWp": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "kgQRBpK5iVMlOVpz": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "confidence": 0.65,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据"
+    },
+    "9KbM9V60gHocxstu": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "iiz5wAmJ6lF6xIh2": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "qLNuTbWVOMR_C8vP": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "M0TX9y6mauONa_bY": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "confidence": 0.72,
+      "ai_notes": "移除quiet:UGC多次提到吵闹/拥挤"
+    },
+    "lWJJLewbtH7oDJJQ": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "m6b3N4dHsUSTxkGL": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "g5bqFNU8t_giWx-Z": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "Zuxb-zDmHEWnDaY9": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "QnByuSFa53fVbEYq": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "Zn9dfN9gTSDZZt5T": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "2bcB1M03J7gUxmWO": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "risk_tags_remove": [
+        "queue_heavy"
+      ],
+      "confidence": 0.69,
+      "ai_notes": "移除quiet:UGC多次提到吵闹/拥挤; 移除queue_heavy:无reviewTag支持,UGC排队证据弱"
+    },
+    "SipVUvs1CIPN8N8t": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "nJTLjM1rvBN-99-h": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "confidence": 0.72,
+      "ai_notes": "移除quiet:UGC多次提到吵闹/拥挤"
+    },
+    "Zt-e7SEd3Jdmmfrx": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "dW0fdtLtwr2gP6-n": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "jKQSFGtF51hm_SnI": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "nxA4cTTCqHGC7BpY": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "1L2PU3yYtRQG1Pho": {
+      "risk_tags_remove": [
+        "queue_heavy"
+      ],
+      "confidence": 0.65,
+      "ai_notes": "移除queue_heavy:无reviewTag支持,UGC排队证据弱"
+    },
+    "RIW6_a1hHZZTW4sH": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "HX8gMBvvcl0LIB0Y": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "JzGe_vdU9nW-Omim": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.66,
+      "ai_notes": "移除quiet:UGC多次提到吵闹/拥挤; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "otLRtoCKGdFE_gzi": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "Y5ZCIZrj7CSyTSm3": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "AWDB755Ya1csvG-G": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "lfYgJAWKJ3h0aorU": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "IIiMW6udiUD-_ZxM": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.67,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "zZRuQ2O6YI8ieX4B": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "EVg4VsDawg6QOHgR": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "0lR3w2zDgDqTyOJ9": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "VnP02YIiyr3J-ntN": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "poi_role": "persona_preferred",
+      "max_stay_minutes": 150,
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi; poi_role修正:connector→persona_preferred(UGC以景点描述为主); max_stay修正:景点型UGC→增加游览时间"
+    },
+    "A1X0scoZ4yjRpeH1": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "quiet"
+      ],
+      "confidence": 0.73,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除quiet:UGC多次提到吵闹/拥挤"
+    },
+    "nhtByatMfpmyFiDw": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "0Q1c-cT-OAMV1vXg": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "5DW2CUK39cNmH10I": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "i8PQqjT5976Kx27q": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "8VW_iCklZBuLPPn-": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "poi_role": "persona_preferred",
+      "max_stay_minutes": 150,
+      "confidence": 0.67,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; poi_role修正:connector→persona_preferred(UGC以景点描述为主); max_stay修正:景点型UGC→增加游览时间"
+    },
+    "qPbEiDr7CgQ9TnQa": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "os_QaaFmlYkLSoYK": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "bAQIzsp4_8f2vwC0": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "CkHJ5ObPu3eweJMF": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "xKHIvrCo4uUy1VPf": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "gROsGsPo6dp-9Agn": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "confidence": 0.65,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据"
+    },
+    "-1Y46uTTaZ5Pp_d6": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "a4-B4EILgGp0w1EY": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "2FHWEchBjOMPwz8J": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "cAdj_nuCcdW88cZg": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "4bN05Ug9lVm1eXa3": {
+      "risk_tags_remove": [
+        "queue_heavy"
+      ],
+      "confidence": 0.65,
+      "ai_notes": "移除queue_heavy:无reviewTag支持,UGC排队证据弱"
+    },
+    "Dh25Nb9HKeOnjpIt": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "xIJc_W9Km3Hi0t5R": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "QMVuydhPb82Q1m-m": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "INc7YdBI1w1iCIrC": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "hyR9jAK6E75uSI68": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "FVw2Ux38zFw7CmDH": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "IeIFqSrv-6x45eSd": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "m6Y47hqmY77XB5ow": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.69,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除quiet:UGC多次提到吵闹/拥挤; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "x9hmMNeimiOqxnZP": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "oGHmDeQaTM5B2E_Z": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.67,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    }
+  },
+  "上海": {
+    "2AUb00doURzX0ZHu": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "confidence": 0.65,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据"
+    },
+    "9BXiXthuHr1oHG2V": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "fO1C6AHui7TFvEIg": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "risk_tags_remove": [
+        "queue_heavy"
+      ],
+      "confidence": 0.7,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除queue_heavy:无reviewTag支持,UGC排队证据弱"
+    },
+    "g6S4WVOg0pdrY0WF": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "PwzN3Z3x1MekP6Op": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "lfWnBbGvLGfMK5HM": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "NuM_VHLt2FQeqBAk": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "Qi41U2Lf71X422JF": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "pkjTA8G56XWFxl-W": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "RlOBX3ud0OOKwKYi": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "0wqD8eXmBaJ7TaH4": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "FIrVRgtiGjFyc-qg": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "jG-WHolmd5lAt9PH": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "confidence": 0.65,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据"
+    },
+    "GpHXFSeKvLzplxYK": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.67,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "iZhUyh_XouO_KMbt": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "BJOpDJaregOMxoPF": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "HBvyXr06VLC0GnHY": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "-v3snQHm9C7CwHBt": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "risk_tags_remove": [
+        "queue_heavy"
+      ],
+      "confidence": 0.7,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除queue_heavy:无reviewTag支持,UGC排队证据弱"
+    },
+    "tPV7hbnUGrJbHCI-": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "KbROrKk-zxj2ajeC": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "_I-F4rWzLMjFZ4H1": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "_McdNYO1ozecAXTz": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "max_stay_minutes": 150,
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; max_stay修正:景点型UGC→增加游览时间"
+    },
+    "BGZl_E68XoOWzGzW": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "4gF5gtTSo7cWaiQY": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "BGCoqJtOMwWsEFJ0": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "JDdoCQQokzkGGs_1": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "B4IN1lSr2XIxYBX3": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.67,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "2l40lpmGyqGy65KS": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "44NVuvMkbTuXQf5W": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "IO_lQ4B0Nf2ymdSP": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "quiet"
+      ],
+      "confidence": 0.73,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除quiet:UGC多次提到吵闹/拥挤"
+    },
+    "oAZk5QbJKKXKgxpC": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "lLa8iVAAsUgxj3Xf": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.67,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "gEuNQT4WTrEOtSe0": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "AMSJnDyP2fsFgsXj": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "p4N8jVkKW5JSu6bn": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "8CwpRkx6nboQI2wn": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "ag6pDywCdRDdVWyG": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "confidence": 0.72,
+      "ai_notes": "移除quiet:UGC多次提到吵闹/拥挤"
+    },
+    "w7pxGC4yPfBzhaif": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "f93dJW2r7HM14YXP": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "confidence": 0.72,
+      "ai_notes": "移除quiet:UGC多次提到吵闹/拥挤"
+    },
+    "dU5_5eQupJo2Dak1": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "pSnh76cMsLCYCq68": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "blJhkAozwaBXf6D6": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "q8nF7Sf2CZm0sQn6": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "14bBehbFQNxF-Jm5": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "s9IEAvwZCdsQhlfa": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "1JOtPfWZ4KCH4g0e": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "eFIphV0x43gX5vTZ": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "confidence": 0.72,
+      "ai_notes": "移除quiet:UGC多次提到吵闹/拥挤"
+    },
+    "wif28wt3E4_bkeX8": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "veNxDJmtBmb7QgcS": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "Xi2p4T-0BW8OmmVW": {
+      "risk_tags_remove": [
+        "queue_heavy"
+      ],
+      "confidence": 0.65,
+      "ai_notes": "移除queue_heavy:无reviewTag支持,UGC排队证据弱"
+    },
+    "UPVeERkMMDu_FUiJ": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "Ym3bJzbxqqweY8sV": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.67,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "uDz8lT47wGyHXghV": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "rt54wfoDCTNVF8NP": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "E0dDkU_PPOUBgS3x": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "BCM2w6r7SLZyTPRF": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.67,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "a9iVcv5ojGzudJyc": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "J85rZanB6XHkg5wI": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "EEZOipEmqSoRyWRx": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "oZpkCs7bdMFqTe8O": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "5T7aahERhIpqk8IU": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "eM31qlx3g8Xb69eY": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "Znnwlwk4u51XeWGZ": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "vx5UbHmjDEkIrSab": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "4LPPcW4RRqWJJjIa": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "nqZCPs6r9Txfp-72": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "Eq6xv1dDMe0PyqQ_": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "confidence": 0.65,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据"
+    },
+    "2sYZc7SWvLUTuF73": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "QCl8NykDEYLILzIq": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "vjlUxj54l7yZ5kTu": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "IlWWour4LkoJmU2W": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.66,
+      "ai_notes": "移除quiet:UGC多次提到吵闹/拥挤; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "KRY_-z90BegjmPIy": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "OYUJjJqD3TT_5gNK": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "confidence": 0.65,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据"
+    },
+    "6JvDeMTreC98NhZO": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "w9kuYZ9hvZp9UjE7": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "xSztdNojiqWRixA0": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "pUr2z21QS2AmzmnT": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "97VlSTd9mPfNRWIS": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "YM3gg-t9Nzbp0OYf": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "qmrGbCOF3gg72OXZ": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "YpiCMt9kRpgwDnk7": {
+      "risk_tags_remove": [
+        "queue_heavy"
+      ],
+      "confidence": 0.65,
+      "ai_notes": "移除queue_heavy:无reviewTag支持,UGC排队证据弱"
+    },
+    "IEF9E4udDetnsHdN": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "mEufugC4T2A9IUze": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    }
+  },
+  "西安": {
+    "Eu9XvBSYujalw0OH": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "confidence": 0.65,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据"
+    },
+    "5llgoHsDctE7z_aQ": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "Bs_Kv4Lufwgte0AN": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "DPSDavP6vdA0Icm3": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "liOMxqEE1ezDtb-k": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "NIfliqDzpTN5bZkg": {
+      "planning_tags": [
+        "night_friendly"
+      ],
+      "suggested_slots": [
+        "lunch",
+        "dinner",
+        "evening"
+      ],
+      "confidence": 0.7,
+      "ai_notes": "新增night_friendly:UGC提到夜景/灯光; suggested_slots修正:增加evening(有night_friendly)"
+    },
+    "nUsNLe25xUJ0TWC0": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "l6e8xEFqF6GVxwZ_": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "e2LAvUeTcV6efDkr": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "gkcg1RCdwm1CMCyy": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "5PAbG_w2j1X8bpP4": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "Ut-B44yk_XWlfyuM": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "r9uLlUzlwHUwbr7k": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "IB93w1hA1LGRiY8G": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "Fy1EStuFepn8MDfj": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "KWbzeXaWySos04AO": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "4qaa61zgi8lrtKq3": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "ATa2BPQ746bE5Qu2": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "e2SpUK7mLaIl2AmL": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "B5SD1pnELls7Negq": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "9WjliLs4r6XKGvi8": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "confidence": 0.72,
+      "ai_notes": "移除quiet:UGC多次提到吵闹/拥挤"
+    },
+    "k--tg1Y1l5Hlz_zx": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "T5Ez9VvIoUk9RTd1": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "8X4pWbeWcCDicpMc": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "syvkHbAeIlZXGF2K": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "AwWD9xyNeznf9cN-": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "aIWTSn-b0xuj9ZP6": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "zAdvV5e325tywl8x": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "RmVc7HZH0EG6flZN": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "A_aCuqyK0uFVvN9V": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "GN3GQl55PkCKOZke": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.66,
+      "ai_notes": "移除quiet:UGC多次提到吵闹/拥挤; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "08l7PFtjkWVXdZbk": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "LwvLNbE_g-TObfiV": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "vqF86-xOCMnz3ko1": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "WgYrQLLQFblJL_Nm": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "IhmR9K0k7aSBEqVI": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "vmaBjpGrE6tcAeBI": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "ePylSGNCAefwRkt5": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "yGkkvvFzWpawLxeE": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "confidence": 0.65,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据"
+    },
+    "CQA24uPkPDymhEiG": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "302vlgVv1MmSQpI-": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "NBsXcr0O5EZcLM2N": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "efBIJuucifvBA9fr": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "gJp6JnpvJmOT6DtE": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "confidence": 0.65,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据"
+    },
+    "NVXpaHVq8aY4TmJQ": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "1veM1crWwyilcdCW": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "zEgVaju0jPTp6RFG": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "klRMsoNZPpD5aTrB": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "kUnEFMlEXzK6DVbx": {
+      "risk_tags_remove": [
+        "queue_heavy"
+      ],
+      "confidence": 0.65,
+      "ai_notes": "移除queue_heavy:无reviewTag支持,UGC排队证据弱"
+    },
+    "uHX20iIwY81XWNnz": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "quiet"
+      ],
+      "confidence": 0.7,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除quiet:无reviewTag支持且UGC无安静证据"
+    },
+    "j8n1cEEMZ8N6J5pd": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "xNWZdelzLzhn9kkh": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "risk_tags_remove": [
+        "queue_heavy"
+      ],
+      "confidence": 0.7,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除queue_heavy:无reviewTag支持,UGC排队证据弱"
+    },
+    "QJm_QCVfRiT4-KoS": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.69,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除quiet:UGC多次提到吵闹/拥挤; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "LzFy0_gsfDcxwnkR": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "IhB84SyArPOQSkKv": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "VKoyV58w69cVrg_d": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "RnNiDBexvyTu3x3r": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "5v8Fzx9ds0_xKyM_": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "iz5KJCDEsBkSuf6e": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "MQckRJPj2W7iLiSy": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "8lhJ-scMKHoUCC7N": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "confidence": 0.65,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据"
+    },
+    "WxJoKMTo8-nackyf": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "3gP96APur5ZyVkt6": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "uAPc8b0uQyvJjKU3": {
+      "planning_tags_remove": [
+        "quiet"
+      ],
+      "confidence": 0.72,
+      "ai_notes": "移除quiet:UGC多次提到吵闹/拥挤"
+    },
+    "LandVIIHvcIVmxMX": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "XklqThf1MIEOExkl": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "PfSd7n55QDSNs0Wd": {
+      "risk_tags_remove": [
+        "queue_heavy"
+      ],
+      "confidence": 0.65,
+      "ai_notes": "移除queue_heavy:无reviewTag支持,UGC排队证据弱"
+    },
+    "T4BN8uqYmmbgyo7A": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "jwuq2_dBwfzxStOw": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "-OCP9HE46M6XMpfZ": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.62,
+      "ai_notes": "移除quiet:无reviewTag支持且UGC无安静证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "xMUWXMliUh_MEQtz": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "0fpXsqS0KCChIhbR": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "KlTS_xuGCUql5I-V": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "ZeQGMI1HR0CBfxlX": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "Dc3iwLOXGMmOQPBq": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "quiet",
+        "rest_friendly"
+      ],
+      "risk_tags_remove": [
+        "queue_heavy"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除quiet:UGC多次提到吵闹/拥挤; 移除queue_heavy:无reviewTag支持,UGC排队证据弱; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "_KfaGhmJDO4gUPQS": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "vdBEZpI0K7mbVPA3": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "OyxhX7AQ5IoyO1jl": {
+      "planning_tags_remove": [
+        "photo_friendly",
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "CaZaQeJFCDzQDGJ6": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "b2SISDv5douJITwe": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "raNKrrWdM1Dz5pXF": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "6izeS8_7racSfz_p": {
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.6,
+      "ai_notes": "移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "VxNE_6_oHzGUocxo": {
+      "planning_tags_remove": [
+        "photo_friendly"
+      ],
+      "confidence": 0.75,
+      "ai_notes": "移除photo_friendly:UGC无拍照/出片证据"
+    },
+    "6vo-sY4M4PeVNCLv": {
+      "planning_tags": [
+        "family_friendly"
+      ],
+      "planning_tags_remove": [
+        "rest_friendly"
+      ],
+      "confidence": 0.68,
+      "ai_notes": "新增family_friendly:UGC提到带娃/亲子; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    },
+    "KXl4KpexFuXlNENJ": {
+      "planning_tags_remove": [
+        "quiet",
+        "rest_friendly"
+      ],
+      "confidence": 0.66,
+      "ai_notes": "移除quiet:UGC多次提到吵闹/拥挤; 移除rest_friendly:UGC无休息/歇脚证据且无WiFi"
+    }
+  }
+}

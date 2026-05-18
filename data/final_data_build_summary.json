@@ -1,0 +1,149 @@
+{
+  "cities": {
+    "上海": {
+      "city_zones": {
+        "center": 176,
+        "east": 68,
+        "far_north": 1,
+        "north": 7,
+        "north_center": 10,
+        "northwest": 4,
+        "south": 7,
+        "southwest": 25,
+        "west": 22
+      },
+      "data_sources": {
+        "real_sources": 320
+      },
+      "label_sources": {
+        "agent:real_sources:v1": 320,
+        "amap:poi": 320,
+        "xhs:guide": 8
+      },
+      "planning_tags": {
+        "culture_friendly": 19,
+        "family_friendly": 46,
+        "first_visit_friendly": 24,
+        "food": 99,
+        "food_quality": 98,
+        "landmark": 24,
+        "night_friendly": 3,
+        "photo_friendly": 169,
+        "rain_friendly": 26,
+        "rest_friendly": 10,
+        "shopping_friendly": 17,
+        "transit_friendly": 65
+      },
+      "poi_count": 320,
+      "poi_roles": {
+        "city_essential": 22,
+        "connector": 47,
+        "fallback": 48,
+        "meal": 99,
+        "persona_preferred": 104
+      },
+      "risk_tags": {
+        "crowded_weekend": 6,
+        "queue_heavy": 4,
+        "reservation_recommended": 4,
+        "walk_heavy": 57
+      }
+    },
+    "深圳": {
+      "city_zones": {
+        "center": 144,
+        "east": 52,
+        "north": 17,
+        "west": 87
+      },
+      "data_sources": {
+        "real_sources": 300
+      },
+      "label_sources": {
+        "agent:real_sources:v1": 300,
+        "amap:poi": 300,
+        "xhs:guide": 5
+      },
+      "planning_tags": {
+        "culture_friendly": 9,
+        "family_friendly": 24,
+        "first_visit_friendly": 24,
+        "food": 100,
+        "food_quality": 97,
+        "landmark": 24,
+        "night_friendly": 1,
+        "photo_friendly": 154,
+        "rain_friendly": 31,
+        "rest_friendly": 9,
+        "shopping_friendly": 30,
+        "transit_friendly": 40
+      },
+      "poi_count": 300,
+      "poi_roles": {
+        "city_essential": 24,
+        "connector": 29,
+        "fallback": 34,
+        "meal": 100,
+        "persona_preferred": 113
+      },
+      "risk_tags": {
+        "crowded_weekend": 4,
+        "walk_heavy": 93
+      }
+    },
+    "西安": {
+      "city_zones": {
+        "center": 58,
+        "east": 36,
+        "north": 129,
+        "south": 80,
+        "southwest": 11
+      },
+      "data_sources": {
+        "real_sources": 314
+      },
+      "label_sources": {
+        "agent:real_sources:v1": 314,
+        "amap:poi": 314,
+        "xhs:guide": 6
+      },
+      "planning_tags": {
+        "atmosphere": 2,
+        "culture_friendly": 20,
+        "family_friendly": 35,
+        "first_visit_friendly": 20,
+        "food": 98,
+        "food_quality": 98,
+        "landmark": 20,
+        "photo_friendly": 141,
+        "rain_friendly": 41,
+        "rest_friendly": 5,
+        "shopping_friendly": 34,
+        "transit_friendly": 26
+      },
+      "poi_count": 314,
+      "poi_roles": {
+        "city_essential": 20,
+        "connector": 33,
+        "fallback": 54,
+        "meal": 98,
+        "persona_preferred": 109
+      },
+      "risk_tags": {
+        "crowded_weekend": 6,
+        "walk_heavy": 55
+      }
+    }
+  },
+  "error_count": 0,
+  "errors_sample": [],
+  "generated_at": "2026-05-13T08:24:52Z",
+  "outputs": {
+    "agent_labels": "data/poi_agent_labels.json",
+    "enriched_labels": "data/poi_enriched_labels.json",
+    "legacy_labels": "data/poi_labels.json",
+    "mock_dir": "data/mock_dianping"
+  },
+  "schema_version": "final_data_build_summary:v1",
+  "source": "data/real_sources/merged_real_poi_candidates.jsonl"
+}
