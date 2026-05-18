@@ -137,6 +137,33 @@ def score_poi(poi: POI, intent: ParsedIntent, variant: Variant = "main") -> floa
         else:
             score -= 50 + (d_km - radius) * 20  # 超出硬扣
 
+    # v1.10 P0.2: amap 注入 POI (must_consider=True + 无 planning_tags) 的 variant 偏置.
+    # 原有 line 91-104 variant 分支只对带 planning_tags/risk_tags 的 enriched POI 起作用,
+    # amap text_search 注入的 POI 没这些标签 → 3 variant 排序相同 → LLM 选一样的 stops.
+    # 这里用 name + categories 关键词推断 variant 偏好, 让 3 variant 在同类候选间分流.
+    if enriched.must_consider and not enriched.planning_tags and not enriched.risk_tags:
+        blob = (poi.name or "") + " " + " ".join(poi.categories or [])
+        if variant == "low_queue":
+            # 偏好小众: '县/老/纪念/古迹/分店' +12; 减权大型: '省/商场/百货/总店' -12
+            if any(k in blob for k in ("县", "老", "小众", "古迹", "纪念", "分店")):
+                score += 12.0
+            if any(k in blob for k in ("省", "商场", "百货", "总店", "市中心")):
+                score -= 12.0
+        elif variant == "interest_first":
+            # 文化/艺术加权 +12
+            for k in ("博物", "艺术", "文化", "历史", "纪念"):
+                if k in blob:
+                    score += 12.0
+                    break  # 只算 1 次, 避免叠加爆分
+            # 用户明示 intent.interests 命中再 +15
+            for ix in intent.interests or []:
+                if ix and ix in blob:
+                    score += 15.0
+                    break
+            # 商场类减权
+            if any(k in blob for k in ("商场", "百货")):
+                score -= 8.0
+
     return score
 
 
