@@ -35,13 +35,15 @@ def test_opencity_returns_three_cities(client):
     assert resp.status_code == 200
     data = resp.json()
     assert data["success"] is True
-    assert set(data["data"]) == {"深圳", "上海", "西安"}
+    # 现在支持 5 座城市（dt_v2 数据集新增北京和南昌）
+    assert {"深圳", "上海", "西安"}.issubset(set(data["data"]))
 
 
 def test_search_returns_records_for_shenzhen(client):
+    # 新数据（dt_v2）类别为高德体系："餐饮服务" 而非大众点评的 "美食"
     resp = client.post(
         "/router/poisearch/search",
-        json=signed_body({"city": "深圳", "categories": "美食", "limit": 10}),
+        json=signed_body({"city": "深圳", "categories": "餐饮服务", "limit": 10}),
     )
     assert resp.status_code == 200
     data = resp.json()

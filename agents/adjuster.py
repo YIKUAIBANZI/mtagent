@@ -119,6 +119,52 @@ def _pick_pool_candidate(
     return cands_in_bucket[0] if cands_in_bucket else None
 
 
+def _pick_pool_candidate_relaxed(
+    ctx: TripContext,
+    *,
+    target_role: str,
+    excluded_oids: set[str],
+) -> Optional[POI]:
+    """降级版: enriched.poi_role 精确匹配失败时，按宽泛类别（美食/景点）兜底."""
+    from agents.candidate_pool import _infer_role_from_categories
+
+    FOOD_ROLES = {"meal", "lunch_main", "dinner_main", "snack", "cafe", "breakfast"}
+    SIGHTSEEING_ROLES = {"city_essential", "hidden_gem", "connector"}
+
+    if target_role in FOOD_ROLES:
+        broad = "food"
+    elif target_role in SIGHTSEEING_ROLES:
+        broad = "sight"
+    else:
+        broad = None
+
+    def _broad_match(p: POI) -> bool:
+        role = (
+            p.enriched.poi_role
+            if p.enriched
+            else _infer_role_from_categories(p.categories)
+        )
+        if broad == "food":
+            return (
+                role in FOOD_ROLES
+                or "meal" in (role or "")
+                or (_infer_role_from_categories(p.categories) == "meal")
+            )
+        if broad == "sight":
+            return role in SIGHTSEEING_ROLES or (
+                _infer_role_from_categories(p.categories) == "city_essential"
+            )
+        return True
+
+    cands = [
+        p
+        for p in ctx.candidate_pois
+        if p.openshopid not in excluded_oids and _broad_match(p)
+    ]
+    cands.sort(key=lambda p: -(p.enriched.manual_priority if p.enriched else 0))
+    return cands[0] if cands else None
+
+
 def _all_used_oids(route: RouteDraft) -> set[str]:
     return {s.poi.openshopid for d in route.days for s in d.stops}
 
@@ -166,6 +212,14 @@ class Adjuster:
             target_role=target_role,
             excluded_oids=used,
         )
+        # 降级1: zone 过滤太严时放宽
+        if not cache_cands and target_zone:
+            cache_cands = _pick_cache_candidates(
+                ctx,
+                target_zone="",
+                target_role=target_role,
+                excluded_oids=used,
+            )
 
         chosen: Optional[POI] = None
         source = ""
@@ -178,6 +232,13 @@ class Adjuster:
                 target_role=target_role,
                 excluded_oids=used,
             )
+            # 降级2: enriched.poi_role 精确匹配失败时，按宽泛类别兜底
+            if pool_pick is None:
+                pool_pick = _pick_pool_candidate_relaxed(
+                    ctx,
+                    target_role=target_role,
+                    excluded_oids=used,
+                )
             if pool_pick is not None:
                 chosen = pool_pick
                 source = "pool"

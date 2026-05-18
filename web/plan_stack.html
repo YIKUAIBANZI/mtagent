@@ -129,32 +129,59 @@
   .mapview{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .6s ease}
   .mapview.on{opacity:1;pointer-events:auto}
 
-  #map-container{position:absolute;inset:0;background:#f6f1e8;z-index:0}
+  #map-container{position:absolute;inset:0;background:#f1ece0;z-index:0}
 
   /* floating left chat panel */
   .panel{
-    position:absolute;left:24px;top:24px;bottom:24px;width:380px;z-index:10;
-    background:var(--canvas);border-radius:24px;
-    box-shadow:var(--shadow-inset), rgba(0,0,0,0.06) 0 8px 30px 0;
+    position:absolute;left:24px;top:24px;bottom:24px;width:400px;z-index:10;
+    background:#fdfaf3;border-radius:22px;
+    border:1px solid #ece6d6;
+    box-shadow:0 1px 0 rgba(255,255,255,.7) inset, 0 20px 50px -20px rgba(80,60,20,.3), 0 4px 12px -6px rgba(80,60,20,.12);
     display:flex;flex-direction:column;
     transform:translateX(-12px);opacity:0;
     transition:transform .55s cubic-bezier(0.19,1,0.22,1) .15s, opacity .5s ease .15s;
     overflow:hidden;
+    font-family:'PingFang SC','Hiragino Sans GB',ui-sans-serif,system-ui,sans-serif;
   }
   .mapview.on .panel{transform:translateX(0);opacity:1}
-  .panel-head{padding:14px 20px 10px 20px;border-bottom:none;display:flex;align-items:center;justify-content:space-between}
+  .panel-head{
+    padding:18px 20px 0;border-bottom:none;
+  }
+  .panel-head-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .panel-brand{display:flex;align-items:center;gap:7px;margin-bottom:10px}
+  .panel-brand-mark{
+    width:24px;height:24px;border-radius:7px;
+    background:#1a1815;color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:13px;font-style:italic;
+  }
+  .panel-brand-name{font-size:13px;font-weight:600;color:#1a1815;letter-spacing:.01em}
+  .panel-trip-title{margin:0;font-size:22px;font-weight:600;color:#1a1815;letter-spacing:.01em;line-height:1.2}
+  .panel-trip-meta{
+    margin-top:4px;font-size:12px;color:#8a8273;
+    display:flex;gap:6px;align-items:center;
+  }
+  .panel-trip-meta .mdot{width:3px;height:3px;border-radius:50%;background:#cdc3ad;display:inline-block}
+  .panel-reset{
+    appearance:none;border:1px solid #ece6d6;background:#fff;cursor:pointer;
+    width:34px;height:34px;border-radius:10px;color:#5a5346;font-size:14px;
+    margin-top:34px;flex-shrink:0;transition:background .15s;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .panel-reset:hover{background:#f5f1e6}
 
   /* ── 对话 / 行程 切换 tab ── */
   .view-tabs{
-    display:flex;border-bottom:1px solid var(--stone);padding:0 20px;flex-shrink:0;
+    display:flex;border-bottom:1px solid #ece6d6;padding:0 20px;flex-shrink:0;
+    margin-top:14px;
   }
   .view-tab{
-    flex:1;padding:8px 0;font-size:13px;font-weight:500;letter-spacing:-0.16px;
-    color:var(--ash);border-bottom:2px solid transparent;text-align:center;
-    transition:color .15s,border-color .15s;
+    padding:10px 4px;margin-right:24px;font-size:14px;font-weight:500;
+    color:#8a8273;border-bottom:2px solid transparent;text-align:left;
+    transition:color .15s,border-color .15s;position:relative;
   }
-  .view-tab.active{color:var(--orange);border-bottom-color:var(--orange)}
-  .view-tab:hover:not(.active){color:var(--graphite)}
+  .view-tab.active{color:#1a1815;font-weight:600;border-bottom-color:var(--orange)}
+  .view-tab:hover:not(.active){color:#5a5346}
 
   /* ── 行程视图 ── */
   .plan-view{
@@ -270,6 +297,136 @@
     margin-left:8px;transition:background .15s;
   }
   .day-regen-btn:hover{background:var(--orange);color:#fff;border-color:var(--orange)}
+  /* ── new plan-card (v1.10 design) ── */
+  .plan-card-v2{
+    background:#fff;border:1px solid #ece6d6;border-radius:18px;overflow:hidden;
+    box-shadow:0 8px 24px -12px rgba(80,60,20,.18);position:relative;
+    font-family:'PingFang SC','Hiragino Sans GB',ui-sans-serif,system-ui,sans-serif;
+  }
+  .plan-card-v2.is-active::before{
+    content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--orange);
+  }
+  .plan-card-v2-head{padding:12px 13px 11px;cursor:default}
+  .plan-card-v2-top{display:flex;align-items:flex-start;gap:10px}
+  .plan-card-v2-icon{
+    width:38px;height:38px;min-width:38px;border-radius:11px;flex-shrink:0;
+    background:linear-gradient(135deg,var(--orange),#ff7a4d);
+    display:flex;align-items:center;justify-content:center;font-size:19px;
+    box-shadow:0 4px 10px -4px rgba(240,73,35,.5);
+  }
+  .plan-card-v2-info{flex:1;min-width:0}
+  .plan-card-v2-name-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  .plan-card-v2-name{font-size:15px;font-weight:600;color:#1a1815;letter-spacing:.01em}
+  .plan-card-v2-tag-rec{
+    font-size:9.5px;padding:1px 6px;border-radius:4px;letter-spacing:.08em;
+    color:var(--orange);background:#fdece6;font-weight:700;
+  }
+  .plan-card-v2-tag-cur{
+    font-size:9.5px;padding:1px 6px;border-radius:4px;letter-spacing:.08em;
+    color:#1a1815;background:#f1ece0;font-weight:700;border:1px solid #ddd4bf;
+  }
+  .plan-card-v2-stats{
+    margin-top:3px;font-size:11.5px;color:#8a8273;
+    display:flex;gap:6px;align-items:center;
+  }
+  .plan-card-v2-dot{width:3px;height:3px;border-radius:50%;background:#cdc3ad;display:inline-block}
+  .plan-card-v2-stops-row{
+    margin-top:11px;display:flex;align-items:center;gap:5px;
+    overflow-x:auto;overflow-y:hidden;scrollbar-width:none;padding-bottom:2px;
+    -webkit-mask-image:linear-gradient(to right,#000 92%,transparent);
+    mask-image:linear-gradient(to right,#000 92%,transparent);
+  }
+  .plan-card-v2-stops-row::-webkit-scrollbar{display:none}
+  .plan-card-v2-stop-chip{
+    display:inline-flex;align-items:center;gap:5px;flex-shrink:0;
+    padding:3px 9px 3px 3px;border-radius:999px;
+    background:#faf6ec;border:1px solid #ece6d6;
+    font-size:11px;color:#5a5346;max-width:140px;
+    white-space:nowrap;overflow:hidden;
+  }
+  .plan-card-v2-pin{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:18px;height:18px;min-width:18px;border-radius:50%;
+    background:var(--orange);color:#fff;font-weight:700;font-size:10px;
+    box-shadow:0 1px 0 rgba(255,255,255,.4) inset;
+  }
+  .plan-card-v2-stop-name{overflow:hidden;text-overflow:ellipsis}
+  .plan-card-v2-arr{color:#cdc3ad;font-size:9px;flex-shrink:0}
+  .plan-card-v2-cta{
+    margin-top:9px;
+    width:100%;appearance:none;border:0;cursor:pointer;
+    padding:10px 14px;border-radius:12px;
+    background:var(--orange);color:#fff;border:none;
+    font-weight:600;font-size:13px;letter-spacing:.02em;
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    box-shadow:0 6px 14px -6px rgba(240,73,35,.5);
+    font-family:inherit;transition:opacity .15s;
+  }
+  .plan-card-v2-cta.is-active{background:#fff;color:#1a1815;border:1px solid #ece6d6;box-shadow:none}
+  .plan-card-v2-cta:hover{opacity:.88}
+
+  /* expanded body */
+  .plan-card-v2-body{overflow:hidden;max-height:0;transition:max-height .5s cubic-bezier(.2,.8,.2,1)}
+  .plan-card-v2-body.open{max-height:2000px}
+  .plan-card-v2-blurb{
+    padding:8px 11px;border-radius:10px;margin:0 13px 12px;
+    background:#faf6ec;border:1px dashed #e1d8c0;
+    font-size:12px;color:#6e6655;
+    display:flex;align-items:center;gap:8px;
+  }
+  .plan-card-v2-timeline{position:relative;padding:0 13px 13px}
+  .plan-card-v2-tl-line{
+    position:absolute;left:24px;top:18px;bottom:46px;width:2px;
+    background:repeating-linear-gradient(to bottom,rgba(240,73,35,.35) 0 4px,transparent 4px 8px);
+  }
+  .plan-card-v2-stop-row{display:flex;gap:10px;padding:4px 0;align-items:flex-start}
+  .plan-card-v2-pin-wrap{padding-top:8px;position:relative;z-index:1}
+  .plan-card-v2-pin22{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:22px;height:22px;min-width:22px;border-radius:50%;
+    background:var(--orange);color:#fff;font-weight:700;font-size:12px;
+    box-shadow:0 1px 0 rgba(255,255,255,.4) inset, 0 2px 5px rgba(240,73,35,.35);
+  }
+  .plan-card-v2-stop-card{
+    flex:1;min-width:0;padding:8px 10px;border-radius:12px;
+    background:#fbf7ed;border:1px solid #ece6d6;
+  }
+  .plan-card-v2-stop-name-row{display:flex;gap:8px;align-items:baseline}
+  .plan-card-v2-stop-title{
+    font-size:13.5px;color:#1a1815;font-weight:600;flex:1;min-width:0;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .plan-card-v2-stop-time{font-size:11px;color:#8a8273;font-variant-numeric:tabular-nums}
+  .plan-card-v2-stop-meta{margin-top:5px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .plan-card-v2-kind-meal{
+    display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:999px;
+    font-size:11px;font-weight:500;color:#a14a17;background:#fcecdd;
+  }
+  .plan-card-v2-kind-sight{
+    display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:999px;
+    font-size:11px;font-weight:500;color:#3d5b2c;background:#e6f1d9;
+  }
+  .plan-card-v2-leg{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:3px 9px 3px 7px;border-radius:999px;
+    font-size:11px;color:#8a8273;
+    background:#f5f1e6;border:1px solid #ebe4d2;
+    margin:6px 0 0 32px;
+  }
+  .plan-card-v2-actions{margin-top:14px;display:flex;gap:8px;align-items:center;padding:0 13px 13px}
+  .plan-card-v2-main-btn{
+    flex:1;appearance:none;border:0;cursor:pointer;
+    padding:11px 14px;border-radius:12px;
+    background:var(--orange);color:#fff;font-weight:600;font-size:13.5px;
+    box-shadow:0 6px 14px -6px rgba(240,73,35,.6);font-family:inherit;
+    transition:opacity .15s;
+  }
+  .plan-card-v2-main-btn:hover{opacity:.88}
+  .plan-card-v2-icon-btn{
+    appearance:none;border:1px solid #ece6d6;background:#fff;cursor:pointer;
+    width:38px;height:38px;border-radius:12px;color:#5a5346;font-size:16px;
+  }
+
   .variant-chip{
     display:inline-block;font-size:12px;padding:5px 12px;border-radius:14px;
     background:#fff;color:#444;cursor:pointer;border:1px solid #e5e1d8;
@@ -307,17 +464,33 @@
   .typing span:nth-child(3){animation-delay:.3s}
   @keyframes tt{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
 
-  .panel-input{border-top:1px solid var(--stone);padding:12px;display:flex;gap:8px;align-items:flex-end}
+  .panel-input{
+    border-top:1px solid #ece6d6;padding:12px 14px 14px;
+    background:rgba(253,250,243,.92);backdrop-filter:blur(6px);
+  }
+  .panel-input-row{display:flex;align-items:center;gap:8px}
   .panel-input .field{
-    flex:1;background:var(--parchment);border-radius:18px;padding:10px 12px;
-    display:flex;align-items:center;gap:8px;box-shadow:var(--shadow-inset);
+    flex:1;background:#fff;border-radius:14px;padding:8px 8px 8px 14px;
+    display:flex;align-items:center;gap:8px;border:1px solid #ece6d6;
   }
-  .panel-input input{flex:1;border:none;outline:none;background:transparent;font-size:14px;letter-spacing:-0.18px;color:var(--charcoal)}
+  .panel-input .field-icon{color:#b8af9a;font-size:14px;flex-shrink:0}
+  .panel-input input{flex:1;border:none;outline:none;background:transparent;font-size:13px;color:#1a1815;font-family:inherit}
+  .panel-input input::placeholder{color:#b8af9a}
   .panel-input .send-mini{
-    width:36px;height:36px;border-radius:50%;background:var(--midnight);color:#fff;
-    display:grid;place-items:center;transition:background .2s ease;
+    width:36px;height:36px;border-radius:11px;background:#1a1815;color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;font-size:16px;font-weight:500;
+    transition:background .15s;
   }
-  .panel-input .send-mini:hover{background:var(--charcoal)}
+  .panel-input .send-mini:hover{background:#333}
+  .panel-suggest-row{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+  .panel-suggest-chip{
+    appearance:none;cursor:pointer;padding:4px 10px;border-radius:999px;
+    background:#fff;border:1px solid #ece6d6;
+    font-size:11.5px;color:#5a5346;font-family:inherit;
+    transition:background .15s,border-color .15s;
+  }
+  .panel-suggest-chip:hover{background:#f5f1e6;border-color:#d6cebc}
 
   /* day tabs */
   .day-tabs{
@@ -473,9 +646,7 @@
 
 <header class="nav">
   <div class="brand"><div class="brand-mark">m</div><span>mtagent</span></div>
-  <div class="nav-actions">
-    <button class="pill light" onclick="window.open('/map','_blank')">旧地图页</button>
-  </div>
+  <div class="nav-actions"></div>
 </header>
 
 <main class="stage" id="stage">
@@ -581,13 +752,17 @@
 
     <aside class="panel" id="panel">
       <div class="panel-head">
-        <div>
-          <h2 class="trip-title" id="tripTitle">旅程加载中…</h2>
-          <div class="trip-meta" id="tripMeta"></div>
+        <div class="panel-brand">
+          <div class="panel-brand-mark">m</div>
+          <span class="panel-brand-name">mtagent</span>
         </div>
-        <button class="reset" id="resetBtn" title="重新开始">
-          <svg width="14" height="14" viewBox="0 0 16 16"><path d="M3 8 a5 5 0 1 0 1.4 -3.5 M3 3 v3 h3" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+        <div class="panel-head-row">
+          <div>
+            <h2 class="panel-trip-title" id="tripTitle">旅程加载中…</h2>
+            <div class="panel-trip-meta" id="tripMeta"></div>
+          </div>
+          <button class="panel-reset" id="resetBtn" title="重新开始">↻</button>
+        </div>
       </div>
       <div class="view-tabs" id="viewTabs">
         <button class="view-tab active" data-view="chat">对话</button>
@@ -596,13 +771,19 @@
       <div class="messages" id="messages"></div>
       <div class="plan-view" id="planView"></div>
       <form class="panel-input" id="panelForm" onsubmit="return false;">
-        <div class="field">
-          <svg width="14" height="14" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.5" stroke="#848281" stroke-width="1.6" fill="none"/><path d="M11 11 l3 3" stroke="#848281" stroke-width="1.6" stroke-linecap="round"/></svg>
-          <input id="panelInput" placeholder="再调整一下吧 · 例：「再加一个夜景」" />
+        <div class="panel-input-row">
+          <div class="field">
+            <span class="field-icon">🔍</span>
+            <input id="panelInput" placeholder="再调整一下吧 · 例：「再加一个夜景」" />
+          </div>
+          <button type="submit" class="send-mini">→</button>
         </div>
-        <button type="submit" class="send-mini">
-          <svg width="14" height="14" viewBox="0 0 16 16"><path d="M3 8 h10 m-4 -4 l4 4 l-4 4" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+        <div class="panel-suggest-row">
+          <button type="button" class="panel-suggest-chip" data-fill="多加夜景">多加夜景</button>
+          <button type="button" class="panel-suggest-chip" data-fill="换素食">换素食</button>
+          <button type="button" class="panel-suggest-chip" data-fill="少走点路">少走点路</button>
+          <button type="button" class="panel-suggest-chip" data-fill="加咖啡店">加咖啡店</button>
+        </div>
       </form>
     </aside>
 
@@ -642,7 +823,19 @@ document.querySelectorAll('[data-add]').forEach(b => {
   });
 });
 document.querySelectorAll('[data-fill]').forEach(b => {
-  b.addEventListener('click', () => { $('prompt').value = b.getAttribute('data-fill'); $('prompt').focus(); });
+  b.addEventListener('click', () => {
+    const fill = b.getAttribute('data-fill');
+    // panel suggest chips → fill panelInput and submit
+    if (b.classList.contains('panel-suggest-chip')) {
+      const pi = $('panelInput');
+      pi.value = fill;
+      pi.focus();
+      $('panelForm').dispatchEvent(new Event('submit'));
+    } else {
+      $('prompt').value = fill;
+      $('prompt').focus();
+    }
+  });
 });
 
 $('composer').addEventListener('submit', (e) => {
@@ -847,6 +1040,19 @@ async function handleEvent({ event, data }) {
   switch (event) {
     case 'trip.started':
       currentTripId = data.trip_id;
+      // 新 trip 开始 → 清除上次地图上的所有 marker + polyline，避免残留"2"叠加
+      markersByDay.forEach((markers, i) => {
+        (markers || []).forEach(m => m?.setMap(null));
+        markersByDay[i] = [];
+      });
+      markersByDay.length = 0;
+      polylinesByDay.forEach((lines, i) => {
+        (lines || []).forEach(l => l?.setMap?.(null));
+        polylinesByDay[i] = [];
+      });
+      polylinesByDay.length = 0;
+      // 清空 variantStops（旧 trip 数据）
+      Object.keys(variantStops).forEach(k => delete variantStops[k]);
       break;
 
     case 'clarify.question':
@@ -869,7 +1075,8 @@ async function handleEvent({ event, data }) {
       if (data.budget_level) parts.push(`💰 ${data.budget_level}`);
       pushMsg('bot', `听清啦：${parts.join(' · ')}`);
       $('tripTitle').textContent = `${data.city || '行程'} · ${data.days || '?'} 天`;
-      $('tripMeta').textContent = `${data.traveler_type || ''} · ${data.budget_level || ''}`;
+      const metaParts = [data.traveler_type, data.preferences?.[0], data.budget_level ? `预算 ${data.budget_level}` : ''].filter(Boolean);
+      $('tripMeta').innerHTML = metaParts.map(escapeHtml).join('<span class="mdot"></span>');
       pushTyping();
       break;
     }
@@ -921,7 +1128,8 @@ async function handleEvent({ event, data }) {
       break;
 
     case 'variant.main_done':
-      // 主方案画完 — noop, day_done 已落 markers
+      // 主方案画完 — 同步 push PlanCard（地图已由 day_done 落 markers）
+      pushVariantSummary(data);
       break;
 
     case 'variant.branch_done':
@@ -945,6 +1153,8 @@ async function handleEvent({ event, data }) {
       // v1.7: 仅 main variant 画地图, 备选走 pushVariantSummary 在 chat 总览
       if (!data.variant || data.variant === 'main') {
         await renderDayDone(data);
+        // main 也存入 variantStops，供 PlanCard 展开详情用
+        variantStops['main'] = { day_index: data.day_index, stops: data.stops || [] };
       } else {
         // 暂存到 variantStops, 等 variant.branch_done 统一 push (避免半数据 chat)
         variantStops[data.variant] = { day_index: data.day_index, stops: data.stops || [] };
@@ -1018,43 +1228,129 @@ function pushVariantSummary(data) {
     pushMsg('bot', `${VARIANT_ICONS[v] || '📋'} ${variantLabel(v)}方案: (空)`);
     return;
   }
+
+  const isMain = v === 'main';
+  const icon = VARIANT_ICONS[v] || '📋';
+  const label = variantLabel(v);
+  const stops = names.length;
   const wrap = document.createElement('div');
   wrap.className = 'msg bot';
-  const nameList = names.map((n, i) => `${i + 1}. ${escapeHtml(n)}`).join(' · ');
+  wrap.dataset.variantCard = v;
+
+  const stopsChips = names.map((n, i) =>
+    `<span class="plan-card-v2-stop-chip">
+      <span class="plan-card-v2-pin">${i+1}</span>
+      <span class="plan-card-v2-stop-name">${escapeHtml(n)}</span>
+    </span>${i < names.length-1 ? '<span class="plan-card-v2-arr">›</span>' : ''}`
+  ).join('');
+
+  const ctaClass = isMain ? 'plan-card-v2-cta is-active' : 'plan-card-v2-cta';
+  const ctaText = isMain ? '查看这个方案 ▾' : '切到这个方案 →';
+
   wrap.innerHTML = `
-    <div class="avatar bot">${VARIANT_ICONS[v] || '📋'}</div>
-    <div class="bubble" style="padding:10px 12px">
-      <div class="vs-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px">
-        <div>
-          <span style="font-weight:600">${variantLabel(v)}方案</span>
-          <span style="font-size:12px;color:var(--ash);margin-left:6px">${nameList}</span>
+    <div class="avatar bot">${icon}</div>
+    <div style="flex:1;min-width:0">
+      <div class="plan-card-v2${isMain ? ' is-active' : ''}" data-vc="${escapeHtml(v)}">
+        <div class="plan-card-v2-head">
+          <div class="plan-card-v2-top">
+            <div class="plan-card-v2-icon">${icon}</div>
+            <div class="plan-card-v2-info">
+              <div class="plan-card-v2-name-row">
+                <span class="plan-card-v2-name">${escapeHtml(label)}方案</span>
+                ${isMain ? '<span class="plan-card-v2-tag-rec">推荐</span>' : ''}
+                ${isMain ? '<span class="plan-card-v2-tag-cur" id="vc-cur-'+v+'">当前</span>' : ''}
+              </div>
+              <div class="plan-card-v2-stats">
+                <span>1天</span>
+                <span class="plan-card-v2-dot"></span>
+                <span>${stops}站</span>
+              </div>
+            </div>
+          </div>
+          <div class="plan-card-v2-stops-row">${stopsChips}</div>
+          <button class="plan-card-v2-cta ${isMain ? 'is-active' : ''}" data-cta="${escapeHtml(v)}" style="margin-top:9px">
+            ${ctaText}
+          </button>
         </div>
-        <span class="vs-toggle" style="font-size:11px;color:var(--orange);white-space:nowrap;flex-shrink:0">展开 ▶</span>
+        <div class="plan-card-v2-body" data-body="${escapeHtml(v)}">
+          <div class="plan-card-v2-timeline" data-detail="${escapeHtml(v)}">
+            <div style="color:#8a8273;font-size:12px;padding:8px 0">加载中…</div>
+          </div>
+        </div>
       </div>
-      <div class="vs-detail" style="display:none;margin-top:10px"></div>
-      ${data.has_fallback ? '<div style="font-size:11px;color:#9aa0a6;margin-top:4px">⚠ 部分LLM失败，走兜底</div>' : ''}
+      ${data.has_fallback ? '<div style="font-size:11px;color:#9aa0a6;margin-top:6px;padding-left:2px">⚠ 部分路线走兜底方案</div>' : ''}
     </div>`;
+
   $('messages').appendChild(wrap);
   $('messages').scrollTop = $('messages').scrollHeight;
 
-  const header = wrap.querySelector('.vs-header');
-  const detail = wrap.querySelector('.vs-detail');
-  const toggle = wrap.querySelector('.vs-toggle');
-  header.addEventListener('click', () => {
-    const expanded = detail.style.display !== 'none';
-    if (!expanded) {
-      detail.style.display = 'block';
-      toggle.textContent = '收起 ▼';
-      if (!detail.dataset.rendered) {
-        _renderVariantDetail(v, detail);
-        detail.dataset.rendered = '1';
+  const ctaBtn = wrap.querySelector(`[data-cta="${v}"]`);
+  const body = wrap.querySelector(`[data-body="${v}"]`);
+  const detail = wrap.querySelector(`[data-detail="${v}"]`);
+  let detailRendered = false;
+  let bodyOpen = false;
+
+  ctaBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!bodyOpen) {
+      // expand
+      body.classList.add('open');
+      ctaBtn.textContent = '收起方案 ▲';
+      ctaBtn.classList.add('is-active');
+      bodyOpen = true;
+      if (!detailRendered) {
+        _renderVariantDetailV2(v, detail);
+        detailRendered = true;
       }
     } else {
-      detail.style.display = 'none';
-      toggle.textContent = '展开 ▶';
+      body.classList.remove('open');
+      ctaBtn.textContent = isMain ? '查看这个方案 ▾' : '切到这个方案 →';
+      if (!isMain) ctaBtn.classList.remove('is-active');
+      bodyOpen = false;
     }
     $('messages').scrollTop = $('messages').scrollHeight;
   });
+}
+
+function _renderVariantDetailV2(variant, container) {
+  const vd = variantStops[variant];
+  const stops = vd?.stops || [];
+  if (!stops.length) {
+    container.innerHTML = '<div style="color:#8a8273;font-size:12px">暂无路线数据</div>';
+    return;
+  }
+  let html = '<div class="plan-card-v2-tl-line"></div>';
+  stops.forEach((stop, i) => {
+    const isMeal = (stop.categories || []).some(c => /美食|餐|食/.test(c));
+    const kindClass = isMeal ? 'plan-card-v2-kind-meal' : 'plan-card-v2-kind-sight';
+    const kindDot = `<span style="width:5px;height:5px;border-radius:50%;background:${isMeal ? '#e07a32' : '#5c8a37'}"></span>`;
+    const cats = (stop.categories || []).join('·') || (isMeal ? '美食' : '景点');
+    html += `
+      <div class="plan-card-v2-stop-row">
+        <div class="plan-card-v2-pin-wrap">
+          <span class="plan-card-v2-pin22">${i+1}</span>
+        </div>
+        <div class="plan-card-v2-stop-card">
+          <div class="plan-card-v2-stop-name-row">
+            <b class="plan-card-v2-stop-title">${escapeHtml(stop.poi_name || '未命名')}</b>
+            <span class="plan-card-v2-stop-time">${escapeHtml(stop.arrival_time || '')}</span>
+          </div>
+          <div class="plan-card-v2-stop-meta">
+            <span class="${kindClass}">${kindDot}${escapeHtml(cats)}</span>
+            <span style="font-size:11px;color:#8a8273">★ ${stop.star ?? '?'}</span>
+            <span style="font-size:11px;color:#8a8273">· ¥${stop.avgprice ?? '?'}/人</span>
+          </div>
+        </div>
+      </div>`;
+  });
+  html += `
+    <div class="plan-card-v2-actions">
+      <button class="plan-card-v2-main-btn" data-switch-v="${escapeHtml(variant)}">切到这个方案 →</button>
+    </div>`;
+  container.innerHTML = html;
+  container.querySelector(`[data-switch-v="${variant}"]`)?.addEventListener('click', () =>
+    triggerAdjust({ operation: 'switch_variant', variant })
+  );
 }
 
 function _renderVariantDetail(variant, container) {

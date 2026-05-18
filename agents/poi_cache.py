@@ -12,7 +12,6 @@ Spec: docs/superpowers/specs/2026-05-14-v19-stage1-5-poi-enrichment-cache.md
 
 from __future__ import annotations
 
-import asyncio
 import json
 import os
 from datetime import UTC, datetime
@@ -222,33 +221,104 @@ async def _enrich_via_qwen(poi: dict) -> dict:
     return json.loads(resp.choices[0].message.content or "{}")
 
 
-async def batch_enrich(
-    pois: list[dict],
-    *,
-    sem_limit: int = 5,
-) -> dict[str, dict]:
-    """并发 enrich 一批新 POI. 返回 dict[cache_key, enriched].
+async def _batch_enrich_via_qwen(pois: list[dict]) -> dict[str, dict]:
+    """单次 LLM 调用批量 enrich 一组 POI（替代逐个调用）.
 
-    输入 poi dict 必须含 name/lng/lat/city/typecode/categories.
-    单个失败 swallow + 不进结果, 不阻塞其它.
-    Caller 责任: cache lookup 后只把 miss 传进来; upsert 写回 cache.
+    输入 poi dict 含 name/lng/lat/city/typecode/categories.
+    返回 dict[cache_key, enriched_dict].
+    LLM 失败或漏项 → 对应 key 不进结果 (caller 走 enriched=None 兜底).
     """
     if not pois:
         return {}
 
-    sem = asyncio.Semaphore(sem_limit)
+    from openai import AsyncOpenAI
 
-    async def _one(poi: dict) -> tuple[str, Optional[dict]]:
+    client = AsyncOpenAI(
+        api_key=os.environ.get("DASHSCOPE_API_KEY", ""),
+        base_url=os.environ.get(
+            "QWEN_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1"
+        ),
+    )
+    poi_list_json = json.dumps(
+        [
+            {
+                "id": i,
+                "name": p["name"],
+                "city": p["city"],
+                "typecode": p.get("typecode", ""),
+                "categories": p.get("categories", []),
+            }
+            for i, p in enumerate(pois)
+        ],
+        ensure_ascii=False,
+    )
+    prompt = (
+        f"批量给以下 {len(pois)} 个 POI 生成路线规划标签。\n\n"
+        f"POI列表：{poi_list_json}\n\n"
+        "规则：\n"
+        "- poi_role: 餐饮/美食→meal, 著名景点/历史/文化→city_essential, "
+        "购物/公园/休闲→connector, 特色小众→persona_preferred, 其他→fallback\n"
+        f"- planning_tags 从以下选2-4个: {', '.join(_PLANNING_TAGS_VOCAB)}\n"
+        f"- risk_tags 可空: {', '.join(_RISK_TAGS_VOCAB)}\n"
+        "- manual_priority: city_essential→80-95, connector→50-70, meal→40-60, 其他→20-40\n"
+        "- min_stay_minutes/max_stay_minutes: 景点60-180, 餐厅45-90, 购物60-150\n\n"
+        "输出JSON对象，items数组与输入id一一对应:\n"
+        '{"items":[{"id":0,"poi_role":"city_essential","planning_tags":["landmark"],'
+        '"risk_tags":[],"city_zone":"外滩","manual_priority":90,'
+        '"min_stay_minutes":60,"max_stay_minutes":120}]}'
+    )
+    try:
+        resp = await client.chat.completions.create(
+            model=os.environ.get("QWEN_MODEL", "qwen-plus"),
+            messages=[
+                {
+                    "role": "system",
+                    "content": "你是路线规划数据专家，严格按JSON格式输出。",
+                },
+                {"role": "user", "content": prompt},
+            ],
+            response_format={"type": "json_object"},
+            temperature=0.1,
+            extra_body={"enable_thinking": False},
+        )
+        data = json.loads(resp.choices[0].message.content or "{}")
+        items = data.get("items") or []
+    except Exception:
+        return {}
+
+    result: dict[str, dict] = {}
+    for item in items:
+        idx = item.get("id")
+        if idx is None or not isinstance(idx, int) or idx >= len(pois):
+            continue
+        poi = pois[idx]
         key = cache_key(poi["name"], poi["lng"], poi["lat"])
-        async with sem:
-            try:
-                enriched = await _enrich_via_qwen(poi)
-                return key, enriched
-            except Exception:
-                return key, None
+        result[key] = item
+    return result
 
-    results = await asyncio.gather(*(_one(p) for p in pois))
-    return {k: v for k, v in results if v is not None}
+
+async def batch_enrich(
+    pois: list[dict],
+    *,
+    sem_limit: int = 5,  # 保留参数兼容旧调用, 不再使用
+) -> dict[str, dict]:
+    """批量 enrich 一批新 POI. 单次 LLM 调用返回全部结果 (替代原逐个并发).
+
+    分块处理 (每块 ≤ 30) 避免超 token 限制.
+    输入 poi dict 必须含 name/lng/lat/city/typecode/categories.
+    """
+    if not pois:
+        return {}
+
+    CHUNK = 30
+    result: dict[str, dict] = {}
+    for i in range(0, len(pois), CHUNK):
+        try:
+            chunk_result = await _batch_enrich_via_qwen(pois[i : i + CHUNK])
+            result.update(chunk_result)
+        except Exception:
+            pass  # 单块失败不阻断其他块
+    return result
 
 
 def _around_to_poi(ap: AroundPOI, city: str, enriched_dict: Optional[dict]) -> POI:

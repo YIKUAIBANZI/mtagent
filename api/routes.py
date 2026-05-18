@@ -568,8 +568,13 @@ async def submit_clarify_answer(
         )
         ctx.save()
 
+        # 若无 Amap 预取结果（landmark_must 模式），从 mock 加载本地 POI
+        from agents.planner_instant import load_city_pois_from_mock as _load_mock
+
+        base_pois = ctx.pre_fetched_pois or _load_mock(intent.city) or []
+
         try:
-            async for chunk in _run_variants(ctx, intent, [], amap, planner):
+            async for chunk in _run_variants(ctx, intent, base_pois, amap, planner):
                 yield chunk
         except Exception as exc:
             yield format_event("error", {"phase": "variants", "message": str(exc)})

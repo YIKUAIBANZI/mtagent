@@ -12,7 +12,7 @@ import os
 import re
 from typing import Awaitable, Callable
 
-_CITY_PAT = re.compile(r"(深圳|上海|西安)")
+_CITY_PAT = re.compile(r"(深圳|上海|西安|北京|南昌)")
 _DAYS_PAT = re.compile(r"(\d+)\s*天")
 _CN_NUM = {
     "一": 1,

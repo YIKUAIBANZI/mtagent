@@ -68,6 +68,7 @@ async def test_plan_one_variant_calls_fetch_around_when_anchor_set(monkeypatch):
             day_cluster_pois,
             amap,
             on_partial=None,
+            variant="main",
         ):
             captured["pool_size"] = len(day_cluster_pois)
             from dianping.schemas import DayPlan

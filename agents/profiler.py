@@ -24,7 +24,13 @@ from agents.trip_router import (
     infer_hub_type,
     route_trip_mode,
 )
-from dianping.schemas import ConstraintName, ModifierName, ParsedIntent, ProfilerOutput
+from dianping.schemas import (
+    ConstraintName,
+    ModifierName,
+    ParsedIntent,
+    ProfilerOutput,
+    RequiredSlot,
+)
 
 _PROMPT_PATH = Path(__file__).parent / "prompts" / "profiler.md"
 
@@ -137,6 +143,11 @@ class Profiler:
             start_with_meal=bool(data.get("start_with_meal") or False),
             estimated_hours=data.get("estimated_hours"),
             current_time=data.get("current_time") or now_iso,
+            required_slots=[
+                RequiredSlot(**rs) if isinstance(rs, dict) else rs
+                for rs in (data.get("required_slots") or [])
+            ],
+            waypoints=data.get("waypoints") or [],
         )
 
         if missing:
@@ -197,6 +208,40 @@ class Profiler:
                 understood.anchor_lng = anchor.lng
                 understood.anchor_lat = anchor.lat
                 understood.anchor_resolved_name = anchor.name
+
+        # v1.9.3: Geocode all waypoints (beyond the first anchor)
+        if understood.waypoints and understood.city:
+            resolved: list = []
+            for wp_text in understood.waypoints:
+                try:
+                    wp_anchor = await _resolve_anchor(wp_text, understood.city)
+                except Exception:
+                    wp_anchor = None
+                if wp_anchor is not None:
+                    from dianping.schemas import WaypointResolution
+
+                    resolved.append(
+                        WaypointResolution(
+                            text=wp_text,
+                            name=wp_anchor.name,
+                            lng=wp_anchor.lng,
+                            lat=wp_anchor.lat,
+                        )
+                    )
+            if resolved:
+                understood.geocoded_waypoints = resolved
+                # Ensure first waypoint is also the primary anchor
+                if understood.anchor_lng is None and resolved:
+                    understood.anchor_lng = resolved[0].lng
+                    understood.anchor_lat = resolved[0].lat
+                    understood.anchor_resolved_name = resolved[0].name
+                # Multi-waypoint → force anchor_explore mode
+                if len(resolved) >= 2 and understood.trip_mode not in (
+                    "anchor_explore",
+                ):
+                    understood.trip_mode = "anchor_explore"
+                if understood.anchor_radius_km is None:
+                    understood.anchor_radius_km = 2.0
 
         # 2) Route trip_mode (规则路由, LLM 已抽 trip_mode 则尊重)
         if not understood.trip_mode:
@@ -269,24 +314,40 @@ class Profiler:
 
 
 async def _default_qwen_call(system: str, user: str) -> str:
-    """Default LLM caller using qwen-plus via OpenAI-compatible API."""
+    """Default LLM caller, OpenAI-compatible. 支持 DeepSeek / Kimi / Qwen 等。
+
+    优先级: PROFILER_API_KEY > DASHSCOPE_API_KEY
+             PROFILER_BASE_URL > QWEN_BASE_URL > dashscope 默认
+             PROFILER_MODEL > QWEN_MODEL > qwen-plus
+    """
     from openai import AsyncOpenAI
 
-    client = AsyncOpenAI(
-        api_key=os.environ.get("DASHSCOPE_API_KEY", ""),
-        base_url=os.environ.get(
-            "QWEN_BASE_URL",
-            "https://dashscope.aliyuncs.com/compatible-mode/v1",
-        ),
+    api_key = os.environ.get("PROFILER_API_KEY") or os.environ.get(
+        "DASHSCOPE_API_KEY", ""
     )
-    resp = await client.chat.completions.create(
-        model=os.environ.get("QWEN_MODEL", "qwen-plus"),
+    base_url = (
+        os.environ.get("PROFILER_BASE_URL")
+        or os.environ.get("QWEN_BASE_URL")
+        or "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    )
+    model = (
+        os.environ.get("PROFILER_MODEL") or os.environ.get("QWEN_MODEL") or "qwen-plus"
+    )
+
+    client = AsyncOpenAI(api_key=api_key, base_url=base_url)
+
+    kwargs: dict = dict(
+        model=model,
         messages=[
             {"role": "system", "content": system},
             {"role": "user", "content": user},
         ],
         response_format={"type": "json_object"},
         temperature=0.2,
-        extra_body={"enable_thinking": False},
     )
+    # enable_thinking 是 Qwen 专属参数，其他模型不传
+    if "dashscope" in base_url:
+        kwargs["extra_body"] = {"enable_thinking": False}
+
+    resp = await client.chat.completions.create(**kwargs)
     return resp.choices[0].message.content or "{}"

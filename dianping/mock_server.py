@@ -37,7 +37,7 @@ def _load_data() -> None:
     """Load all city JSONs into memory. Called from lifespan."""
     MockState.pois_by_id.clear()
     MockState.pois_by_city.clear()
-    for city in ["深圳", "上海", "西安"]:
+    for city in ["深圳", "上海", "西安", "北京", "南昌"]:
         path = DATA_DIR / f"{city}.json"
         if not path.exists():
             continue

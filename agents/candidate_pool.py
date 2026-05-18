@@ -148,11 +148,45 @@ def _infer_role_from_categories(categories: Optional[list[str]]) -> str:
     if not categories:
         return "fallback"
     cats = " ".join(categories)
-    if "美食" in cats:
+    # 餐饮
+    if any(
+        k in cats
+        for k in (
+            "美食",
+            "餐饮",
+            "中餐",
+            "西餐",
+            "小吃",
+            "火锅",
+            "咖啡",
+            "甜品",
+            "冷饮",
+        )
+    ):
         return "meal"
-    if "景点" in cats or "历史文化" in cats:
+    # 景点 / 文化（含高德 & 大众点评两种 category 体系）
+    if any(
+        k in cats
+        for k in (
+            "景点",
+            "历史文化",
+            "风景名胜",
+            "博物馆",
+            "公园广场",
+            "公园",
+            "科教文化",
+            "纪念",
+            "古迹",
+            "展馆",
+            "展览",
+        )
+    ):
         return "city_essential"
-    if "购物" in cats or "休闲娱乐" in cats:
+    # 休闲娱乐 / 购物
+    if any(
+        k in cats
+        for k in ("购物", "休闲娱乐", "商场", "娱乐", "体育休闲", "KTV", "影剧院")
+    ):
         return "connector"
     return "fallback"
 

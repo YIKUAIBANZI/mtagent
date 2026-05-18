@@ -1,6 +1,5 @@
 """v1.9.1: planner_instant 调 poi_cache.lookup_and_enrich 验证."""
 
-
 import pytest
 
 from agents.planner_instant import plan_one_variant
@@ -51,8 +50,8 @@ def _make_cache_poi(name, oid, lat, lng):
 
 
 @pytest.mark.asyncio
-async def test_plan_one_variant_calls_lookup_and_enrich_when_anchor(monkeypatch):
-    """anchor + trip_mode → 应调 lookup_and_enrich, pool 含 cache POI."""
+async def test_plan_one_variant_uses_around_to_poi_when_anchor(monkeypatch):
+    """anchor + trip_mode → 调 fetch_around + _around_to_poi (不再 lookup_and_enrich), pool 含两个 POI."""
     intent = ParsedIntent(
         city="深圳",
         days=1,
@@ -81,23 +80,22 @@ async def test_plan_one_variant_calls_lookup_and_enrich_when_anchor(monkeypatch)
     async def _fake_fetch(**kw):
         return fake_around
 
+    # lookup_and_enrich 不再被调用
     cache_call_count = {"n": 0}
 
     async def _fake_cache(around, *, city, cache_path=None):
         cache_call_count["n"] += 1
-        # 模拟 cache 命中, 返回 1 个 enriched POI
-        return [_make_cache_poi("高德新店", "amap_x", 22.540, 114.060)]
+        return []
 
     monkeypatch.setattr("agents.anchor.fetch_around", _fake_fetch)
     monkeypatch.setattr("agents.poi_cache.lookup_and_enrich", _fake_cache)
 
-    captured = {"pool_size": 0, "pool_names": []}
+    captured = {"pool_names": []}
 
     class _FakePlanner:
         async def compose_one_day(self, **kw):
             from dianping.schemas import DayPlan
 
-            captured["pool_size"] = len(kw.get("day_cluster_pois", []))
             captured["pool_names"] = [p.name for p in kw.get("day_cluster_pois", [])]
             return 0, DayPlan(day_index=0, anchor_district="", stops=[]), []
 
@@ -120,8 +118,9 @@ async def test_plan_one_variant_calls_lookup_and_enrich_when_anchor(monkeypatch)
     except Exception:
         pass
 
-    assert cache_call_count["n"] == 1
-    # pool 应含本地 local-A + cache 来的 "高德新店"
+    # lookup_and_enrich 不再调用（改用 _around_to_poi 直接转换）
+    assert cache_call_count["n"] == 0
+    # pool 应含本地 local-A + 高德 fetch_around 来的 "高德新店"
     assert "local-A" in captured["pool_names"]
     assert "高德新店" in captured["pool_names"]
 

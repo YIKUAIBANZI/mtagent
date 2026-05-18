@@ -42,7 +42,22 @@ _SLOT_DEFS: dict[str, dict] = {
     "上午景点": dict(
         start=time(9, 0),
         end=time(12, 0),
-        category_pool=["休闲娱乐", "亲子"],
+        # 兼容大众点评体系（景点/历史文化）和高德体系（风景名胜/公园广场/科教文化服务）
+        category_pool=[
+            "景点",
+            "历史文化",
+            "自然风光",
+            "风景名胜",
+            "风景名胜相关",
+            "公园广场",
+            "公园",
+            "科教文化服务",
+            "科教文化场所",
+            "博物馆",
+            "纪念馆",
+            "休闲娱乐",
+            "亲子",
+        ],
         is_meal=False,
         min_stay_minutes=60,
         max_stay_minutes=180,
@@ -50,7 +65,17 @@ _SLOT_DEFS: dict[str, dict] = {
     "午饭": dict(
         start=time(12, 0),
         end=time(13, 30),
-        category_pool=["美食"],
+        category_pool=[
+            "美食",
+            "餐饮服务",
+            "中餐厅",
+            "西餐厅",
+            "小吃快餐",
+            "火锅",
+            "日本料理",
+            "烧烤",
+            "面包甜点",
+        ],
         is_meal=True,
         min_stay_minutes=60,
         max_stay_minutes=90,
@@ -58,7 +83,21 @@ _SLOT_DEFS: dict[str, dict] = {
     "下午": dict(
         start=time(13, 30),
         end=time(17, 0),
-        category_pool=["购物", "休闲娱乐"],
+        category_pool=[
+            "景点",
+            "历史文化",
+            "自然风光",
+            "风景名胜",
+            "风景名胜相关",
+            "公园广场",
+            "公园",
+            "科教文化服务",
+            "博物馆",
+            "购物",
+            "休闲娱乐",
+            "商场",
+            "购物服务",
+        ],
         is_meal=False,
         min_stay_minutes=90,
         max_stay_minutes=180,
@@ -66,7 +105,14 @@ _SLOT_DEFS: dict[str, dict] = {
     "下午茶": dict(
         start=time(15, 30),
         end=time(16, 30),
-        category_pool=["美食"],
+        category_pool=[
+            "美食",
+            "餐饮服务",
+            "咖啡厅",
+            "冷饮店",
+            "甜品",
+            "下午茶",
+        ],
         is_meal=False,
         optional=True,
         min_stay_minutes=30,
@@ -75,7 +121,17 @@ _SLOT_DEFS: dict[str, dict] = {
     "晚饭": dict(
         start=time(18, 0),
         end=time(20, 0),
-        category_pool=["美食"],
+        category_pool=[
+            "美食",
+            "餐饮服务",
+            "中餐厅",
+            "西餐厅",
+            "小吃快餐",
+            "火锅",
+            "烧烤",
+            "海鲜",
+            "夜宵",
+        ],
         is_meal=True,
         min_stay_minutes=60,
         max_stay_minutes=120,
@@ -83,7 +139,15 @@ _SLOT_DEFS: dict[str, dict] = {
     "夜场": dict(
         start=time(20, 0),
         end=time(22, 0),
-        category_pool=["休闲娱乐"],
+        category_pool=[
+            "休闲娱乐",
+            "娱乐场所",
+            "KTV",
+            "酒吧",
+            "影剧院",
+            "风景名胜",
+            "公园广场",
+        ],
         is_meal=False,
         optional=True,
         min_stay_minutes=60,
@@ -98,12 +162,31 @@ def is_instant_window(intent: ParsedIntent) -> bool:
     return tw in _INSTANT_SLOT_NAMES
 
 
-def make_instant_template(time_window: Optional[str]) -> DayTemplate:
+def make_instant_template(
+    time_window: Optional[str], required_slots=None
+) -> DayTemplate:
     """Build a single-day template fitting the time_window.
 
     Fallback (unknown / None): 全天 4 slot 跟旧 'pace=适中' 一致.
+    v1.9.2: required_slots 里用户明确要求的 slot (如 "下午茶") 若不在模板里则按时间插入.
     """
-    names = _INSTANT_SLOT_NAMES.get(time_window) or ["上午景点", "午饭", "下午", "晚饭"]
+    names = list(
+        _INSTANT_SLOT_NAMES.get(time_window) or ["上午景点", "午饭", "下午", "晚饭"]
+    )
+    if required_slots:
+        for rs in required_slots:
+            sn = rs.slot_name
+            if sn in _SLOT_DEFS and sn not in names:
+                new_start = _SLOT_DEFS[sn]["start"]
+                idx = next(
+                    (
+                        i
+                        for i, n in enumerate(names)
+                        if _SLOT_DEFS.get(n, {}).get("start", time(0, 0)) > new_start
+                    ),
+                    len(names),
+                )
+                names.insert(idx, sn)
     slots = [DaySlotSpec(name=n, **_SLOT_DEFS[n]) for n in names]
     return DayTemplate(day_index=0, slots=slots)
 
@@ -194,6 +277,106 @@ def _filter_meal_by_anchor_distance(
     return kept
 
 
+# v1.9.3 required_slots → 高德 typecode 精准搜索
+_CATEGORY_TO_AMAP_TYPE: dict[str, str] = {
+    "咖啡": "050700",
+    "甜品": "050700",
+    "奶茶": "050301",
+    "茶饮": "050301",
+    "西餐": "050200",
+    "西式": "050200",
+    "牛排": "050200",
+    "披萨": "050200",
+    "火锅": "050100",
+    "川菜": "050100",
+    "素食": "050100",
+    "蔬食": "050100",
+}
+
+
+def _slot_typecodes(required_slots) -> str | None:
+    """把 required_slots 里的 categories 映射到高德 typecode 字符串, 无映射返 None."""
+    codes: set[str] = set()
+    for rs in required_slots or []:
+        for cat in rs.categories:
+            tc = _CATEGORY_TO_AMAP_TYPE.get(cat)
+            if tc:
+                codes.add(tc)
+    return "|".join(sorted(codes)) if codes else None
+
+
+def _point_to_segment_dist_km(
+    p: tuple[float, float],
+    a: tuple[float, float],
+    b: tuple[float, float],
+) -> float:
+    """Approximate distance (km) from point p to line segment a→b (lng/lat pairs)."""
+    from agents.anchor import _haversine_km as _hv
+
+    ax, ay = a
+    bx, by = b
+    px, py = p
+    ab2 = (bx - ax) ** 2 + (by - ay) ** 2
+    if ab2 < 1e-12:
+        return _hv(p, a)
+    t = max(0.0, min(1.0, ((px - ax) * (bx - ax) + (py - ay) * (by - ay)) / ab2))
+    proj = (ax + t * (bx - ax), ay + t * (by - ay))
+    return _hv(p, proj)
+
+
+def _corridor_filter(
+    pois: list[POI],
+    waypoints: list,  # list[WaypointResolution]
+    width_km: float = 0.5,
+) -> list[POI]:
+    """Keep POIs within width_km of any segment of the waypoint path."""
+    if len(waypoints) < 2:
+        return pois
+    segments = [
+        (
+            (waypoints[i].lng, waypoints[i].lat),
+            (waypoints[i + 1].lng, waypoints[i + 1].lat),
+        )
+        for i in range(len(waypoints) - 1)
+    ]
+    result = []
+    for p in pois:
+        pt = (p.longitude, p.latitude)
+        if any(_point_to_segment_dist_km(pt, a, b) <= width_km for a, b in segments):
+            result.append(p)
+    return result
+
+
+def _reorder_for_variant(pois: list[POI], variant: Variant) -> list[POI]:
+    """无 enriched 时按 variant 重排候选，让三个 variant 收到不同的 top-N.
+
+    - main: 不变（star 高的在前）
+    - low_queue: 把 star≥4.8 的热门 POI 沉到后半，突出评分略低但独特的
+    - interest_first: 把 categories 包含"文化/历史/艺术"的提前
+    """
+    if variant == "main":
+        return pois
+
+    if variant == "low_queue":
+        # 热门高星沉底，给冷门让位
+        hot = [p for p in pois if (p.star or 0) >= 4.8]
+        rest = [p for p in pois if (p.star or 0) < 4.8]
+        return rest + hot
+
+    if variant == "interest_first":
+        CULTURE_KW = {"历史", "文化", "艺术", "博物", "古迹", "遗址", "寺", "庙", "故"}
+
+        def _is_culture(p: POI) -> bool:
+            cats = " ".join(p.categories or []) + (p.name or "")
+            return any(kw in cats for kw in CULTURE_KW)
+
+        culture = [p for p in pois if _is_culture(p)]
+        other = [p for p in pois if not _is_culture(p)]
+        return culture + other
+
+    return pois
+
+
 def flatten_candidate_pool(
     intent: ParsedIntent, variant: Variant, pois: list[POI]
 ) -> list[POI]:
@@ -240,6 +423,9 @@ async def plan_one_variant(
     pois: list[POI],
     on_partial: Optional[Callable[[int, list[str]], Awaitable[None]]] = None,
     excluded_oids: Optional[set[str]] = None,
+    pre_fetched_pois: Optional[
+        list[POI]
+    ] = None,  # v1.9.4: 共享 Amap fetch 结果，跳过内部重复抓取
 ) -> VariantPlan:
     """Run one variant end-to-end: pool → compose_one_day → DayPlan + segments.
 
@@ -251,14 +437,16 @@ async def plan_one_variant(
     from agents.planner import PlannerLLMError, _synthesize_fallback_route
     from api.routes import _compute_day_transits
 
+    # v1.9.4: 若调用方已预取 Amap POI（并行 variant 场景），直接用，跳过内部重复抓取
+    if pre_fetched_pois is not None:
+        pois = pre_fetched_pois
     # v1.9 / v1.9.1: anchor 模式下拉高德周边 POI → cache 层 → 合进本地池 (扩 pool)
-    if (
+    elif (
         intent.anchor_lng is not None
         and intent.anchor_lat is not None
         and intent.trip_mode in ("anchor_explore", "layover_eat", "layover_explore")
     ):
         from agents import anchor as _anchor_mod
-        from agents import poi_cache as _poi_cache
         from agents.anchor import _haversine_km, _norm_name
 
         types = (
@@ -278,13 +466,10 @@ async def plan_one_variant(
         except Exception:
             around = []
         if around:
-            # v1.9.1: cache 层 — 高德 POI 进 cache 命中复用 / miss 并发 enrich + 写回
-            try:
-                amap_enriched = await _poi_cache.lookup_and_enrich(
-                    around, city=intent.city
-                )
-            except Exception:
-                amap_enriched = []
+            # 直接用 typecode→categories 转换，跳过 LLM enrich (避免 N 次 LLM 拖慢冷启动)
+            from agents.poi_cache import _around_to_poi
+
+            amap_enriched = [_around_to_poi(ap, intent.city, None) for ap in around]
 
             # 半径过滤 + 与 local_pois 去重 (替代 merge_with_local_pool 老路径)
             anchor_pt = (intent.anchor_lng, intent.anchor_lat)
@@ -327,10 +512,75 @@ async def plan_one_variant(
             )
             pois = kept_local + kept_amap
 
-    template = make_instant_template(intent.time_window)
+    # v1.9.3 Multi-waypoint + category-targeted fetch（仅在没有预取结果时执行）
+    extra_wps = getattr(intent, "geocoded_waypoints", [])
+    if pre_fetched_pois is None and len(extra_wps) >= 2:
+        from agents import anchor as _anchor_mod
+        from agents.poi_cache import _around_to_poi
+
+        existing_oids = {p.openshopid for p in pois}
+        for wp in extra_wps[1:]:  # skip first (already fetched as primary anchor)
+            try:
+                extra_around = await _anchor_mod.fetch_around(
+                    lng=wp.lng,
+                    lat=wp.lat,
+                    radius_m=int((intent.anchor_radius_km or 2.0) * 1000),
+                    types=_anchor_mod.DEFAULT_AROUND_TYPES,
+                    limit=20,  # 限制数量，用 categories 兜底不 enrich
+                )
+            except Exception:
+                extra_around = []
+            for ap in extra_around:
+                p = _around_to_poi(
+                    ap, intent.city, None
+                )  # enriched=None, typecode→categories 兜底
+                if p.openshopid not in existing_oids:
+                    pois.append(p)
+                    existing_oids.add(p.openshopid)
+        # 不做走廊过滤，候选池保持丰富，waypoint 通过 must_consider 置顶
+
+    # v1.9.3 required_slots category-targeted 搜索（仅在没有预取结果时执行）
+    _target_tc = _slot_typecodes(getattr(intent, "required_slots", []))
+    if (
+        pre_fetched_pois is None
+        and _target_tc
+        and intent.anchor_lng is not None
+        and intent.anchor_lat is not None
+    ):
+        from agents import anchor as _anchor_mod
+        from agents.poi_cache import _around_to_poi
+
+        try:
+            _cat_around = await _anchor_mod.fetch_around(
+                lng=intent.anchor_lng,
+                lat=intent.anchor_lat,
+                radius_m=int((intent.anchor_radius_km or 3.0) * 1000),
+                types=_target_tc,
+                limit=15,
+            )
+        except Exception:
+            _cat_around = []
+        existing_oids = {p.openshopid for p in pois}
+        for ap in _cat_around:
+            p = _around_to_poi(ap, intent.city, None)
+            if p.openshopid not in existing_oids:
+                pois.append(p)
+                existing_oids.add(p.openshopid)
+
+    template = make_instant_template(intent.time_window, intent.required_slots or [])
     flat_pois = flatten_candidate_pool(intent, variant, pois)
     if excluded_oids:
         flat_pois = [p for p in flat_pois if p.openshopid not in excluded_oids]
+
+    # v1.9.4: geocoded waypoints 强制置顶 flat_pois（候选池距离过滤可能把远处 waypoint 踢出去）
+    _gwps = getattr(intent, "geocoded_waypoints", [])
+    if _gwps:
+        _wp_oids = {f"waypoint_{wp.name[:8]}" for wp in _gwps}
+        _in_flat = {p.openshopid for p in flat_pois}
+        for p in pois:
+            if p.openshopid in _wp_oids and p.openshopid not in _in_flat:
+                flat_pois.insert(0, p)
+                _in_flat.add(p.openshopid)
     # v1.8: 优先用 intent.anchor_lng/lat (来自高德 geocode); 兜底 POI[0]
     if intent.anchor_lng is not None and intent.anchor_lat is not None:
         anchor_name = (
@@ -350,6 +600,9 @@ async def plan_one_variant(
     # 已对全 pool 过滤; 这里覆盖 landmark_must / 无 anchor 路径.
     flat_pois = _filter_meal_by_anchor_distance(flat_pois, anchor_lat, anchor_lng)
 
+    # 无 enriched 数据时（Amap POI），按 variant 重排候选以差异化 LLM 输入
+    flat_pois = _reorder_for_variant(flat_pois, variant)
+
     try:
         _, day_plan, segments = await planner.compose_one_day(
             day_idx=0,
@@ -359,6 +612,7 @@ async def plan_one_variant(
             day_cluster_pois=flat_pois,
             amap=amap,
             on_partial=on_partial,
+            variant=variant,
         )
         return VariantPlan(
             variant=variant, day_plan=day_plan, transit_segments=segments

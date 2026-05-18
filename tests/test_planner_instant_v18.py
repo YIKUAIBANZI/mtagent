@@ -53,6 +53,7 @@ async def test_plan_one_variant_uses_intent_anchor_lng_lat_when_set(monkeypatch)
             day_cluster_pois,
             amap,
             on_partial=None,
+            variant="main",
         ):
             captured_anchor["a"] = anchor
             from dianping.schemas import DayPlan
@@ -111,6 +112,7 @@ async def test_plan_one_variant_falls_back_to_first_poi_when_no_anchor(monkeypat
             day_cluster_pois,
             amap,
             on_partial=None,
+            variant="main",
         ):
             captured_anchor["a"] = anchor
             from dianping.schemas import DayPlan

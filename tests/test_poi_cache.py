@@ -153,24 +153,29 @@ async def test_batch_enrich_empty_list_returns_empty():
     assert result == {}
 
 
-async def test_batch_enrich_calls_llm_per_poi(monkeypatch):
+async def test_batch_enrich_calls_llm_once_for_all_pois(monkeypatch):
+    """新批量实现: N 个 POI 只触发一次 _batch_enrich_via_qwen 调用."""
     from agents import poi_cache as pc
 
     call_count = {"n": 0}
 
-    async def _fake_enrich(poi):
+    async def _fake_batch(pois_chunk):
         call_count["n"] += 1
         return {
-            "poi_role": "meal",
-            "planning_tags": ["food_quality", "local_food"],
-            "risk_tags": [],
-            "city_zone": "test",
-            "manual_priority": 75,
-            "min_stay_minutes": 45,
-            "max_stay_minutes": 90,
+            pc.cache_key(p["name"], p["lng"], p["lat"]): {
+                "id": i,
+                "poi_role": "meal",
+                "planning_tags": ["food_quality", "local_food"],
+                "risk_tags": [],
+                "city_zone": "test",
+                "manual_priority": 75,
+                "min_stay_minutes": 45,
+                "max_stay_minutes": 90,
+            }
+            for i, p in enumerate(pois_chunk)
         }
 
-    monkeypatch.setattr(pc, "_enrich_via_qwen", _fake_enrich)
+    monkeypatch.setattr(pc, "_batch_enrich_via_qwen", _fake_batch)
     pois = [
         {
             "name": "A",
@@ -198,7 +203,7 @@ async def test_batch_enrich_calls_llm_per_poi(monkeypatch):
         },
     ]
     result = await pc.batch_enrich(pois)
-    assert call_count["n"] == 3
+    assert call_count["n"] == 1  # 3 POI → 一次批量调用
     assert len(result) == 3
     for entry in result.values():
         assert entry["poi_role"] == "meal"
@@ -403,36 +408,19 @@ async def test_lookup_and_enrich_llm_failure_returns_poi_without_enriched(
     assert result[0].enriched is None  # LLM 失败, _bucket_of 走 categories
 
 
-async def test_batch_enrich_failure_does_not_block_others(monkeypatch):
+async def test_batch_enrich_failure_returns_empty(monkeypatch):
+    """批量调用整体失败 → 返回空 dict，不抛出异常."""
     from agents import poi_cache as pc
 
-    async def _flaky_enrich(poi):
-        if poi["name"] == "BAD":
-            raise RuntimeError("LLM 失败")
-        return {
-            "poi_role": "meal",
-            "planning_tags": ["food_quality", "local_food"],
-            "risk_tags": [],
-            "city_zone": "x",
-            "manual_priority": 70,
-            "min_stay_minutes": 45,
-            "max_stay_minutes": 90,
-        }
+    async def _fail_batch(pois_chunk):
+        raise RuntimeError("LLM 整体失败")
 
-    monkeypatch.setattr(pc, "_enrich_via_qwen", _flaky_enrich)
+    monkeypatch.setattr(pc, "_batch_enrich_via_qwen", _fail_batch)
     pois = [
         {
             "name": "OK1",
             "lng": 114.0,
             "lat": 22.0,
-            "city": "深圳",
-            "typecode": "050000",
-            "categories": ["美食"],
-        },
-        {
-            "name": "BAD",
-            "lng": 114.1,
-            "lat": 22.1,
             "city": "深圳",
             "typecode": "050000",
             "categories": ["美食"],
@@ -447,14 +435,8 @@ async def test_batch_enrich_failure_does_not_block_others(monkeypatch):
         },
     ]
     result = await pc.batch_enrich(pois)
-    # BAD 失败不进结果, OK1/OK2 应在
-    assert len(result) == 2
-    [v.get("_name") for v in result.values() if "_name" in v]
-    # 用 cache_key 验证: BAD 的 key 不应出现
-    from agents.poi_cache import cache_key
-
-    bad_key = cache_key("BAD", 114.1, 22.1)
-    assert bad_key not in result
+    # 整体失败 → 空结果，不 crash
+    assert result == {}
 
 
 def test_upsert_existing_entry_increments_seen_count(tmp_path):
