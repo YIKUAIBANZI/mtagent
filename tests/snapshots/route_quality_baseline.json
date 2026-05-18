@@ -1,0 +1,192 @@
+{
+  "深圳": {
+    "main": {
+      "stops": 4,
+      "score": 0.8571428571428571,
+      "passed": 6,
+      "total": 7,
+      "failed_rules": [
+        "cluster_ok"
+      ],
+      "details": {
+        "cluster_ok": "max pairwise 9.45 km > 5.0 km"
+      }
+    },
+    "low_queue": {
+      "stops": 4,
+      "score": 0.8571428571428571,
+      "passed": 6,
+      "total": 7,
+      "failed_rules": [
+        "cluster_ok"
+      ],
+      "details": {
+        "cluster_ok": "max pairwise 14.10 km > 5.0 km"
+      }
+    },
+    "interest_first": {
+      "stops": 4,
+      "score": 0.8571428571428571,
+      "passed": 6,
+      "total": 7,
+      "failed_rules": [
+        "cluster_ok"
+      ],
+      "details": {
+        "cluster_ok": "max pairwise 5.94 km > 5.0 km"
+      }
+    }
+  },
+  "上海": {
+    "main": {
+      "stops": 4,
+      "score": 0.8571428571428571,
+      "passed": 6,
+      "total": 7,
+      "failed_rules": [
+        "cluster_ok"
+      ],
+      "details": {
+        "cluster_ok": "max pairwise 5.03 km > 5.0 km"
+      }
+    },
+    "low_queue": {
+      "stops": 4,
+      "score": 0.8571428571428571,
+      "passed": 6,
+      "total": 7,
+      "failed_rules": [
+        "cluster_ok"
+      ],
+      "details": {
+        "cluster_ok": "max pairwise 22.77 km > 5.0 km"
+      }
+    },
+    "interest_first": {
+      "stops": 4,
+      "score": 0.8571428571428571,
+      "passed": 6,
+      "total": 7,
+      "failed_rules": [
+        "cluster_ok"
+      ],
+      "details": {
+        "cluster_ok": "max pairwise 5.03 km > 5.0 km"
+      }
+    }
+  },
+  "西安": {
+    "main": {
+      "stops": 4,
+      "score": 0.8571428571428571,
+      "passed": 6,
+      "total": 7,
+      "failed_rules": [
+        "cluster_ok"
+      ],
+      "details": {
+        "cluster_ok": "max pairwise 13.65 km > 5.0 km"
+      }
+    },
+    "low_queue": {
+      "stops": 4,
+      "score": 0.8571428571428571,
+      "passed": 6,
+      "total": 7,
+      "failed_rules": [
+        "cluster_ok"
+      ],
+      "details": {
+        "cluster_ok": "max pairwise 17.91 km > 5.0 km"
+      }
+    },
+    "interest_first": {
+      "stops": 4,
+      "score": 0.8571428571428571,
+      "passed": 6,
+      "total": 7,
+      "failed_rules": [
+        "cluster_ok"
+      ],
+      "details": {
+        "cluster_ok": "max pairwise 15.03 km > 5.0 km"
+      }
+    }
+  },
+  "南昌": {
+    "main": {
+      "stops": 4,
+      "score": 0.8571428571428571,
+      "passed": 6,
+      "total": 7,
+      "failed_rules": [
+        "cluster_ok"
+      ],
+      "details": {
+        "cluster_ok": "max pairwise 5.79 km > 5.0 km"
+      }
+    },
+    "low_queue": {
+      "stops": 4,
+      "score": 0.8571428571428571,
+      "passed": 6,
+      "total": 7,
+      "failed_rules": [
+        "cluster_ok"
+      ],
+      "details": {
+        "cluster_ok": "max pairwise 17.94 km > 5.0 km"
+      }
+    },
+    "interest_first": {
+      "stops": 4,
+      "score": 0.8571428571428571,
+      "passed": 6,
+      "total": 7,
+      "failed_rules": [
+        "cluster_ok"
+      ],
+      "details": {
+        "cluster_ok": "max pairwise 5.79 km > 5.0 km"
+      }
+    }
+  },
+  "北京": {
+    "main": {
+      "stops": 4,
+      "score": 0.8571428571428571,
+      "passed": 6,
+      "total": 7,
+      "failed_rules": [
+        "cluster_ok"
+      ],
+      "details": {
+        "cluster_ok": "max pairwise 7.46 km > 5.0 km"
+      }
+    },
+    "low_queue": {
+      "stops": 4,
+      "score": 0.8571428571428571,
+      "passed": 6,
+      "total": 7,
+      "failed_rules": [
+        "cluster_ok"
+      ],
+      "details": {
+        "cluster_ok": "max pairwise 8.57 km > 5.0 km"
+      }
+    },
+    "interest_first": {
+      "stops": 4,
+      "score": 0.8571428571428571,
+      "passed": 6,
+      "total": 7,
+      "failed_rules": [
+        "cluster_ok"
+      ],
+      "details": {
+        "cluster_ok": "max pairwise 8.05 km > 5.0 km"
+      }
+    }
+  }
+}
