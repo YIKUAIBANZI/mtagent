@@ -381,3 +381,48 @@ async def test_switch_variant_empty_variants_raises():
     adj = Adjuster()
     with pytest.raises(AdjusterError):
         await adj.switch_variant(ctx, variant="main")
+
+
+# ====================================================== P0.3 amap fallback
+
+
+@pytest.mark.asyncio
+async def test_replace_stop_falls_back_to_amap_text_search(monkeypatch, cache_path):
+    """v1.10: cache + pool 都没命中时, 用 user_hint 调 amap text_search 兜底.
+
+    用户输入'我不去博物馆了去南昌之星', refiner 解析出 user_hint='南昌之星'.
+    本地 pool/cache 都没有'南昌之星'POI, 应该调 text_search 找到'南昌之星摩天轮'替换.
+    修前: 直接 raise AdjusterError, 前端弹"调整失败".
+    """
+    from agents.anchor import AroundPOI
+
+    old = _mk_poi("OID_OLD", "江西省博物馆", role="city_essential", zone="东湖区")
+    # candidate_pois 完全空; cache 也空 — 强制走 amap fallback
+    ctx = _mk_ctx(stops=[_mk_stop(old, "下午", 13, 17)], candidate_pois=[])
+    ctx.intent.city = "南昌"
+    _write_cache(cache_path, {})
+
+    async def _fake_text_search(keyword, city, limit=5):
+        if "南昌之星" in keyword and city == "南昌":
+            return [
+                AroundPOI(
+                    name="南昌之星摩天轮",
+                    lng=115.850,
+                    lat=28.656,
+                    typecode="110100",
+                    distance_m=0,
+                    address="南昌红谷滩",
+                )
+            ]
+        return []
+
+    monkeypatch.setattr("agents.anchor.text_search", _fake_text_search)
+
+    adj = Adjuster()
+    result = await adj.replace_stop(
+        ctx, day_index=0, slot_name="下午", user_hint="南昌之星"
+    )
+    assert result["source"] == "amap"
+    assert result["new_stop"].poi.name == "南昌之星摩天轮"
+    # 注入的 POI 应该被标 must_consider 以豁免后续过滤
+    assert result["new_stop"].poi.enriched.must_consider is True

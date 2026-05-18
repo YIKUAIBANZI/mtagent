@@ -243,6 +243,36 @@ class Adjuster:
                 chosen = pool_pick
                 source = "pool"
 
+        # v1.10 P0.3: cache + pool 都失败时, 用 user_hint 调 amap text_search 兜底.
+        # 解决 "用户说去南昌之星但本地池没这个 POI" 的现实场景.
+        if chosen is None and user_hint and len(user_hint.strip()) >= 2:
+            from agents.anchor import text_search
+            from agents.candidate_pool import _infer_role_from_categories
+            from agents.poi_cache import _around_to_poi
+            from dianping.schemas import EnrichedLabel
+
+            try:
+                amap_results = await text_search(
+                    user_hint.strip(),
+                    city=ctx.intent.city,
+                    limit=5,
+                )
+            except Exception:
+                amap_results = []
+            for ap in amap_results:
+                new_poi = _around_to_poi(ap, ctx.intent.city, None)
+                if new_poi.openshopid in used:
+                    continue
+                role = _infer_role_from_categories(new_poi.categories)
+                new_poi.enriched = EnrichedLabel(
+                    poi_role=role if role != "fallback" else target_role,
+                    must_consider=True,
+                    manual_priority=80,
+                )
+                chosen = new_poi
+                source = "amap"
+                break
+
         if chosen is None:
             raise AdjusterError(
                 f"no replacement candidate for day {day_index} slot {slot_name}"
