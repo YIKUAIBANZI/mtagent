@@ -1,0 +1,17 @@
+[Unit]
+Description=mtagent FastAPI app (port 9191)
+After=network.target mtagent-mock.service
+Requires=mtagent-mock.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/mtagent
+Environment=PYTHONPATH=/opt/mtagent
+EnvironmentFile=/opt/mtagent/.env
+ExecStart=/opt/mtagent/venv/bin/uvicorn api.main:app --host 127.0.0.1 --port 9191 --workers 1
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

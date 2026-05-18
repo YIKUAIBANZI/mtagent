@@ -1,0 +1,16 @@
+[Unit]
+Description=mtagent dianping mock server (port 9192)
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/mtagent
+Environment=PYTHONPATH=/opt/mtagent
+EnvironmentFile=/opt/mtagent/.env
+ExecStart=/opt/mtagent/venv/bin/uvicorn dianping.mock_server:mock_app --host 127.0.0.1 --port 9192
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
