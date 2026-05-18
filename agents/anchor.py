@@ -18,8 +18,8 @@ from dianping.schemas import POI
 _AMAP_BASE = "https://restapi.amap.com"
 _TIMEOUT = 5.0
 
-# 高德 typecode: 餐饮/购物/休闲/景点 (Spec §3.2)
-DEFAULT_AROUND_TYPES = "050000|060000|080000|110000"
+# 高德 typecode: 餐饮/购物/休闲/景点/科教文化(含博物馆) (Spec §3.2)
+DEFAULT_AROUND_TYPES = "050000|060000|080000|110000|140000"
 
 
 class AnchorResolution(BaseModel):
@@ -110,6 +110,56 @@ async def fetch_around(
                 "radius": min(radius_m, 50000),
                 "types": types,
                 "offset": min(limit, 50),
+                "page": 1,
+                "extensions": "base",
+            },
+        )
+    except Exception:
+        return []
+    if data.get("status") != "1":
+        return []
+    out: list[AroundPOI] = []
+    for raw in data.get("pois", []):
+        loc = raw.get("location", "")
+        try:
+            lng_s, lat_s = loc.split(",")
+            p_lng, p_lat = float(lng_s), float(lat_s)
+        except (ValueError, AttributeError):
+            continue
+        out.append(
+            AroundPOI(
+                name=raw.get("name", ""),
+                lng=p_lng,
+                lat=p_lat,
+                typecode=raw.get("typecode", ""),
+                distance_m=int(raw.get("distance") or 0),
+                address=raw.get("address", "")
+                if isinstance(raw.get("address"), str)
+                else "",
+            )
+        )
+    return out
+
+
+async def text_search(
+    keyword: str,
+    city: str,
+    limit: int = 10,
+) -> list[AroundPOI]:
+    """高德关键词文本搜 POI. /v3/place/text.
+
+    用于 must_visit (e.g. '南昌博物馆') 和 required_slots categories (e.g. '南昌拌粉')
+    进入 candidate pool — 周边搜的 typecode 兜不住具体关键词的场景由此补齐.
+    失败兜底返 [] (与 fetch_around 对齐, 不让 caller 崩).
+    """
+    try:
+        data = await _amap_get(
+            "/v3/place/text",
+            {
+                "keywords": keyword,
+                "city": city,
+                "citylimit": "true",
+                "offset": min(limit, 25),
                 "page": 1,
                 "extensions": "base",
             },

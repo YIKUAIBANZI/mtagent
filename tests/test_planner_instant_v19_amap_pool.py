@@ -206,3 +206,125 @@ async def test_plan_one_variant_layover_eat_uses_food_types(monkeypatch):
 
     assert captured_types["types"] is not None
     assert "050000" in captured_types["types"]
+
+
+@pytest.mark.asyncio
+async def test_plan_one_variant_text_searches_must_visit_and_slot_categories(
+    monkeypatch,
+):
+    """v1.10: must_visit 和 required_slots[].categories 通过 anchor.text_search 进 pool.
+
+    根因复现: 南昌输入 '博物馆' / '拌粉' 在原来 fetch_around-only 路径下池子里 0 条.
+    本测试断言: text_search 被以 ['南昌博物馆', '南昌拌粉', '江西小炒'] 调用,
+    且每个关键词返回的 POI 都进入了最终传给 compose_one_day 的 day_cluster_pois.
+    """
+    from agents.anchor import AroundPOI
+    from dianping.schemas import RequiredSlot
+
+    intent = ParsedIntent(
+        city="南昌",
+        days=1,
+        traveler_type="独行",
+        time_window="一日",
+        trip_mode="anchor_explore",
+        anchor_lng=115.904,
+        anchor_lat=28.673,
+        anchor_radius_km=2.0,
+        must_visit=["南昌博物馆"],
+        required_slots=[
+            RequiredSlot(slot_name="午饭", categories=["南昌拌粉"]),
+            RequiredSlot(slot_name="晚饭", categories=["江西小炒"]),
+        ],
+    )
+    local_pois = [_make_poi("local-A", "id_l", 28.673, 115.904)]
+
+    # text_search 按 keyword 返不同 POI, 方便断言哪个关键词的结果进了 pool
+    _kw_to_poi = {
+        "南昌博物馆": AroundPOI(
+            name="江西省博物馆",
+            lng=115.881823,
+            lat=28.7059,
+            typecode="140100",
+            distance_m=0,
+            address="南昌东湖区",
+        ),
+        "南昌拌粉": AroundPOI(
+            name="雪三娘南昌拌粉(八一广场店)",
+            lng=115.9087,
+            lat=28.6716,
+            typecode="050700",
+            distance_m=0,
+            address="南昌东湖区",
+        ),
+        "江西小炒": AroundPOI(
+            name="春天来了·精致江西菜",
+            lng=115.844,
+            lat=28.685,
+            typecode="050000",
+            distance_m=0,
+            address="南昌红谷滩",
+        ),
+    }
+    called_kws: list[str] = []
+
+    async def _fake_text_search(keyword, city, limit=10):
+        called_kws.append(keyword)
+        ap = _kw_to_poi.get(keyword)
+        return [ap] if ap else []
+
+    # 隔离 fetch_around (空) 和 cache (空), 让 text_search 注入是池子里 amap 部分的唯一来源
+    async def _empty_fetch(*a, **kw):
+        return []
+
+    async def _empty_cache(around, *, city, cache_path=None):
+        return []
+
+    async def _no_transit(*a, **kw):
+        return 0, []
+
+    monkeypatch.setattr("agents.anchor.text_search", _fake_text_search)
+    monkeypatch.setattr("agents.anchor.fetch_around", _empty_fetch)
+    monkeypatch.setattr("agents.poi_cache.lookup_and_enrich", _empty_cache)
+    monkeypatch.setattr("api.routes._compute_day_transits", _no_transit)
+
+    captured = {"pool_names": []}
+
+    class _FakePlanner:
+        async def compose_one_day(self, **kw):
+            from dianping.schemas import DayPlan
+
+            captured["pool_names"] = [p.name for p in kw["day_cluster_pois"]]
+            return (
+                kw["day_idx"],
+                DayPlan(
+                    day_index=0,
+                    anchor_district=kw["anchor"][0],
+                    stops=[],
+                ),
+                [],
+            )
+
+    class _FakeAmap:
+        pass
+
+    try:
+        await plan_one_variant(
+            intent=intent,
+            variant="main",
+            planner=_FakePlanner(),
+            amap=_FakeAmap(),
+            pois=local_pois,
+        )
+    except Exception:
+        pass
+
+    # 关键词全调过了
+    assert "南昌博物馆" in called_kws
+    assert "南昌拌粉" in called_kws
+    assert "江西小炒" in called_kws
+
+    # 关键词搜出的 POI 真的进了 day_cluster_pois
+    names = captured["pool_names"]
+    assert any("江西省博物馆" in n for n in names), f"博物馆没进池: {names}"
+    assert any("拌粉" in n for n in names), f"拌粉没进池: {names}"
+    assert any("江西菜" in n for n in names), f"江西菜没进池: {names}"

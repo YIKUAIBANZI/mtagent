@@ -261,8 +261,11 @@ def build_candidate_pool(
             continue
         is_must = _match_must_visit_name(poi.name, must_visit_list) is not None
         # v1.8: 有 anchor 时硬过滤掉超出 radius 2x 的 POI (must_visit 命中跳过过滤)
+        # v1.10: text_search 注入的 POI (enriched.must_consider) 也豁免, 因为是用户明示
+        _must_consider = bool(poi.enriched and poi.enriched.must_consider)
         if (
             not is_must
+            and not _must_consider
             and intent.anchor_lng is not None
             and intent.anchor_lat is not None
         ):

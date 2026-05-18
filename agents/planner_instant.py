@@ -271,6 +271,10 @@ def _filter_meal_by_anchor_distance(
         if not _is_meal_poi(p):
             kept.append(p)
             continue
+        # v1.10: text_search 命中的 meal POI (must_consider) 是用户明示, 豁免距离过滤
+        if p.enriched and p.enriched.must_consider:
+            kept.append(p)
+            continue
         d = _haversine_km((anchor_lng, anchor_lat), (p.longitude, p.latitude))
         if d <= radius_km:
             kept.append(p)
@@ -566,6 +570,44 @@ async def plan_one_variant(
             if p.openshopid not in existing_oids:
                 pois.append(p)
                 existing_oids.add(p.openshopid)
+
+    # v1.10 keyword text_search: must_visit + required_slots[].categories 进 pool.
+    # 关键词搜补足 fetch_around 的 typecode 兜不住的场景 (e.g. '南昌博物馆' / '南昌拌粉').
+    # 命中的 POI 标记 must_consider=True, 豁免后续 candidate_pool 距离过滤.
+    if pre_fetched_pois is None:
+        from agents import anchor as _anchor_mod
+        from agents.candidate_pool import _infer_role_from_categories
+        from agents.poi_cache import _around_to_poi
+        from dianping.schemas import EnrichedLabel
+
+        _seen_oids_kw = {p.openshopid for p in pois}
+        _keywords: list[str] = []
+        for _kw in intent.must_visit or []:
+            if _kw and _kw not in _keywords:
+                _keywords.append(_kw)
+        for _slot in intent.required_slots or []:
+            for _cat in _slot.categories or []:
+                if _cat and _cat not in _keywords:
+                    _keywords.append(_cat)
+        for _kw in _keywords:
+            try:
+                _kw_around = await _anchor_mod.text_search(
+                    _kw, city=intent.city, limit=8
+                )
+            except Exception:
+                _kw_around = []
+            for ap in _kw_around:
+                p = _around_to_poi(ap, intent.city, None)
+                if p.openshopid in _seen_oids_kw:
+                    continue
+                _role = _infer_role_from_categories(p.categories)
+                p.enriched = EnrichedLabel(
+                    poi_role=_role if _role != "fallback" else "city_essential",
+                    must_consider=True,
+                    manual_priority=80,
+                )
+                pois.append(p)
+                _seen_oids_kw.add(p.openshopid)
 
     template = make_instant_template(intent.time_window, intent.required_slots or [])
     flat_pois = flatten_candidate_pool(intent, variant, pois)

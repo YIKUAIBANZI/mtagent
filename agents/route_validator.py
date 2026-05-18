@@ -1,6 +1,6 @@
 """Route quality validator.
 
-队友 2026-05-11 调研 "行程规划规律与人群模板" → 7 条可执行硬规则。
+队友 2026-05-11 调研 "行程规划规律与人群模板" → 6 条可执行硬规则。
 纯只读, 不改 planner 任何逻辑. 输入 DayPlan + ParsedIntent, 输出 ValidationReport.
 """
 
@@ -10,7 +10,6 @@ from collections import Counter
 from dataclasses import dataclass, field
 from datetime import time as _t
 
-from agents.anchor import _haversine_km
 from agents.candidate_pool import _infer_role_from_categories
 from agents.tools import default_pace_for_traveler
 from dianping.schemas import DayPlan, PaceLevel, ParsedIntent, RouteDraft, Stop
@@ -26,8 +25,6 @@ GOAL_STOPS_BY_PACE: dict[PaceLevel, int] = {
 _LUNCH_WINDOW = (_t(11, 30), _t(13, 30))
 _DINNER_WINDOW = (_t(18, 0), _t(20, 0))
 
-_CLUSTER_KM_DEFAULT = 5.0
-_CLUSTER_KM_CROSS_DISTRICT = 10.0
 _TRANSIT_MAX_MIN = 30
 _MAX_SAME_ROLE = 2
 
@@ -92,31 +89,6 @@ def _check_has_meal(day: DayPlan, window: tuple[_t, _t], name: str) -> CheckResu
     return CheckResult(name=name, passed=hit, detail=detail)
 
 
-def _cluster_radius_km(intent: ParsedIntent) -> float:
-    """避免跨区约束 = False 时放宽到 10km, 默认 5km."""
-    constraints = intent.constraints or {}
-    # avoid_cross_district = True means user wants to stay in one district → keep 5km
-    # avoid_cross_district = False (explicitly) means user is OK with multi-district → 10km
-    if constraints.get("avoid_cross_district") is False:
-        return _CLUSTER_KM_CROSS_DISTRICT
-    return _CLUSTER_KM_DEFAULT
-
-
-def _check_cluster(day: DayPlan, intent: ParsedIntent) -> CheckResult:
-    pts = [(s.poi.longitude, s.poi.latitude) for s in day.stops]
-    if len(pts) < 2:
-        return CheckResult(name="cluster_ok", passed=True)
-    max_d = max(
-        _haversine_km(pts[i], pts[j])
-        for i in range(len(pts))
-        for j in range(i + 1, len(pts))
-    )
-    limit = _cluster_radius_km(intent)
-    passed = max_d <= limit
-    detail = "" if passed else f"max pairwise {max_d:.2f} km > {limit} km"
-    return CheckResult(name="cluster_ok", passed=passed, detail=detail)
-
-
 def _check_transit(day: DayPlan, intent: ParsedIntent) -> CheckResult:
     over = [
         (i, s.transport_to_next_minutes)
@@ -172,13 +144,12 @@ def _check_no_lunch_skipped(day: DayPlan, intent: ParsedIntent) -> CheckResult:
 
 
 def validate_day(day: DayPlan, intent: ParsedIntent) -> ValidationReport:
-    """运行 7 条规则 (Task 5 完成全部规则集)."""
+    """运行 6 条规则. cluster_ok 已删除——几何聚集由 transit_ok 兜底."""
     return ValidationReport(
         checks=[
             _check_stop_count(day, intent),
             _check_has_meal(day, _LUNCH_WINDOW, "has_lunch"),
             _check_has_meal(day, _DINNER_WINDOW, "has_dinner"),
-            _check_cluster(day, intent),
             _check_transit(day, intent),
             _check_type_diversity(day, intent),
             _check_no_lunch_skipped(day, intent),

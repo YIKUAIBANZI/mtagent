@@ -165,3 +165,65 @@ def test_merge_filters_out_of_radius():
     local = [_make_poi("远 POI", "id_far", 22.55, 114.30)]
     merged = merge_with_local_pool([], local, anchor, radius_m=3000)
     assert merged == []
+
+
+@pytest.mark.asyncio
+async def test_text_search_returns_pois_for_keyword():
+    """关键词搜 POI: /v3/place/text 命中 → 返回 AroundPOI 列表."""
+    from agents.anchor import text_search
+
+    mock_response = {
+        "status": "1",
+        "count": "2",
+        "pois": [
+            {
+                "name": "江西省博物馆",
+                "location": "115.881823,28.705900",
+                "typecode": "140100",
+                "address": "南昌市东湖区八一大道",
+            },
+            {
+                "name": "南昌市博物馆",
+                "location": "115.879336,28.675458",
+                "typecode": "140100",
+                "address": "南昌市西湖区",
+            },
+        ],
+    }
+
+    captured: dict = {}
+
+    async def fake_amap_get(path, params):
+        captured["path"] = path
+        captured["params"] = params
+        return mock_response
+
+    with patch("agents.anchor._amap_get", new=fake_amap_get):
+        pois = await text_search("南昌博物馆", city="南昌", limit=10)
+
+    assert captured["path"] == "/v3/place/text"
+    assert captured["params"]["keywords"] == "南昌博物馆"
+    assert captured["params"]["city"] == "南昌"
+    assert captured["params"]["citylimit"] == "true"
+    assert len(pois) == 2
+    assert pois[0].name == "江西省博物馆"
+    assert pois[0].lng == 115.881823
+    assert pois[0].lat == 28.7059
+    assert pois[0].typecode == "140100"
+
+
+@pytest.mark.asyncio
+async def test_text_search_returns_empty_on_amap_error():
+    """高德返回 status != 1 或抛异常 → 返空列表, 不让 caller 崩."""
+    from agents.anchor import text_search
+
+    # status != 1
+    with patch("agents.anchor._amap_get", new=AsyncMock(return_value={"status": "0"})):
+        assert await text_search("不存在", city="南昌") == []
+
+    # raise
+    async def boom(*_a, **_k):
+        raise RuntimeError("network down")
+
+    with patch("agents.anchor._amap_get", new=boom):
+        assert await text_search("X", city="Y") == []

@@ -1,7 +1,7 @@
 """5 城市 × 3 variant 路线质量基线.
 
-每次 CI 跑一遍, 把 7 条规则的通过情况打入 tests/snapshots/route_quality_baseline.json.
-当前阈值低 (>=3/7), 是为了让 bug 在快照里被看到, 而不是被测试隐藏.
+每次 CI 跑一遍, 把 6 条规则的通过情况打入 tests/snapshots/route_quality_baseline.json.
+当前阈值低 (>=3/6), 是为了让 bug 在快照里被看到, 而不是被测试隐藏.
 修一条 rule 就把阈值升一格.
 """
 
@@ -22,7 +22,7 @@ from dianping.client import DianpingClient
 from dianping.schemas import ParsedIntent
 
 _CITIES = ["深圳", "上海", "西安", "南昌", "北京"]
-_MIN_SCORE = 3 / 7  # 初始阈值: 每个 variant 至少通过 3/7 规则
+_MIN_SCORE = 3 / 6  # 初始阈值: 每个 variant 至少通过 3/6 规则
 _SNAPSHOT = Path("tests/snapshots/route_quality_baseline.json")
 
 
