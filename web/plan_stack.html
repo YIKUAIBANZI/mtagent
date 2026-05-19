@@ -2164,7 +2164,7 @@ async function renderProfileChip() {
       return;
     }
     chip.style.display = 'inline-flex';
-    chip.innerHTML = `<span class="pchip-dot">👤</span><span class="pchip-text">系统记得你：${parts.join('，')}</span><button class="pchip-edit" onclick="document.getElementById('prefOverlay').classList.add('show')">改</button>`;
+    chip.innerHTML = `<span class="pchip-dot">👤</span><span class="pchip-text">系统记得你：${escapeHtml(parts.join('，'))}</span><button class="pchip-edit" onclick="document.getElementById('prefOverlay').classList.add('show')">改</button>`;
   } catch (_) { /* 失败不阻塞 */ }
 }
 
