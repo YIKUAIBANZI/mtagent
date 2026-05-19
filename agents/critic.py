@@ -67,7 +67,13 @@ class Critic:
 
     @staticmethod
     def _guess_stop_idx(check_name: str, day: DayPlan) -> int:
-        """Pick a plausible stop_idx for the patch; defaults to 0."""
+        """Pick a plausible stop_idx for the patch; defaults to 0.
+
+        Only meaningful for `has_lunch` / `has_dinner` (returns the meal-slot
+        index). Day-level checks (`stop_count_ok`, `transit_ok`,
+        `type_diversity`, `no_lunch_skipped`) fall through to 0 — downstream
+        Adjuster must NOT treat 0 as the literal target stop for these; it's
+        a placeholder until v2 Adjuster re-derives from the issue text."""
         stops = day.stops
         if not stops:
             return 0

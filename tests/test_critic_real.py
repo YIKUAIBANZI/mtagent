@@ -57,7 +57,7 @@ async def test_critic_flags_missing_lunch():
     ctx = _ctx(day, intent)
     patches = await Critic().run(ctx)
     issues = [p.issue for p in patches]
-    assert any("午饭" in i or "lunch" in i for i in issues)
+    assert any("午饭" in i for i in issues)
 
 
 @pytest.mark.asyncio
