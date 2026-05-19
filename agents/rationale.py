@@ -7,8 +7,9 @@ add LLM polish on top.
 
 from __future__ import annotations
 
+from typing import Optional
 
-from dianping.schemas import DayPlan, ParsedIntent
+from dianping.schemas import DayPlan, EnrichedLabel, ParsedIntent, Stop
 
 
 _MODE_CN = {
@@ -212,7 +213,7 @@ def build_rationale_for_day(
 
 def build_rationale_for_stop(
     intent: ParsedIntent,
-    stop,
+    stop: Stop,
     variant: str = "main",
 ) -> dict:
     """Stop 级 rationale dict。
@@ -226,20 +227,14 @@ def build_rationale_for_stop(
     """
     poi = stop.poi
     factors: list[str] = [f"variant={variant}", f"slot={stop.slot.name}"]
-    text: str
 
-    user_keyword = _match_must_visit(poi.name, intent.must_visit or [])
+    user_keyword = _match_must_visit(
+        poi.name, intent.must_visit or [], intent.city or ""
+    )
     if user_keyword:
         text = f"因为你说想去「{user_keyword}」，我挑了「{poi.name}」对上。"
         factors.append("must_visit")
-        return {
-            "stage": "stop",
-            "poi_name": poi.name,
-            "slot_name": stop.slot.name,
-            "variant": variant,
-            "text": text,
-            "key_factors": factors,
-        }
+        return _wrap(stop, variant, text, factors)
 
     enriched = poi.enriched
     if enriched and enriched.must_consider:
@@ -268,26 +263,26 @@ def build_rationale_for_stop(
     return _wrap(stop, variant, text, factors)
 
 
-def _match_must_visit(poi_name: str, must_visit: list[str]) -> str:
+def _match_must_visit(poi_name: str, must_visit: list[str], city: str = "") -> str:
     """返回首个子串命中的用户原话；都没命中返 ''。"""
     for kw in must_visit:
         if not kw:
             continue
         if kw in poi_name or poi_name in kw:
             return kw
-        core = kw
-        for prefix in ("南昌", "深圳", "上海", "西安"):
-            if core.startswith(prefix):
-                core = core[len(prefix) :]
-                break
-        if core and (core in poi_name or poi_name in core):
-            return kw
+        # 去掉城市前缀再试
+        if city and kw.startswith(city):
+            core = kw[len(city) :]
+            if core and (core in poi_name or poi_name in core):
+                return kw
     return ""
 
 
-def _variant_phrase(variant: str, poi_name: str, enriched) -> str:
+def _variant_phrase(
+    variant: str, poi_name: str, enriched: Optional[EnrichedLabel]
+) -> str:
     if variant == "low_queue":
-        if "分店" in poi_name or "二分店" in poi_name or "新店" in poi_name:
+        if "分店" in poi_name or "新店" in poi_name:
             return f"备选「少排队」方案，挑了人少的分店「{poi_name}」。"
         return ""
     if variant == "interest_first":
@@ -299,7 +294,7 @@ def _variant_phrase(variant: str, poi_name: str, enriched) -> str:
     return ""
 
 
-def _wrap(stop, variant: str, text: str, factors: list[str]) -> dict:
+def _wrap(stop: Stop, variant: str, text: str, factors: list[str]) -> dict:
     return {
         "stage": "stop",
         "poi_name": stop.poi.name,

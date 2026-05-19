@@ -60,7 +60,8 @@ def test_interest_first_variant_prefers_culture_tag():
     enriched = EnrichedLabel(planning_tags=["文化", "历史"])
     stop = _make_stop("八一起义纪念馆", enriched=enriched)
     r = build_rationale_for_stop(intent, stop, variant="interest_first")
-    assert "兴趣优先" in r["text"] or "文化向" in r["text"]
+    assert "兴趣优先" in r["text"] and "文化向" in r["text"]
+    assert "variant_bias=interest_first" in r["key_factors"]
 
 
 def test_planning_tags_with_traveler_type():
