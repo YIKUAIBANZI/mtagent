@@ -608,6 +608,35 @@
     flex: 1; padding: 6px 10px; border-radius: 16px;
     border: 1.5px solid #ddd; font-size: 13px;
   }
+  .profile-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 8px;
+    padding: 4px 10px;
+    background: #f4ede1;
+    color: #6b5736;
+    border-radius: 14px;
+    font-size: 12px;
+    line-height: 1.4;
+    max-width: 360px;
+  }
+  .profile-chip .pchip-dot { font-size: 13px; }
+  .profile-chip .pchip-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 280px;
+  }
+  .profile-chip .pchip-edit {
+    background: transparent;
+    border: none;
+    color: #b08a4e;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 0 4px;
+  }
+  .profile-chip .pchip-edit:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -646,7 +675,9 @@
 
 <header class="nav">
   <div class="brand"><div class="brand-mark">m</div><span>mtagent</span></div>
-  <div class="nav-actions"></div>
+  <div class="nav-actions">
+    <div id="profileChip" class="profile-chip" style="display:none;"></div>
+  </div>
 </header>
 
 <main class="stage" id="stage">
@@ -2112,6 +2143,31 @@ async function initPrefModal() {
   });
 }
 
+async function renderProfileChip() {
+  try {
+    const resp = await fetch('/api/user/profile');
+    const profile = await resp.json();
+    const chip = document.getElementById('profileChip');
+    if (!chip) return;
+    if (profile === null) {
+      chip.style.display = 'none';
+      return;
+    }
+    const mods = profile.modifiers || {};
+    const onTags = Object.keys(mods).filter(k => mods[k]);
+    const interests = (profile.interests_text || '').trim();
+    const parts = [];
+    if (onTags.length) parts.push(onTags.join(' · '));
+    if (interests) parts.push(`兴趣：${interests}`);
+    if (!parts.length) {
+      chip.style.display = 'none';
+      return;
+    }
+    chip.style.display = 'inline-flex';
+    chip.innerHTML = `<span class="pchip-dot">👤</span><span class="pchip-text">系统记得你：${parts.join('，')}</span><button class="pchip-edit" onclick="document.getElementById('prefOverlay').classList.add('show')">改</button>`;
+  } catch (_) { /* 失败不阻塞 */ }
+}
+
 function closePrefModal(skip) {
   document.getElementById('prefOverlay').classList.remove('show');
   if (skip) {
@@ -2137,6 +2193,7 @@ async function savePrefModal() {
       body: JSON.stringify({ modifiers: mods, interests_text: interests }),
     });
     pushMsg('bot', `偏好已记住 ✓ ${interests ? `(${interests})` : ''}`);
+    renderProfileChip();
   } catch (e) {
     pushMsg('bot', `保存偏好失败: ${e.message}`);
   }
@@ -2144,7 +2201,10 @@ async function savePrefModal() {
 }
 
 // 页面加载完触发
-window.addEventListener('DOMContentLoaded', () => { initPrefModal(); });
+window.addEventListener('DOMContentLoaded', () => {
+  initPrefModal();
+  renderProfileChip();
+});
 
 function escapeHtml(s) {
   return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
