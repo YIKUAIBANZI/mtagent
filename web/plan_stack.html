@@ -1053,6 +1053,9 @@ async function handleEvent({ event, data }) {
       polylinesByDay.length = 0;
       // 清空 variantStops（旧 trip 数据）
       Object.keys(variantStops).forEach(k => delete variantStops[k]);
+      // P1.1: 重置 stop rationale 缓存 + 气泡计数（避免第二次 trip 拿不到 💡）
+      pendingStopRationale.clear();
+      stopRationaleCount = 0;
       break;
 
     case 'clarify.question':
@@ -1105,12 +1108,10 @@ async function handleEvent({ event, data }) {
 
     case 'planner.stop_rationale':
       // P1.1: stop 级 "为什么选这个 POI"
-      if (!window.pendingStopRationale) window.pendingStopRationale = new Map();
-      window.pendingStopRationale.set(data.poi_name, data);
-      if (!window.stopRationaleCount) window.stopRationaleCount = 0;
-      if (window.stopRationaleCount < 2) {
+      pendingStopRationale.set(data.poi_name, data);
+      if (stopRationaleCount < STOP_RATIONALE_CHAT_CAP) {
         pushMsg('bot', `💡 ${data.text}`);
-        window.stopRationaleCount++;
+        stopRationaleCount++;
       }
       break;
 
@@ -1218,6 +1219,11 @@ async function handleEvent({ event, data }) {
 }
 
 const pendingRationaleByDay = new Map();
+
+// P1.1: stop 级 rationale 缓存 + chat 气泡输出节流
+const pendingStopRationale = new Map();
+const STOP_RATIONALE_CHAT_CAP = 2;
+let stopRationaleCount = 0;
 
 // v1.7 即时出发: branch variant 数据缓存 (main 走原 renderDayDone, branches 缓存到 chat 总览)
 const variantStops = {};
