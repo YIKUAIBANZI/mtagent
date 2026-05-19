@@ -208,3 +208,103 @@ def build_rationale_for_day(
         "text": text,
         "key_factors": factors,
     }
+
+
+def build_rationale_for_stop(
+    intent: ParsedIntent,
+    stop,
+    variant: str = "main",
+) -> dict:
+    """Stop 级 rationale dict。
+
+    优先级（高 → 低）：
+    1. must_visit 子串命中 → "因为你说想去 {user_keyword}"
+    2. must_consider（amap inject） → "你点名的 {slot}"
+    3. variant 偏置 → "low_queue 偏分店 / interest_first 偏文化"
+    4. planning_tags 命中 traveler/preference → "适合 {traveler_type}+{tag}"
+    5. fallback → "{slot} 就近顺路"
+    """
+    poi = stop.poi
+    factors: list[str] = [f"variant={variant}", f"slot={stop.slot.name}"]
+    text: str
+
+    user_keyword = _match_must_visit(poi.name, intent.must_visit or [])
+    if user_keyword:
+        text = f"因为你说想去「{user_keyword}」，我挑了「{poi.name}」对上。"
+        factors.append("must_visit")
+        return {
+            "stage": "stop",
+            "poi_name": poi.name,
+            "slot_name": stop.slot.name,
+            "variant": variant,
+            "text": text,
+            "key_factors": factors,
+        }
+
+    enriched = poi.enriched
+    if enriched and enriched.must_consider:
+        text = f"你点名要的{stop.slot.name}，我从地图实搜补了「{poi.name}」。"
+        factors.append("amap_inject")
+        return _wrap(stop, variant, text, factors)
+
+    variant_text = _variant_phrase(variant, poi.name, enriched)
+    if variant_text:
+        text = variant_text
+        factors.append(f"variant_bias={variant}")
+        return _wrap(stop, variant, text, factors)
+
+    if enriched and enriched.planning_tags:
+        tags = "/".join(enriched.planning_tags[:2])
+        traveler = intent.traveler_type or ""
+        if traveler:
+            text = f"{stop.slot.name}选「{poi.name}」——{tags}，适合{traveler}。"
+        else:
+            text = f"{stop.slot.name}选「{poi.name}」，主打{tags}。"
+        factors.append(f"tags={tags}")
+        return _wrap(stop, variant, text, factors)
+
+    text = f"{stop.slot.name}就近顺路串「{poi.name}」。"
+    factors.append("fallback")
+    return _wrap(stop, variant, text, factors)
+
+
+def _match_must_visit(poi_name: str, must_visit: list[str]) -> str:
+    """返回首个子串命中的用户原话；都没命中返 ''。"""
+    for kw in must_visit:
+        if not kw:
+            continue
+        if kw in poi_name or poi_name in kw:
+            return kw
+        core = kw
+        for prefix in ("南昌", "深圳", "上海", "西安"):
+            if core.startswith(prefix):
+                core = core[len(prefix) :]
+                break
+        if core and (core in poi_name or poi_name in core):
+            return kw
+    return ""
+
+
+def _variant_phrase(variant: str, poi_name: str, enriched) -> str:
+    if variant == "low_queue":
+        if "分店" in poi_name or "二分店" in poi_name or "新店" in poi_name:
+            return f"备选「少排队」方案，挑了人少的分店「{poi_name}」。"
+        return ""
+    if variant == "interest_first":
+        if enriched and any(
+            t in ("文化", "历史", "人文", "小众") for t in enriched.planning_tags
+        ):
+            return f"备选「兴趣优先」方案，文化向「{poi_name}」。"
+        return ""
+    return ""
+
+
+def _wrap(stop, variant: str, text: str, factors: list[str]) -> dict:
+    return {
+        "stage": "stop",
+        "poi_name": stop.poi.name,
+        "slot_name": stop.slot.name,
+        "variant": variant,
+        "text": text,
+        "key_factors": factors,
+    }
