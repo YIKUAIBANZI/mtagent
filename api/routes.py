@@ -460,12 +460,23 @@ async def plan_stream(
             )
             return
 
-        # ----- Critic stub -----
+        # ----- Critic (P1.2: real rule-based check) -----
         try:
             yield format_event("critic.start", {})
             critic = Critic()
             patches = await critic.run(ctx)
             _stamp("critic_done")
+            if patches:
+                yield format_event(
+                    "critic.findings",
+                    {
+                        "count": len(patches),
+                        "items": [
+                            {"day": p.day, "stop_idx": p.stop_idx, "issue": p.issue}
+                            for p in patches[:5]
+                        ],
+                    },
+                )
             yield format_event("critic.done", {"patches_count": len(patches)})
         except Exception as exc:
             yield format_event(

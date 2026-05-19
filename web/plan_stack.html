@@ -1115,6 +1115,14 @@ async function handleEvent({ event, data }) {
       }
       break;
 
+    case 'critic.findings':
+      // P1.2: AI 自检发现的问题
+      pushMsg('bot', `🔍 AI 复检了路线，发现 ${data.count} 处可优化：`);
+      data.items.forEach(it => {
+        pushMsg('bot', `  · Day${it.day + 1}: ${it.issue}`);
+      });
+      break;
+
     case 'planner.candidates_loaded':
       removeTyping();
       pushMsg('bot', `从 ${data.count} 个候选里精选，开始排路线 ✨`);
