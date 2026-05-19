@@ -1103,6 +1103,17 @@ async function handleEvent({ event, data }) {
       }
       break;
 
+    case 'planner.stop_rationale':
+      // P1.1: stop 级 "为什么选这个 POI"
+      if (!window.pendingStopRationale) window.pendingStopRationale = new Map();
+      window.pendingStopRationale.set(data.poi_name, data);
+      if (!window.stopRationaleCount) window.stopRationaleCount = 0;
+      if (window.stopRationaleCount < 2) {
+        pushMsg('bot', `💡 ${data.text}`);
+        window.stopRationaleCount++;
+      }
+      break;
+
     case 'planner.candidates_loaded':
       removeTyping();
       pushMsg('bot', `从 ${data.count} 个候选里精选，开始排路线 ✨`);

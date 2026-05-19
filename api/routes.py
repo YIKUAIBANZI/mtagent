@@ -408,6 +408,14 @@ async def plan_stream(
                             else "",
                         ),
                     )
+                    # P1.1: per-stop rationale, 主推荐 variant 默认 "main"
+                    from agents.rationale import build_rationale_for_stop
+
+                    for stop in day_plan.stops:
+                        yield format_event(
+                            "planner.stop_rationale",
+                            build_rationale_for_stop(intent, stop, variant="main"),
+                        )
 
                 for d_idx, segs in segments_by_day.items():
                     if days_out[d_idx] is not None:
