@@ -948,7 +948,7 @@ async function renderPlanView() {
   el.innerHTML = html;
 }
 
-$('panelForm').addEventListener('submit', (e) => {
+$('panelForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const v = $('panelInput').value.trim();
   if (!v) return;
@@ -958,11 +958,34 @@ $('panelForm').addEventListener('submit', (e) => {
     pushMsg('bot', '还没生成行程，先在上面发起规划吧');
     return;
   }
+  // Bug fix 2026-05-20: 若 profiler 在等 clarify, 用户输入按首位 missing 字段填入 extra,
+  // 走 /api/plan/stream 重放, 不能走 refine (refine 看到无 draft_route 会拒).
+  if (pendingClarifyFields.length > 0) {
+    const field = pendingClarifyFields[0];
+    pushTyping();
+    try {
+      const resp = await fetch('/api/plan/stream', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ free_text: lastFreeText, extra: { [field]: v } }),
+      });
+      if (!resp.ok) throw new Error('plan/stream HTTP ' + resp.status);
+      await consumeSSE(resp);
+    } catch (err) {
+      console.error(err);
+      removeTyping();
+      pushMsg('bot', '出错了：' + err.message);
+    }
+    return;
+  }
   triggerRefine(v);
 });
 
 // ============ Start trip ============
 async function startTrip(userText) {
+  // Bug fix 2026-05-20: 记录原始 free_text 给 clarify 回复重提时复用
+  lastFreeText = userText;
+
   // 1. transition to map view
   $('intro').classList.add('gone');
   setTimeout(() => $('mapview').classList.add('on'), 250);
@@ -1087,6 +1110,8 @@ async function handleEvent({ event, data }) {
       // P1.1: 重置 stop rationale 缓存 + 气泡计数（避免第二次 trip 拿不到 💡）
       pendingStopRationale.clear();
       stopRationaleCount = 0;
+      // Bug fix 2026-05-20: 新 trip 起点, 上轮 clarify state 失效
+      pendingClarifyFields = [];
       break;
 
     case 'clarify.question':
@@ -1117,7 +1142,8 @@ async function handleEvent({ event, data }) {
 
     case 'profiler.clarifying':
       removeTyping();
-      pushMsg('bot', `信息差一点点，再补给我：${(data.missing_fields || []).join('、')}`);
+      pendingClarifyFields = data.missing_fields || [];
+      pushMsg('bot', `信息差一点点，再补给我：${pendingClarifyFields.join('、')}`);
       break;
 
     case 'planner.anchors':
@@ -1225,6 +1251,7 @@ async function handleEvent({ event, data }) {
       $('dayTabs').classList.add('show');
       $('mapChrome').classList.add('show');
       fitMapToAllMarkers();
+      pendingClarifyFields = [];  // 规划成功, 不再需要 clarify state
       break;
 
     case 'trip.complete':
@@ -1263,6 +1290,12 @@ const pendingRationaleByDay = new Map();
 const pendingStopRationale = new Map();
 const STOP_RATIONALE_CHAT_CAP = 2;
 let stopRationaleCount = 0;
+
+// Bug fix 2026-05-20: clarify 回复必须走 /api/plan/stream + extra, 不能误进 refine.
+// profiler.clarifying 时填 missing_fields, 用户下一条输入按首位 missing 字段填入 extra
+// 重发 stream. 原 free_text 保留供 profiler 重抽 + extra 合并 (routes.py:88 _merge_extra).
+let pendingClarifyFields = [];
+let lastFreeText = '';
 
 // v1.7 即时出发: branch variant 数据缓存 (main 走原 renderDayDone, branches 缓存到 chat 总览)
 const variantStops = {};
