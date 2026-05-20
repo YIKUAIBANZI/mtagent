@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import Awaitable, Callable, Optional
@@ -36,6 +37,23 @@ _PROMPT_PATH = Path(__file__).parent / "prompts" / "profiler.md"
 
 
 REQUIRED_FIELDS = ("city", "days", "traveler_type")
+
+
+# Fallback regex 兜底: 真 LLM 偶尔受 prompt 5-城枚举影响返 city=null, 直接扫一遍 user_input.
+# 涵盖中国主要省会/直辖市/计划单列市. 后端 amap 路径 (text_search + fetch_around) 全城市可用.
+_FALLBACK_CITY_PAT = re.compile(
+    r"(北京|上海|广州|深圳|杭州|南京|苏州|成都|重庆|武汉|西安|长沙|青岛|大连|"
+    r"厦门|福州|济南|郑州|天津|哈尔滨|长春|沈阳|南昌|昆明|贵阳|海口|三亚|"
+    r"拉萨|乌鲁木齐|呼和浩特|银川|西宁|兰州|合肥|太原|石家庄|南宁|香港|澳门)"
+)
+
+
+def _scan_city_fallback(text: str) -> Optional[str]:
+    """从 user_input 扫常见城市名, 命中返第一个, 没命中返 None."""
+    if not text:
+        return None
+    m = _FALLBACK_CITY_PAT.search(text)
+    return m.group(1) if m else None
 
 
 KEYWORD_RULES: dict[ModifierName, tuple[str, ...]] = {
@@ -126,6 +144,13 @@ class Profiler:
         # city 仍需用户/LLM 给出, 没说才走 clarifying.
         if not data.get("traveler_type"):
             data["traveler_type"] = "情侣"
+
+        # 防御兜底: LLM 受 prompt 5-城枚举影响, 偶尔会对哈尔滨等非内置城市返 null.
+        # 用 regex 扫一遍 user_input, 若命中常见中国城市就回填, 不进 missing.
+        if not data.get("city"):
+            fallback_city = _scan_city_fallback(ctx.user_input.free_text)
+            if fallback_city:
+                data["city"] = fallback_city
 
         # Build ParsedIntent — None values keep field optional/missing
         missing: list[str] = []
