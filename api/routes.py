@@ -1121,6 +1121,11 @@ async def _apply_text_search_keywords(intent, pois: list) -> list:
     for kw in must_visit_kws + slot_kws:
         if kw not in keywords:
             keywords.append(kw)
+    # P2: 按 traveler_type 自动扩 2-3 个类目词, 扩 variant 分流候选池.
+    # 局部 import 防 autoflake (同 build_rationale_for_stop 的教训)
+    from agents.text_search_keywords import expand_keywords_for_traveler
+
+    keywords = expand_keywords_for_traveler(intent.traveler_type or "", keywords)
     if not keywords:
         return pois
 

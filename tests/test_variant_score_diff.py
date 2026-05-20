@@ -91,6 +91,29 @@ def test_interest_first_boosts_culture_and_user_interests():
     )
 
 
+def test_interest_first_boosts_indie_keywords_for_chain_food():
+    """interest_first 对'独立店/老字号/手工/精品/小店/特色/创意/网红' 关键词加分.
+
+    场景: 哈尔滨拌粉/咖啡/西餐没有 enriched.planning_tags=文化, 现有 bias 打不出区分.
+    新规则: 让 interest_first 对'独立/非连锁'信号也加分, 真正分流同名连锁店."""
+    intent = _intent()
+    chain = _injected_poi("塔道斯西餐厅(中央大街店)", ["美食", "西餐"])
+    indie = _injected_poi("安德列维奇的店", ["美食", "西餐"])
+    s_if_chain = score_poi(chain, intent, variant="interest_first")
+    s_if_indie = score_poi(indie, intent, variant="interest_first")
+    s_main_chain = score_poi(chain, intent, variant="main")
+    s_main_indie = score_poi(indie, intent, variant="main")
+    # main 不区分（两者无显著差距）
+    assert abs(s_main_chain - s_main_indie) < 5, (
+        f"main should not bias indie vs chain: chain={s_main_chain} indie={s_main_indie}"
+    )
+    # interest_first: indie 应显著高于 chain（"的店" 是独立小店强信号 / "中央大街店" 是连锁分店减分）
+    assert s_if_indie > s_if_chain + 8, (
+        f"interest_first should prefer indie over chain: "
+        f"chain={s_if_chain} indie={s_if_indie}"
+    )
+
+
 def test_main_variant_unchanged_for_injected_poi():
     """main variant 对 amap 注入 POI 的打分应等同于无 variant bias 时.
 

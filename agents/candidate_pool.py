@@ -163,6 +163,16 @@ def score_poi(poi: POI, intent: ParsedIntent, variant: Variant = "main") -> floa
             # 商场类减权
             if any(k in blob for k in ("商场", "百货")):
                 score -= 8.0
+            # 独立小店/老字号信号 +10 (非连锁、有个性)
+            # "的店"是中文小店命名典型后缀; 老字号/手工/精品/创意 是 indie 强信号
+            if any(
+                k in blob
+                for k in ("的店", "老字号", "手工", "精品", "创意", "小店", "本店")
+            ):
+                score += 10.0
+            # 连锁分店信号 -6 (XX店/总店/分店/连锁等)
+            if any(k in blob for k in ("总店", "分店", "连锁", "(", "（")):
+                score -= 6.0
 
     return score
 
