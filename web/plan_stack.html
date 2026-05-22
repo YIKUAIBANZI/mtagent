@@ -2447,8 +2447,178 @@ function renderPatchTags() {
 }
 
 function onVariantChipClick(kind) {
-  console.log('[vp] chip clicked:', kind);
-  // 实现见 Task 4
+  if (variantMode === 'idle') {
+    activeVariantKind = kind;
+    variantMode = 'highlighted';
+    _vpHighlightChip(kind);
+    renderPatchTags();
+  } else if (variantMode === 'highlighted' && activeVariantKind === kind) {
+    activeVariantKind = null;
+    variantMode = 'idle';
+    _vpUnhighlightAll();
+    renderPatchTags();
+  } else if (variantMode === 'highlighted' && activeVariantKind !== kind) {
+    activeVariantKind = kind;
+    _vpUnhighlightAll();
+    _vpHighlightChip(kind);
+    renderPatchTags();
+  } else if (variantMode === 'applied') {
+    // applied → 新 chip: 撤销当前 + highlight 新 (不立即 apply, 给评委 2 步空间)
+    undoVariant();
+    activeVariantKind = kind;
+    variantMode = 'highlighted';
+    _vpHighlightChip(kind);
+    renderPatchTags();
+  }
+}
+
+function _vpHighlightChip(kind) {
+  const chip = document.querySelector(`.vp-chip[data-kind="${kind}"]`);
+  if (!chip) return;
+  chip.classList.add('active');
+  // 插入 "应用此方案" link (如果还没有)
+  if (!chip.querySelector('.vp-chip-apply')) {
+    const a = document.createElement('span');
+    a.className = 'vp-chip-apply';
+    a.textContent = '应用此方案';
+    a.onclick = (e) => { e.stopPropagation(); applyVariant(kind); };
+    chip.appendChild(a);
+  }
+}
+
+function _vpUnhighlightAll() {
+  document.querySelectorAll('.vp-chip').forEach(c => {
+    c.classList.remove('active');
+    const a = c.querySelector('.vp-chip-apply');
+    if (a) a.remove();
+  });
+}
+
+function applyVariant(kind) {
+  const set = variantPatchSets.find(v => v.kind === kind);
+  if (!set || !(set.patches?.length)) return;
+  const mainEntry = variantStops['main'];
+  if (!mainEntry || !Array.isArray(mainEntry.stops)) return;
+
+  // 锁定 baseStops 一次 (再次 apply 会先 undo, baseStops 已被 undo 清回 null)
+  if (!baseStops) {
+    baseStops = JSON.parse(JSON.stringify(mainEntry.stops));
+  }
+
+  // swap: 在 mainEntry.stops 上 mutate 每个 patch 指向的 stop 字段
+  for (const patch of (set.patches || [])) {
+    const idx = patch.stop_idx;
+    const stop = mainEntry.stops[idx];
+    if (!stop || !patch.to) continue;
+    stop.poi_openshopid = patch.to.openshopid || stop.poi_openshopid;
+    stop.poi_name = patch.to.name || stop.poi_name;
+    stop.longitude = (typeof patch.to.longitude === 'number') ? patch.to.longitude : stop.longitude;
+    stop.latitude = (typeof patch.to.latitude === 'number') ? patch.to.latitude : stop.latitude;
+    stop.categories = Array.isArray(patch.to.categories) ? patch.to.categories : stop.categories;
+    // slot/arrival/leave/star/avgprice 保持原状 (B 方案: 同槽位换 POI; 没有的字段就留旧值)
+    stop.star = stop.star ?? null;
+    stop.avgprice = stop.avgprice ?? null;
+  }
+
+  variantMode = 'applied';
+  _vpRerenderMainDay();
+  _vpShowToast(set.label);
+}
+
+function undoVariant() {
+  if (!baseStops) {
+    _vpHideToast();
+    variantMode = 'idle';
+    activeVariantKind = null;
+    _vpUnhighlightAll();
+    return;
+  }
+  const mainEntry = variantStops['main'];
+  if (mainEntry) {
+    mainEntry.stops = JSON.parse(JSON.stringify(baseStops));
+  }
+  baseStops = null;
+  variantMode = 'idle';
+  activeVariantKind = null;
+  _vpUnhighlightAll();
+  _vpRerenderMainDay();
+  _vpHideToast();
+}
+
+function _vpRerenderMainDay() {
+  const dayIndex = 0;
+  const mainEntry = variantStops['main'];
+  if (!mainEntry || !Array.isArray(mainEntry.stops)) return;
+  const stops = mainEntry.stops;
+  const color = (typeof DAY_COLORS !== 'undefined' && DAY_COLORS[dayIndex]) || '#ff3e00';
+
+  // 1. 清旧 markers
+  (markersByDay[dayIndex] || []).forEach(m => { if (m) m.setMap(null); });
+  markersByDay[dayIndex] = [];
+
+  // 2. 清旧 polylines
+  (polylinesByDay[dayIndex] || []).forEach(l => { if (l) l.setMap(null); });
+  polylinesByDay[dayIndex] = [];
+
+  // 3. 清旧 stop cards in day-group-content
+  const container = (typeof dayGroupContentByIndex !== 'undefined') ? dayGroupContentByIndex[dayIndex] : null;
+  if (container) {
+    container.innerHTML = '';
+  }
+
+  // 4. dayCardsByIndex 清掉该 day 的 entries
+  if (typeof dayCardsByIndex !== 'undefined') {
+    for (const key of Array.from(dayCardsByIndex.keys())) {
+      if (key.startsWith(`${dayIndex}-`)) dayCardsByIndex.delete(key);
+    }
+  }
+
+  // 5. 重新画 stop cards + markers
+  for (let i = 0; i < stops.length; i++) {
+    if (container) {
+      pushPlaceCard(stops[i], dayIndex, i, color, container, null);
+    }
+    if (typeof map !== 'undefined' && map && typeof SVC !== 'undefined' && SVC.drive) {
+      addMarker(stops[i], dayIndex, i, color);
+    }
+  }
+
+  // 6. 画 estimated 灰虚线 (apply 后不重跑 AMap 路由, 评委一眼看出 "preview" 状态)
+  if (typeof map !== 'undefined' && map) {
+    for (let i = 0; i < stops.length - 1; i++) {
+      const a = stops[i], b = stops[i + 1];
+      if (typeof a.longitude === 'number' && typeof a.latitude === 'number'
+       && typeof b.longitude === 'number' && typeof b.latitude === 'number') {
+        drawEstimatedLine([a.longitude, a.latitude], [b.longitude, b.latitude], dayIndex);
+      }
+    }
+  }
+
+  // 7. fit map
+  if (typeof fitMapToAllMarkers === 'function') {
+    try { fitMapToAllMarkers(); } catch {}
+  }
+
+  // 8. 重画 inline patch tags (apply 后保留 tag 在新 swap 完的 stops 旁)
+  if (typeof renderPatchTags === 'function') renderPatchTags();
+}
+
+function _vpShowToast(label) {
+  const el = document.getElementById('vpToast');
+  if (!el) return;
+  el.innerHTML = '';
+  const text = document.createTextNode(`已应用 [${label}] · `);
+  el.appendChild(text);
+  const btn = document.createElement('button');
+  btn.textContent = '撤销';
+  btn.onclick = undoVariant;
+  el.appendChild(btn);
+  el.hidden = false;
+}
+
+function _vpHideToast() {
+  const el = document.getElementById('vpToast');
+  if (el) el.hidden = true;
 }
 
 // ── v1.10 Clarify Round ──────────────────────────────────────────────────────
