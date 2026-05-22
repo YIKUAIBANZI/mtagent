@@ -1080,6 +1080,7 @@ async def _run_variants(
         await amap._client.aclose()
 
     # P2: variant patches (alt variant vs main 的 stop diff, 给前端 chip+tag)
+    # 局部 import 防 autoflake (同 build_rationale_for_stop / expand_keywords_for_traveler 的教训)
     from agents.variant_patches import build_variant_patch_set
 
     main_route = variant_routes.get("main")
@@ -1091,7 +1092,10 @@ async def _run_variants(
             if not vroute or not vroute.days:
                 continue
             vstops = vroute.days[0].stops
-            ps = build_variant_patch_set(main_stops, vstops, vk)
+            try:
+                ps = build_variant_patch_set(main_stops, vstops, vk)
+            except Exception:
+                continue
             if ps is not None:
                 patch_sets.append(ps.model_dump(mode="json", by_alias=True))
         if patch_sets:

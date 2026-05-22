@@ -225,6 +225,4 @@ def test_variant_exception_omits_set(monkeypatch, sse_app_client):
     except Exception as exc:
         # Outcome (a): exception propagated out of the SSE generator.
         # low_queue never made it into the patch set — test passes.
-        assert "planner crashed" in str(exc) or isinstance(exc, RuntimeError), (
-            f"unexpected exception type: {exc!r}"
-        )
+        assert isinstance(exc, RuntimeError), f"unexpected exception type: {exc!r}"
