@@ -76,13 +76,10 @@ def compute_variant_patches(
         if m.poi.openshopid == v.poi.openshopid:
             continue
         out.append(
-            VariantPatch.model_validate(
-                {
-                    "stop_idx": idx,
-                    "from": _stop_to_endpoint(m).model_dump(),
-                    "to": _stop_to_endpoint(v).model_dump(),
-                    "reason": "",
-                }
+            VariantPatch(
+                stop_idx=idx,
+                from_endpoint=_stop_to_endpoint(m),
+                to_endpoint=_stop_to_endpoint(v),
             )
         )
     return out

@@ -6,6 +6,7 @@ from dianping.schemas import POI, Stop, TimeSlot
 from datetime import time as _time
 
 from agents.variant_patches import (
+    build_variant_patch_set,
     compute_variant_patches,
 )
 
@@ -74,15 +75,12 @@ def test_variant_longer_ignores_extra():
 def test_build_set_returns_none_on_empty_patches():
     main = [_mk_stop("A"), _mk_stop("B")]
     variant = [_mk_stop("A"), _mk_stop("B")]
-    from agents.variant_patches import build_variant_patch_set
 
     result = build_variant_patch_set(main, variant, "low_queue")
     assert result is None
 
 
 def test_build_set_returns_labeled_set_on_diff():
-    from agents.variant_patches import build_variant_patch_set
-
     main = [_mk_stop("A"), _mk_stop("B")]
     variant = [_mk_stop("A"), _mk_stop("B2")]
     result = build_variant_patch_set(main, variant, "interest_first")
