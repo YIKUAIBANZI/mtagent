@@ -910,7 +910,7 @@ let map = null;                     // AMap.Map instance
 const SVC = {};                     // SVC[mode] = AMap.Driving|Walking|Riding
 const markersByDay = [];            // [day][stop] = AMap.Marker
 const polylinesByDay = [];          // [day] = [polyline,...] per segment
-const dayCardsByIndex = new Map();  // poi_openshopid → place card el
+const dayCardsByIndex = new Map();  // "${dayIndex}-${stopIndex}" → .stop-card-v2 el
 let currentTripId = null;
 let pendingDayDones = [];           // queue of pending day_done events (drop progressively)
 let dayVisibility = [];
@@ -1162,7 +1162,7 @@ function handleSSEEvent(ev, dat) {
 
 async function handleEvent({ event, data }) {
   switch (event) {
-    case 'trip.started':
+    case 'trip.started': {
       currentTripId = data.trip_id;
       // 新 trip 开始 → 清除上次地图上的所有 marker + polyline，避免残留"2"叠加
       markersByDay.forEach((markers, i) => {
@@ -1192,6 +1192,7 @@ async function handleEvent({ event, data }) {
       if (vpToast) vpToast.hidden = true;
       document.querySelectorAll('.vp-tag').forEach(el => el.remove());
       break;
+    }
 
     case 'clarify.question':
       removeTyping();
@@ -1326,6 +1327,7 @@ async function handleEvent({ event, data }) {
     case 'planner.variant_patches':
       variantPatchSets = data.variants || [];
       renderVariantChips();
+      // renderPatchTags 在 idle/activeKind=null 时是 no-op; chip click 后 (Task 4) 再触发实际渲染
       renderPatchTags();
       break;
 
@@ -2418,7 +2420,7 @@ function renderVariantChips() {
   el.innerHTML = variantPatchSets.map(vs => `
     <button class="vp-chip" data-kind="${escapeHtml(vs.kind)}"
             onclick="onVariantChipClick('${escapeHtml(vs.kind)}')">
-      ${escapeHtml(vs.icon)} ${escapeHtml(vs.label)}<span class="vp-chip-count">(${vs.patches.length})</span>
+      ${escapeHtml(vs.icon)} ${escapeHtml(vs.label)}<span class="vp-chip-count">(${vs.patches?.length ?? 0})</span>
     </button>
   `).join('');
 }
@@ -2430,7 +2432,7 @@ function renderPatchTags() {
   if (variantMode === 'idle' || !activeVariantKind) return;
   const set = variantPatchSets.find(v => v.kind === activeVariantKind);
   if (!set) return;
-  for (const patch of set.patches) {
+  for (const patch of (set.patches || [])) {
     // 单天 MVP: day_index=0; 用 dayCardsByIndex 找 .stop-card-v2
     const stopEl = dayCardsByIndex.get(`0-${patch.stop_idx}`)
                 || document.querySelector(`.stop-card-v2[data-stop-idx="${patch.stop_idx}"]`);
