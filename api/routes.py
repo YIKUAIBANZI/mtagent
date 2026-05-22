@@ -1079,6 +1079,27 @@ async def _run_variants(
                 t.cancel()
         await amap._client.aclose()
 
+    # P2: variant patches (alt variant vs main 的 stop diff, 给前端 chip+tag)
+    from agents.variant_patches import build_variant_patch_set
+
+    main_route = variant_routes.get("main")
+    if main_route and main_route.days:
+        main_stops = main_route.days[0].stops
+        patch_sets = []
+        for vk in ("low_queue", "interest_first"):
+            vroute = variant_routes.get(vk)
+            if not vroute or not vroute.days:
+                continue
+            vstops = vroute.days[0].stops
+            ps = build_variant_patch_set(main_stops, vstops, vk)
+            if ps is not None:
+                patch_sets.append(ps.model_dump(mode="json", by_alias=True))
+        if patch_sets:
+            yield format_event(
+                "planner.variant_patches",
+                {"variants": patch_sets},
+            )
+
     yield format_event("planner.compose_done", {})
     yield format_event(
         "planner.done",
