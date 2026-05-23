@@ -51,15 +51,23 @@ def test_morning_long_squeezes_prev_for_lunch() -> None:
 
 
 def test_morning_long_squeezes_prev_overshoot() -> None:
-    """亲子博物馆 140min + 起点 8:30 = 11:00 + 140 + 30 = 13:40 > 12:30 → 压前 stop -25%."""
+    """触发 squeeze + clamp: 亲子博物馆 140min + transit 150 = 8:30+140+150=13:20.
+
+    cur=800 > hi=750, overshoot=50. max_squeeze = 140//4 = 35.
+    squeeze=35 → 博物馆 140 → 105. cur=800-35=765 仍 > 750 → clamp 至 750 (12:30).
+    """
     pois = [
         _poi("博物馆", ["博物馆"]),
         _poi("中餐厅", ["中餐厅"]),
     ]
     slots = ["上午景点", "午饭"]
-    out = schedule_day(pois, slots, "亲子")
-    assert out[1][0] <= LUNCH_ANCHOR[1]
-    assert 105 <= out[0][1] <= 140
+    out = schedule_day(pois, slots, "亲子", transit_min_between=150)
+    assert out[1][0] == LUNCH_ANCHOR[1], (
+        f"lunch arrival should clamp to anchor hi 12:30, got {out[1][0]}"
+    )
+    assert out[0][1] == 105, (
+        f"博物馆 duration should be squeezed from 140 to 105, got {out[0][1]}"
+    )
 
 
 # --- 早起 ---

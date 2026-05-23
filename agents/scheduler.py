@@ -42,6 +42,10 @@ def _to_time(m: int) -> time:
 
 
 def _slot_anchor(slot: str) -> tuple[int, int] | None:
+    """slot_name 含 "午饭" → 午餐 anchor; 含 "晚饭" → 晚餐 anchor; 否则 None.
+
+    优先级: 午饭 先匹配. 同时含两者 (如 "午饭/晚饭混合") 走午饭 — v1 不支持复合 slot.
+    """
     if "午饭" in slot:
         return _to_min(LUNCH_ANCHOR[0]), _to_min(LUNCH_ANCHOR[1])
     if "晚饭" in slot:
@@ -91,6 +95,9 @@ def schedule_day(
         cur += durations[i] + transit_min_between
 
     # tail check: 末位 arrival 超 DAY_END_HARD_CAP → 从最长 stop 压 -25%
+    # NOTE v1 acceptable limitation: 压完后不会重新校验被前移的 meal slot 是否还在 anchor 内.
+    # 例如末位回退 30min 时, 若中间的晚饭被前移到 17:30, 走出 [18:00,19:00] anchor 窗.
+    # 实际触发条件极少 (要求行程总时长接近 13h), 留待 v2 处理.
     cap = _to_min(DAY_END_HARD_CAP)
     if arrivals_min[-1] > cap:
         overshoot = arrivals_min[-1] - cap
