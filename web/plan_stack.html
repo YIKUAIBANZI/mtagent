@@ -1758,7 +1758,10 @@ function pushPlaceCard(stop, dayIndex, stopIndex, color, container, transitLeg) 
   const arrTime = stop.arrival_time || '';
   const leaveTime = stop.leave_time || stop.leaveTime || '';
   let durText = '';
-  if (arrTime && leaveTime) {
+  const recDur = stop.recommended_duration_min;
+  if (recDur && recDur > 0) {
+    durText = `推荐 ${recDur}min`;
+  } else if (arrTime && leaveTime) {
     const [ah,am] = arrTime.split(':').map(Number);
     const [lh,lm] = leaveTime.split(':').map(Number);
     const mins = (lh*60+lm)-(ah*60+am);
