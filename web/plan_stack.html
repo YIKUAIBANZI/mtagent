@@ -2428,8 +2428,8 @@ function renderVariantChips() {
 function renderPatchTags() {
   // 清旧 tags
   document.querySelectorAll('.vp-tag').forEach(el => el.remove());
-  // 高亮 active 方案的 tags
-  if (variantMode === 'idle' || !activeVariantKind) return;
+  // 高亮 active 方案的 tags; applied mode 下 stop card 已反映, 不再 inline 指示
+  if (variantMode === 'idle' || variantMode === 'applied' || !activeVariantKind) return;
   const set = variantPatchSets.find(v => v.kind === activeVariantKind);
   if (!set) return;
   for (const patch of (set.patches || [])) {
@@ -2463,8 +2463,10 @@ function onVariantChipClick(kind) {
     _vpHighlightChip(kind);
     renderPatchTags();
   } else if (variantMode === 'applied') {
-    // applied → 新 chip: 撤销当前 + highlight 新 (不立即 apply, 给评委 2 步空间)
-    undoVariant();
+    // applied → 同 chip 仅 undo 回 idle; 不同 chip 才 undo+highlight 新方案
+    const wasKind = activeVariantKind;
+    undoVariant();                  // 清空 activeVariantKind + variantMode='idle'
+    if (kind === wasKind) return;
     activeVariantKind = kind;
     variantMode = 'highlighted';
     _vpHighlightChip(kind);
@@ -2515,9 +2517,7 @@ function applyVariant(kind) {
     stop.longitude = (typeof patch.to.longitude === 'number') ? patch.to.longitude : stop.longitude;
     stop.latitude = (typeof patch.to.latitude === 'number') ? patch.to.latitude : stop.latitude;
     stop.categories = Array.isArray(patch.to.categories) ? patch.to.categories : stop.categories;
-    // slot/arrival/leave/star/avgprice 保持原状 (B 方案: 同槽位换 POI; 没有的字段就留旧值)
-    stop.star = stop.star ?? null;
-    stop.avgprice = stop.avgprice ?? null;
+    // slot / arrival / leave / star / avgprice 保留原 stop 值 (B 方案: 同槽位换 POI, 不重算)
   }
 
   variantMode = 'applied';
@@ -2556,7 +2556,13 @@ function _vpRerenderMainDay() {
   (markersByDay[dayIndex] || []).forEach(m => { if (m) m.setMap(null); });
   markersByDay[dayIndex] = [];
 
-  // 2. 清旧 polylines
+  // 2a. 清 pending polylineQueue 同 day 项 (防 async worker 把 stale line 推回新数组)
+  if (typeof polylineQueue !== 'undefined' && Array.isArray(polylineQueue)) {
+    for (let qi = polylineQueue.length - 1; qi >= 0; qi--) {
+      if (polylineQueue[qi].dayIndex === dayIndex) polylineQueue.splice(qi, 1);
+    }
+  }
+  // 2b. 清旧 polylines
   (polylinesByDay[dayIndex] || []).forEach(l => { if (l) l.setMap(null); });
   polylinesByDay[dayIndex] = [];
 
