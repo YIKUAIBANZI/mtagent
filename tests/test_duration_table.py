@@ -41,6 +41,14 @@ def test_base_unknown_fallback() -> None:
     assert base_duration_for(["未知类别 X"]) == 60
 
 
+def test_base_scenic_outranks_cafe() -> None:
+    """风景名胜 + 咖啡 混合 categories → 命中风景名胜 90, 不是咖啡 40.
+
+    一个公园里的咖啡馆首先是景点, 不是单纯咖啡馆.
+    """
+    assert base_duration_for(["风景名胜", "咖啡馆"]) == 90
+
+
 # --- duration_for: traveler 倍率 + 向上取整到 5 ---
 
 
