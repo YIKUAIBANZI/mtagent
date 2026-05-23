@@ -2552,8 +2552,19 @@ function _vpRerenderMainDay() {
   const stops = mainEntry.stops;
   const color = (typeof DAY_COLORS !== 'undefined' && DAY_COLORS[dayIndex]) || '#ff3e00';
 
-  // 1. 清旧 markers
-  (markersByDay[dayIndex] || []).forEach(m => { if (m) m.setMap(null); });
+  // 1. 清旧 markers — 用 map.remove 真删 (setMap(null) 在频繁 swap 下偶有 stale 残留)
+  if (typeof map !== 'undefined' && map) {
+    (markersByDay[dayIndex] || []).forEach(m => { if (m) { try { map.remove(m); } catch (_) {} } });
+    // 二次保险: 扫地图当前所有 marker, 除 anchorMarker 外都清 (防追踪数组遗漏的 stale)
+    if (typeof map.getAllOverlays === 'function') {
+      const all = map.getAllOverlays('marker') || [];
+      for (const m of all) {
+        if (m && m !== anchorMarker) {
+          try { map.remove(m); } catch (_) {}
+        }
+      }
+    }
+  }
   markersByDay[dayIndex] = [];
 
   // 2a. 清 pending polylineQueue 同 day 项 (防 async worker 把 stale line 推回新数组)
