@@ -390,6 +390,7 @@ class Stop(BaseModel):
     leave_time: time
     transport_to_next_minutes: int = 30
     transport_options: Optional[dict[str, TransitInfo]] = None
+    recommended_duration_min: int = 60  # v1: 时长灵动; 老 trip 缓存默认 60
 
 
 class DayPlan(BaseModel):
