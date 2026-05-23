@@ -215,6 +215,8 @@ def build_rationale_for_stop(
     intent: ParsedIntent,
     stop: Stop,
     variant: str = "main",
+    prev_squeeze_pct: Optional[int] = None,
+    prev_stop_name: str = "",
 ) -> dict:
     """Stop 级 rationale dict。
 
@@ -224,7 +226,20 @@ def build_rationale_for_stop(
     3. variant 偏置 → "low_queue 偏分店 / interest_first 偏文化"
     4. planning_tags 命中 traveler/preference → "适合 {traveler_type}+{tag}"
     5. fallback → "{slot} 就近顺路"
+
+    v1: 若 prev_squeeze_pct < 100 且 prev_stop_name 非空, 在 text 末尾追加
+    "为了赶{slot}节点，把「{prev}」的逗留压到 {pct}%。"
     """
+    result = _build_rationale_core(intent, stop, variant)
+    if prev_squeeze_pct is not None and prev_squeeze_pct < 100 and prev_stop_name:
+        suffix = f" 为了赶{stop.slot.name}节点，把「{prev_stop_name}」的逗留压到 {prev_squeeze_pct}%。"
+        result["text"] = result["text"] + suffix
+        result["key_factors"].append(f"squeeze_prev={prev_squeeze_pct}")
+    return result
+
+
+def _build_rationale_core(intent: ParsedIntent, stop: Stop, variant: str) -> dict:
+    """Stop 级 rationale 核心逻辑（无 squeeze 后处理）。"""
     poi = stop.poi
     factors: list[str] = [f"variant={variant}", f"slot={stop.slot.name}"]
 
