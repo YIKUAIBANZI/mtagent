@@ -58,11 +58,11 @@ _DEFAULT_BASE = 60
 
 _TRAVELER_MULTIPLIER: dict[str, float] = {
     "情侣": 1.2,
-    "亲子": 1.4,
+    "家庭亲子": 1.4,
     "银发": 1.3,
     "独行": 1.0,
     "商务": 0.7,
-    "朋友": 1.1,
+    "朋友团": 1.1,
 }
 
 
@@ -86,8 +86,8 @@ DAY_START_BY_TRAVELER: dict[str, time] = {
     "商务": time(9, 0),
     "独行": time(9, 30),
     "情侣": time(10, 0),
-    "朋友": time(10, 0),
-    "亲子": time(8, 30),
+    "朋友团": time(10, 0),
+    "家庭亲子": time(8, 30),
     "银发": time(8, 0),
 }
 DAY_START_DEFAULT = time(9, 30)

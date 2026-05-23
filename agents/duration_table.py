@@ -27,12 +27,13 @@ _DURATION_RULES: list[tuple[tuple[str, ...], int]] = [
 _DEFAULT_BASE = 60
 
 _TRAVELER_MULTIPLIER: dict[str, float] = {
+    # key 必须与 dianping.schemas.TravelerType Literal 对齐
     "情侣": 1.2,
-    "亲子": 1.4,
+    "家庭亲子": 1.4,
     "银发": 1.3,
     "独行": 1.0,
     "商务": 0.7,
-    "朋友": 1.1,
+    "朋友团": 1.1,
 }
 
 

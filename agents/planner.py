@@ -57,19 +57,21 @@ def _apply_schedule_to_stops(stops: list[Stop], traveler: str) -> list[Stop]:
     leave_time / recommended_duration_min. 返回新 Stop list (同序).
 
     leave_time = arrival_time + recommended_duration_min (不跨日截断).
+    若 scheduler 抛错 (例如 slot 数与 stops 数不一致), fallback 保留原 Stop list.
     """
     if not stops:
         return stops
-    from datetime import time as _t
-
     pois = [s.poi for s in stops]
     slots = [s.slot.name for s in stops]
-    scheduled = _schedule_day(pois, slots, traveler or "")
+    try:
+        scheduled = _schedule_day(pois, slots, traveler or "")
+    except Exception:
+        return stops
     out: list[Stop] = []
     for s, (arr, dur) in zip(stops, scheduled):
         arr_min = arr.hour * 60 + arr.minute
         leave_min = min(arr_min + dur, 23 * 60 + 59)
-        leave_t = _t(leave_min // 60, leave_min % 60)
+        leave_t = time(leave_min // 60, leave_min % 60)
         out.append(
             s.model_copy(
                 update={

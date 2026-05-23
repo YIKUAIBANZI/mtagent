@@ -61,7 +61,7 @@ def test_morning_long_squeezes_prev_overshoot() -> None:
         _poi("中餐厅", ["中餐厅"]),
     ]
     slots = ["上午景点", "午饭"]
-    out = schedule_day(pois, slots, "亲子", transit_min_between=150)
+    out = schedule_day(pois, slots, "家庭亲子", transit_min_between=150)
     assert out[1][0] == LUNCH_ANCHOR[1], (
         f"lunch arrival should clamp to anchor hi 12:30, got {out[1][0]}"
     )
@@ -82,8 +82,8 @@ def test_family_early_start_within_day_cap() -> None:
         _poi("晚饭", ["餐厅"]),
     ]
     slots = ["上午景点", "午饭", "下午", "晚饭"]
-    out = schedule_day(pois, slots, "亲子")
-    assert out[0][0] == DAY_START_BY_TRAVELER["亲子"]
+    out = schedule_day(pois, slots, "家庭亲子")
+    assert out[0][0] == DAY_START_BY_TRAVELER["家庭亲子"]
     for arrival, _ in out:
         assert arrival <= DAY_END_HARD_CAP
 

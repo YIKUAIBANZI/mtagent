@@ -64,7 +64,7 @@ def test_duration_museum_business() -> None:
 
 def test_duration_hotpot_family() -> None:
     """火锅 + 亲子: 90 × 1.4 = 126 → 130."""
-    assert duration_for(["火锅"], "亲子") == 130
+    assert duration_for(["火锅"], "家庭亲子") == 130
 
 
 def test_duration_cafe_senior() -> None:

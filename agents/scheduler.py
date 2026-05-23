@@ -18,11 +18,12 @@ from typing import Any
 from agents.duration_table import duration_for
 
 DAY_START_BY_TRAVELER: dict[str, time] = {
+    # key 必须与 dianping.schemas.TravelerType Literal 对齐
     "商务": time(9, 0),
     "独行": time(9, 30),
     "情侣": time(10, 0),
-    "朋友": time(10, 0),
-    "亲子": time(8, 30),
+    "朋友团": time(10, 0),
+    "家庭亲子": time(8, 30),
     "银发": time(8, 0),
 }
 DAY_START_DEFAULT = time(9, 30)
