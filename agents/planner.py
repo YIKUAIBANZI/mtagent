@@ -48,6 +48,39 @@ from dianping.schemas import (
 
 _PROMPT_PATH = Path(__file__).parent / "prompts" / "planner.md"
 
+# v1: 时长灵动 — schedule_day 覆盖 Stop 时间
+from agents.scheduler import schedule_day as _schedule_day
+
+
+def _apply_schedule_to_stops(stops: list[Stop], traveler: str) -> list[Stop]:
+    """对一组按行程顺序排好的 Stop 调 schedule_day, 用结果覆盖 arrival_time /
+    leave_time / recommended_duration_min. 返回新 Stop list (同序).
+
+    leave_time = arrival_time + recommended_duration_min (不跨日截断).
+    """
+    if not stops:
+        return stops
+    from datetime import time as _t
+
+    pois = [s.poi for s in stops]
+    slots = [s.slot.name for s in stops]
+    scheduled = _schedule_day(pois, slots, traveler or "")
+    out: list[Stop] = []
+    for s, (arr, dur) in zip(stops, scheduled):
+        arr_min = arr.hour * 60 + arr.minute
+        leave_min = min(arr_min + dur, 23 * 60 + 59)
+        leave_t = _t(leave_min // 60, leave_min % 60)
+        out.append(
+            s.model_copy(
+                update={
+                    "arrival_time": arr,
+                    "leave_time": leave_t,
+                    "recommended_duration_min": dur,
+                }
+            )
+        )
+    return out
+
 
 # Hand-curated anchors per city (centroid lat/lng for known business districts).
 _CITY_ANCHORS: dict[str, list[tuple[str, float, float]]] = {
@@ -321,6 +354,8 @@ class Planner:
                         ),
                     )
                 )
+            # v1: 时长灵动 — 用 scheduler 覆盖 LLM 给的时间
+            stops = _apply_schedule_to_stops(stops, intent.traveler_type or "")
             days_out.append(
                 DayPlan(
                     day_index=day_data.get("day_index", d),
@@ -458,6 +493,10 @@ class Planner:
                 ),
             )
 
+        # v1: 时长灵动 — 用 scheduler 覆盖 LLM 给的时间
+        stops = _apply_schedule_to_stops(
+            stops, getattr(intent, "traveler_type", "") or ""
+        )
         day_plan = DayPlan(
             day_index=day_idx,
             anchor_district=anchor[0],
@@ -775,6 +814,10 @@ def _synthesize_fallback_route(
                     transport_to_next_minutes=30,
                 )
             )
+        # v1: 时长灵动 — fallback 也走 scheduler
+        stops = _apply_schedule_to_stops(
+            stops, getattr(intent, "traveler_type", "") or ""
+        )
         days_out.append(
             DayPlan(
                 day_index=d,
