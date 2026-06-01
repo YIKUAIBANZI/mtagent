@@ -16,6 +16,17 @@
   mock UGC 还混入了“北京特色”等错误城市模板。数据轨会重建上海信号，并让
   `evidence` 可回溯到 POI 自身 `reviewTags` / `ugcs`。
 
+## Task 2 进展
+
+- 新增 `scripts/build_canonical_pois.py`，保持现有运行时 attach 合约，不新增
+  第二份 canonical 运行时文件。
+- 修复前上海、深圳、西安 attach 交集均为 0；执行规则重建后，上海 750/750、
+  深圳 721/721、西安 712/712、北京 736/736、南昌 642/642 均可 attach。
+- 旧 `scripts/label_pois.py` 只识别精确类目“美食”/“购物”，与 mock 中的
+  “餐饮服务”/“中餐厅”/“购物服务”不兼容；已在数据脚本侧补齐高德类目兼容。
+- 北京和南昌现阶段 `city_essential` 仍为空：北京会在数据轨补 landmark
+  词表，南昌由庐山替代。
+
 ## 给 Claude 的运行时接线事项
 
 - 庐山数据落盘后，请把 `庐山` 接入以下运行时文件：

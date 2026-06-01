@@ -1,0 +1,61 @@
+{
+  "schema_version": "canonical_coverage:v1",
+  "runtime_contract": "mock_dianping/<city>.json + poi_enriched_labels.json[city][openshopid]",
+  "cities": {
+    "上海": {
+      "mock_poi_count": 750,
+      "label_count_before": 750,
+      "attached_before": 750,
+      "attach_rate_before": 1.0,
+      "generated_missing": 0,
+      "rebuilt_labels": 750,
+      "dropped_orphans": 0,
+      "attached_after": 750,
+      "attach_rate_after": 1.0
+    },
+    "北京": {
+      "mock_poi_count": 736,
+      "label_count_before": 736,
+      "attached_before": 736,
+      "attach_rate_before": 1.0,
+      "generated_missing": 0,
+      "rebuilt_labels": 736,
+      "dropped_orphans": 0,
+      "attached_after": 736,
+      "attach_rate_after": 1.0
+    },
+    "南昌": {
+      "mock_poi_count": 642,
+      "label_count_before": 642,
+      "attached_before": 642,
+      "attach_rate_before": 1.0,
+      "generated_missing": 0,
+      "rebuilt_labels": 642,
+      "dropped_orphans": 0,
+      "attached_after": 642,
+      "attach_rate_after": 1.0
+    },
+    "深圳": {
+      "mock_poi_count": 721,
+      "label_count_before": 721,
+      "attached_before": 721,
+      "attach_rate_before": 1.0,
+      "generated_missing": 0,
+      "rebuilt_labels": 721,
+      "dropped_orphans": 0,
+      "attached_after": 721,
+      "attach_rate_after": 1.0
+    },
+    "西安": {
+      "mock_poi_count": 712,
+      "label_count_before": 712,
+      "attached_before": 712,
+      "attach_rate_before": 1.0,
+      "generated_missing": 0,
+      "rebuilt_labels": 712,
+      "dropped_orphans": 0,
+      "attached_after": 712,
+      "attach_rate_after": 1.0
+    }
+  }
+}

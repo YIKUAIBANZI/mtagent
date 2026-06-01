@@ -1,6 +1,11 @@
 """Tests for offline label pipeline rules."""
 
-from scripts.label_pois import label_modifiers, label_traveler_types
+from scripts.label_pois import (
+    label_modifiers,
+    label_planning_tags,
+    label_poi_role,
+    label_traveler_types,
+)
 
 
 def _poi(*, review_tags=None, special=None, queueable=False, isBlackPearl=0):
@@ -42,3 +47,19 @@ def test_label_modifiers_full():
     assert mods["重文化"] is True
     assert mods["重美食"] is True
     assert mods["怕排队"] is False  # queueable=True AND 等位久 → 不怕排队=False
+
+
+def test_label_poi_role_accepts_amap_food_categories():
+    poi = _poi()
+    poi["categories"] = ["餐饮服务", "中餐厅"]
+
+    assert label_poi_role(poi) == "meal"
+    assert "food" in label_planning_tags(poi, "meal")
+
+
+def test_label_poi_role_accepts_amap_shopping_categories():
+    poi = _poi()
+    poi["categories"] = ["购物服务", "商场"]
+
+    assert label_poi_role(poi) == "connector"
+    assert "shopping_friendly" in label_planning_tags(poi, "connector")

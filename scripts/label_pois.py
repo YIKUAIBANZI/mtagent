@@ -417,22 +417,28 @@ def is_city_essential(poi: dict) -> bool:
     return False
 
 
+def _category_contains(poi: dict, *terms: str) -> bool:
+    categories = poi.get("categories") or []
+    return any(term in str(category) for category in categories for term in terms)
+
+
 def label_poi_role(poi: dict) -> str:
-    categories = set(poi.get("categories") or [])
     tags = _tag_hits(poi)
     name = str(poi.get("name") or "")
 
     if is_city_essential(poi):
         return "city_essential"
-    if "美食" in categories:
+    if _category_contains(
+        poi, "美食", "餐饮", "中餐", "西餐", "小吃", "火锅", "咖啡", "甜品", "冷饮"
+    ):
         return "meal"
-    if "购物" in categories:
+    if _category_contains(poi, "购物", "商场"):
         return "connector"
-    if "酒店" in categories:
+    if _category_contains(poi, "酒店", "住宿", "宾馆"):
         return "fallback"
-    if "亲子" in categories or "亲子友好" in tags:
+    if _category_contains(poi, "亲子") or "亲子友好" in tags:
         return "persona_preferred"
-    if "丽人" in categories:
+    if _category_contains(poi, "丽人"):
         return "connector"
     if any(k in name for k in ("咖啡", "茶", "书店", "商场", "万象城")):
         return "connector"
@@ -441,7 +447,6 @@ def label_poi_role(poi: dict) -> str:
 
 def label_planning_tags(poi: dict, poi_role: str) -> list[str]:
     tags = _tag_hits(poi)
-    categories = set(poi.get("categories") or [])
     special = set(poi.get("special") or [])
     blob = _text_blob(poi)
     out: set[str] = set()
@@ -450,12 +455,14 @@ def label_planning_tags(poi: dict, poi_role: str) -> list[str]:
         if tag in tags:
             out.add(mapped)
 
-    if "美食" in categories:
+    if _category_contains(
+        poi, "美食", "餐饮", "中餐", "西餐", "小吃", "火锅", "咖啡", "甜品", "冷饮"
+    ):
         out.add("food")
-    if "购物" in categories:
+    if _category_contains(poi, "购物", "商场"):
         out.add("shopping_friendly")
         out.add("rain_friendly")
-    if "亲子" in categories or "提供婴儿椅" in special:
+    if _category_contains(poi, "亲子") or "提供婴儿椅" in special:
         out.add("family_friendly")
     if "无障碍" in special:
         out.add("senior_friendly")
