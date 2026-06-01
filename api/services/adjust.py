@@ -13,7 +13,35 @@ from api.sse import format_event
 from api.stub_llm import resolve_planner_llm, resolve_planner_llm_stream
 
 
-async def stream_adjust_events(ctx: TripContext, req) -> AsyncIterator[str]:
+def _capture_rejection(cookie_key, old_poi) -> None:
+    """删/换 stop 时, 把被换掉 POI 的 risk_tags 记为用户拒绝信号。
+
+    best-effort: 任何失败都不能影响改路线主流程。
+    """
+    if not cookie_key or old_poi is None:
+        return
+    try:
+        from agents.user_profile_store import apply_signal
+
+        apply_signal(cookie_key, "reject", poi=old_poi)
+    except Exception:
+        pass
+
+
+def _find_stop_poi(ctx: TripContext, day_index: int, slot_name: str):
+    """从 ctx.draft_route 取指定 day/slot 的 stop POI; 找不到返 None。"""
+    route = ctx.draft_route
+    if not route or day_index < 0 or day_index >= len(route.days):
+        return None
+    for s in route.days[day_index].stops:
+        if s.slot.name == slot_name:
+            return s.poi
+    return None
+
+
+async def stream_adjust_events(
+    ctx: TripContext, req, cookie_key: str | None = None
+) -> AsyncIterator[str]:
     """Yield `adjust.*` SSE events for one AdjustRequest.
 
     不包含 adjust.thinking / adjust.done 包裹 — 调用方负责.
@@ -24,6 +52,7 @@ async def stream_adjust_events(ctx: TripContext, req) -> AsyncIterator[str]:
     adjuster = Adjuster(llm_call=resolve_planner_llm())
     try:
         if req.operation == "replace_stop":
+            old_poi = _find_stop_poi(ctx, req.day_index, req.slot_name)
             result = await adjuster.replace_stop(
                 ctx,
                 day_index=req.day_index,
@@ -31,6 +60,7 @@ async def stream_adjust_events(ctx: TripContext, req) -> AsyncIterator[str]:
                 user_hint=req.user_hint,
                 target_poi_id=req.target_poi_id,
             )
+            _capture_rejection(cookie_key, old_poi)
             yield format_event(
                 "adjust.stop_replaced",
                 {
@@ -42,9 +72,11 @@ async def stream_adjust_events(ctx: TripContext, req) -> AsyncIterator[str]:
                 },
             )
         elif req.operation == "remove_stop":
+            old_poi = _find_stop_poi(ctx, req.day_index, req.slot_name)
             day_plan = await adjuster.remove_stop(
                 ctx, day_index=req.day_index, slot_name=req.slot_name
             )
+            _capture_rejection(cookie_key, old_poi)
             yield format_event(
                 "adjust.stop_removed",
                 {

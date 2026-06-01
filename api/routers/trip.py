@@ -111,7 +111,7 @@ async def submit_clarify_answer(
 
 
 @router.post("/plan/{trip_id}/adjust")
-async def adjust_trip(trip_id: str, body: dict):
+async def adjust_trip(trip_id: str, body: dict, request: Request):
     """Adjust an existing trip: replace_stop / remove_stop / regenerate_day / switch_variant.
 
     Stream SSE: adjust.thinking → adjust.<op>_xxx → adjust.done.
@@ -128,12 +128,14 @@ async def adjust_trip(trip_id: str, body: dict):
     except FileNotFoundError:
         raise HTTPException(404, f"trip not found: {trip_id}")
 
+    cookie_key = _cookie_key(request)
+
     async def _gen():
         yield format_event(
             "adjust.thinking",
             {"operation": req.operation, "day_index": req.day_index},
         )
-        async for ev in stream_adjust_events(ctx, req):
+        async for ev in stream_adjust_events(ctx, req, cookie_key=cookie_key):
             yield ev
         yield format_event("adjust.done", {"trip_id": ctx.trip_id})
 
@@ -233,7 +235,9 @@ async def refine_trip(trip_id: str, body: _RefineBody, request: Request):
 
         # 2) adjust path (复用 adjust.* 事件)
         if action.adjust is not None:
-            async for ev in stream_adjust_events(ctx, action.adjust):
+            async for ev in stream_adjust_events(
+                ctx, action.adjust, cookie_key=cookie_key
+            ):
                 yield ev
 
         # 3) chat reply 兜底
