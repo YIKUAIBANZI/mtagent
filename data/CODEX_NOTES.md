@@ -78,6 +78,17 @@
   `validate_day` 得分均为 `1.0`。
 - 用户从自然语言进入庐山的完整 API 路径仍依赖上方 Claude 运行时接线事项。
 
+### attach 修复后暴露的 Planner 截断问题
+
+- 最终全量回归发现：`agents/planner_instant.py::flatten_candidate_pool` 当前按
+  `city_essential -> persona_preferred -> connector -> meal` 展开，再做
+  `flat[:30]`。当 enriched 真正 attach 后，上海、深圳、西安、北京通常已有
+  `10 + 16 + 12` 个前三桶候选，餐饮桶在进入列表前就被截断。
+- 结果是即时路线 fallback 缺午饭、晚饭，`tests/test_route_quality_baseline.py`
+  新增失败。此前 enriched attach 为 `0%` 时，这个运行时问题被数据缺陷遮蔽。
+- 建议 Claude 在运行时侧修复：在 cap 前为 meal 保留配额，或把 meal 提前到
+  connector 之前；修复后重跑路线质量基线。Codex 不改 `agents/` ownership。
+
 ## Task 6 进展
 
 - 新增 `scripts/validate_pois.py`，作为五城交付级离线校验器，覆盖：
