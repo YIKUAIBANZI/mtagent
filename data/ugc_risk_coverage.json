@@ -1,0 +1,82 @@
+{
+  "schema_version": "ugc_risk_coverage:v1",
+  "source": "agent:risk_from_ugc:v1",
+  "cities": {
+    "上海": {
+      "poi_count": 750,
+      "changed_poi_count": 0,
+      "risk_tags": {
+        "crowded_weekend": 129,
+        "queue_heavy": 149,
+        "reservation_recommended": 140,
+        "walk_heavy": 65
+      },
+      "evidence_samples": {
+        "queue_heavy": [
+          {
+            "openshopid": "mock_263095456c9a6dd4",
+            "evidence": [
+              "reviewTag:排队较长"
+            ]
+          },
+          {
+            "openshopid": "mock_1610ef85f5a865ae",
+            "evidence": [
+              "reviewTag:排队较长"
+            ]
+          },
+          {
+            "openshopid": "mock_8a8825d784b2c1ba",
+            "evidence": [
+              "reviewTag:排队较长"
+            ]
+          },
+          {
+            "openshopid": "mock_2166e188da0f8de9",
+            "evidence": [
+              "reviewTag:排队较长"
+            ]
+          },
+          {
+            "openshopid": "mock_b6b045b9c29fb8b3",
+            "evidence": [
+              "reviewTag:排队较长"
+            ]
+          }
+        ],
+        "crowded_weekend": [
+          {
+            "openshopid": "mock_b2b60efa8bab0b04",
+            "evidence": [
+              "reviewTag:人流较多"
+            ]
+          },
+          {
+            "openshopid": "mock_f883366edbed24b1",
+            "evidence": [
+              "reviewTag:人流较多"
+            ]
+          },
+          {
+            "openshopid": "mock_360eaed7bc817fd3",
+            "evidence": [
+              "reviewTag:人流较多"
+            ]
+          },
+          {
+            "openshopid": "mock_2125230fc7662744",
+            "evidence": [
+              "reviewTag:周末人多"
+            ]
+          },
+          {
+            "openshopid": "mock_19cd89dd5834b827",
+            "evidence": [
+              "reviewTag:人流较多"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

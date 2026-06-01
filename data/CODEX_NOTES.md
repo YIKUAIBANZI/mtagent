@@ -27,6 +27,16 @@
 - 北京和南昌现阶段 `city_essential` 仍为空：北京会在数据轨补 landmark
   词表，南昌由庐山替代。
 
+## Task 3 进展
+
+- 新增 `scripts/distill_ugc_risk_tags.py`，只从 POI 自身 `reviewTags` / `ugcs`
+  抽取风险，并在新增标签时写入 `agent:risk_from_ugc:v1` 来源。
+- 上海执行后：`queue_heavy=149`、`crowded_weekend=129`、`walk_heavy=65`；
+  第二次执行 `changed_poi_count=0`，具备幂等性。
+- 抽查证据写入 `data/ugc_risk_coverage.json`，例如
+  `reviewTag:排队较长`、`reviewTag:人流较多`，没有把普通“适合散步”误标为
+  `walk_heavy`。
+
 ## 给 Claude 的运行时接线事项
 
 - 庐山数据落盘后，请把 `庐山` 接入以下运行时文件：

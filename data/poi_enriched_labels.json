@@ -164,7 +164,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -180,6 +182,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -200,7 +203,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -211,6 +216,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -230,6 +236,7 @@
       "manual_priority": 70,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "静安区",
@@ -247,6 +254,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -301,7 +309,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "静安区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -317,6 +327,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -375,7 +386,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -386,6 +399,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -438,7 +452,9 @@
         "landmark",
         "premium_food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -454,6 +470,7 @@
       "min_stay_minutes": 90,
       "max_stay_minutes": 180,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -542,6 +559,7 @@
         "transit_friendly"
       ],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "静安区",
@@ -559,6 +577,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -777,7 +796,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -788,6 +809,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -806,7 +828,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -817,6 +841,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -871,7 +896,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -882,6 +909,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -900,7 +928,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "浦东新区",
       "city_zone": "east",
       "neighbor_zones": [
@@ -913,6 +943,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -932,6 +963,7 @@
       "manual_priority": 70,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -944,6 +976,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -1042,7 +1075,9 @@
       "planning_tags": [
         "photo_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -1053,6 +1088,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -1071,7 +1107,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -1082,6 +1120,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -1331,7 +1370,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "普陀区",
       "city_zone": "west",
       "neighbor_zones": [
@@ -1346,6 +1387,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -1473,7 +1515,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -1484,6 +1528,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -1707,7 +1752,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -1718,6 +1765,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -1769,7 +1817,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -1780,6 +1830,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -2062,6 +2113,7 @@
         "transit_friendly"
       ],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -2074,6 +2126,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -2129,6 +2182,7 @@
       "manual_priority": 50,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "黄浦区",
@@ -2146,6 +2200,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -2263,7 +2318,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -2274,6 +2331,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -2292,7 +2350,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -2303,6 +2363,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -2363,6 +2424,7 @@
       "manual_priority": 70,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -2375,6 +2437,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -2395,7 +2458,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -2411,6 +2476,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -2532,7 +2598,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -2548,6 +2616,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -2597,7 +2666,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -2608,6 +2679,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -2685,6 +2757,7 @@
       "manual_priority": 50,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -2697,6 +2770,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -2757,6 +2831,7 @@
         "transit_friendly"
       ],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "黄浦区",
@@ -2774,6 +2849,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -2860,7 +2936,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -2871,6 +2949,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -3026,7 +3105,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -3037,6 +3118,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -3057,7 +3139,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -3068,6 +3152,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -3122,6 +3207,7 @@
         "transit_friendly"
       ],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "静安区",
@@ -3139,6 +3225,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -3158,6 +3245,7 @@
       "manual_priority": 50,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -3170,6 +3258,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -3219,7 +3308,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -3230,6 +3321,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -3249,6 +3341,7 @@
       "manual_priority": 70,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -3261,6 +3354,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -3342,6 +3436,7 @@
       "manual_priority": 70,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -3354,6 +3449,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -3405,7 +3501,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -3416,6 +3514,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -3469,7 +3568,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -3480,6 +3581,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -3528,6 +3630,7 @@
       "manual_priority": 70,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -3540,6 +3643,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -3998,7 +4102,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -4009,6 +4115,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -4159,6 +4266,7 @@
       "manual_priority": 50,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -4171,6 +4279,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -4250,6 +4359,7 @@
       "manual_priority": 70,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -4262,6 +4372,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -4316,7 +4427,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -4327,6 +4440,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -4594,7 +4708,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -4605,6 +4721,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -4839,7 +4956,9 @@
         "food_quality",
         "premium_food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -4850,6 +4969,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -4904,7 +5024,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -4915,6 +5037,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -5036,7 +5159,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "浦东新区",
       "city_zone": "east",
       "neighbor_zones": [
@@ -5049,6 +5174,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -5067,7 +5193,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -5078,6 +5206,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -5196,7 +5325,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -5207,6 +5338,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -5256,7 +5388,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -5267,6 +5401,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -5318,7 +5453,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -5329,6 +5466,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -5383,7 +5521,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -5394,6 +5534,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -5446,7 +5587,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -5457,6 +5600,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -5544,7 +5688,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -5555,6 +5701,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -5608,7 +5755,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -5619,6 +5768,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -5780,7 +5930,9 @@
         "food_quality",
         "premium_food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -5791,6 +5943,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -5840,7 +5993,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "静安区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -5856,6 +6011,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -5903,7 +6059,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -5914,6 +6072,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -5932,7 +6091,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "静安区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -5948,6 +6109,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -5968,7 +6130,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -5979,6 +6143,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -6033,7 +6198,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -6044,6 +6211,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -6062,7 +6230,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -6073,6 +6243,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -6164,7 +6335,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "静安区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -6180,6 +6353,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -6328,6 +6502,7 @@
       "manual_priority": 50,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -6340,6 +6515,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -6359,6 +6535,7 @@
       "manual_priority": 70,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -6371,6 +6548,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -6453,6 +6631,7 @@
         "premium_food"
       ],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -6465,6 +6644,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -6580,7 +6760,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -6591,6 +6773,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -6610,6 +6793,7 @@
       "manual_priority": 70,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -6622,6 +6806,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -6641,6 +6826,7 @@
       "manual_priority": 50,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -6653,6 +6839,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -6671,7 +6858,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -6682,6 +6871,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -6732,6 +6922,7 @@
       "manual_priority": 50,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -6744,6 +6935,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -6797,6 +6989,7 @@
       "manual_priority": 70,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -6809,6 +7002,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -6828,6 +7022,7 @@
       "manual_priority": 70,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -6840,6 +7035,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -6858,7 +7054,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -6869,6 +7067,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -6917,6 +7116,7 @@
       "manual_priority": 70,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -6929,6 +7129,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -6947,7 +7148,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -6958,6 +7161,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -7008,6 +7212,7 @@
       "manual_priority": 70,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -7020,6 +7225,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -7038,7 +7244,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -7049,6 +7257,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -7068,6 +7277,7 @@
       "manual_priority": 70,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -7080,6 +7290,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -7161,6 +7372,7 @@
       "manual_priority": 50,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -7173,6 +7385,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -7194,6 +7407,7 @@
         "transit_friendly"
       ],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -7206,6 +7420,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -7224,7 +7439,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -7235,6 +7452,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -7256,6 +7474,7 @@
         "transit_friendly"
       ],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "",
@@ -7268,6 +7487,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -7317,7 +7537,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -7328,6 +7550,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -7348,7 +7571,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -7359,6 +7584,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -7417,7 +7643,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -7433,6 +7661,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -7486,7 +7715,9 @@
         "food_quality",
         "premium_food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -7497,6 +7728,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -7553,7 +7785,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -7569,6 +7803,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -7590,7 +7825,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -7601,6 +7838,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -7764,7 +8002,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -7775,6 +8015,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -7797,7 +8038,9 @@
         "good_value",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "静安区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -7813,6 +8056,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -7864,7 +8108,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -7875,6 +8121,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -7895,7 +8142,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -7906,6 +8155,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -7928,7 +8178,9 @@
         "good_value",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -7939,6 +8191,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -7960,7 +8213,9 @@
         "food",
         "photo_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -7971,6 +8226,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -8089,7 +8345,9 @@
         "food",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -8100,6 +8358,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -8121,7 +8380,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -8132,6 +8393,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -8153,7 +8415,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -8164,6 +8428,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -8219,7 +8484,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -8236,6 +8503,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -8259,6 +8527,7 @@
         "landmark"
       ],
       "risk_tags": [
+        "queue_heavy",
         "crowded_weekend"
       ],
       "district": "黄浦区",
@@ -8278,6 +8547,7 @@
       "min_stay_minutes": 90,
       "max_stay_minutes": 180,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -8329,7 +8599,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -8340,6 +8612,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -8361,7 +8634,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -8372,6 +8647,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -8424,7 +8700,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "静安区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -8440,6 +8718,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -8491,7 +8770,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -8502,6 +8783,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -8661,7 +8943,9 @@
         "good_value",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -8672,6 +8956,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -8693,7 +8978,9 @@
         "food",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -8704,6 +8991,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -8790,7 +9078,9 @@
         "good_value",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -8801,6 +9091,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -8854,7 +9145,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -8865,6 +9158,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -8952,7 +9246,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -8963,6 +9259,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -9015,7 +9312,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "静安区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -9031,6 +9330,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -9051,7 +9351,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -9062,6 +9364,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -9082,7 +9385,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -9093,6 +9398,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -9113,7 +9419,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -9124,6 +9432,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -9146,7 +9455,9 @@
         "good_value",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -9162,6 +9473,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -9279,7 +9591,9 @@
         "food",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -9290,6 +9604,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -9311,7 +9626,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -9327,6 +9644,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -9384,7 +9702,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -9395,6 +9715,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -9415,7 +9736,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -9426,6 +9749,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -9482,7 +9806,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -9493,6 +9819,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -9578,7 +9905,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -9589,6 +9918,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -9609,7 +9939,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "浦东新区",
       "city_zone": "east",
       "neighbor_zones": [
@@ -9622,6 +9954,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -9643,7 +9976,9 @@
         "food",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "静安区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -9659,6 +9994,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -9680,7 +10016,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -9692,6 +10030,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -9712,7 +10051,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -9723,6 +10064,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -9744,7 +10086,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "静安区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -9760,6 +10104,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -9780,7 +10125,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -9791,6 +10138,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -9844,7 +10192,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -9855,6 +10205,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -9937,7 +10288,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -9948,6 +10301,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -9968,7 +10322,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -9979,6 +10335,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -10064,7 +10421,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -10076,6 +10435,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -10096,7 +10456,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -10107,6 +10469,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -10128,7 +10491,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -10139,6 +10504,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -10192,7 +10558,9 @@
         "food",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -10208,6 +10576,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -10293,7 +10662,9 @@
         "food",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "长宁区",
       "city_zone": "west",
       "neighbor_zones": [
@@ -10308,6 +10679,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -10360,7 +10732,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -10371,6 +10745,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -10391,7 +10766,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -10403,6 +10780,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -10423,7 +10801,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -10434,6 +10814,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -10488,7 +10869,9 @@
         "food",
         "photo_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -10504,6 +10887,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -10525,7 +10909,9 @@
         "food",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -10536,6 +10922,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -10654,7 +11041,9 @@
         "food_quality",
         "premium_food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "浦东新区",
       "city_zone": "east",
       "neighbor_zones": [
@@ -10667,6 +11056,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -10687,7 +11077,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -10698,6 +11090,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -10719,7 +11112,9 @@
         "food",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -10730,6 +11125,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -10750,7 +11146,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -10761,6 +11159,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -10781,7 +11180,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -10792,6 +11193,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -10812,7 +11214,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -10824,6 +11228,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -10845,7 +11250,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -10856,6 +11263,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -10876,7 +11284,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -10887,6 +11297,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -10945,7 +11356,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "浦东新区",
       "city_zone": "east",
       "neighbor_zones": [
@@ -10958,6 +11371,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -11010,7 +11424,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -11022,6 +11438,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -11168,7 +11585,9 @@
         "food",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -11184,6 +11603,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -11206,7 +11626,9 @@
         "good_value",
         "rain_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -11218,6 +11640,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -11238,7 +11661,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -11249,6 +11674,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -11300,7 +11726,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -11311,6 +11739,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -11404,7 +11833,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -11415,6 +11846,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -11467,7 +11899,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -11478,6 +11912,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -11530,7 +11965,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -11541,6 +11978,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -11561,7 +11999,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -11572,6 +12012,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -11624,7 +12065,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -11635,6 +12078,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -11687,7 +12131,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -11698,6 +12144,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -11719,7 +12166,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -11730,6 +12179,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -11751,7 +12201,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -11762,6 +12214,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -11782,7 +12235,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -11793,6 +12248,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -11815,7 +12271,9 @@
         "good_value",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -11826,6 +12284,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -11847,7 +12306,9 @@
         "food",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -11863,6 +12324,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -11946,7 +12408,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -11957,6 +12421,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -12010,7 +12475,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -12021,6 +12488,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -12044,6 +12512,7 @@
         "premium_food"
       ],
       "risk_tags": [
+        "queue_heavy",
         "walk_heavy"
       ],
       "district": "",
@@ -12056,6 +12525,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -12078,7 +12548,9 @@
         "good_value",
         "photo_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -12089,6 +12561,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -12173,7 +12646,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -12189,6 +12664,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -12210,7 +12686,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -12221,6 +12699,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -12243,7 +12722,9 @@
         "good_value",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -12254,6 +12735,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -12276,7 +12758,9 @@
         "good_value",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "浦东新区",
       "city_zone": "east",
       "neighbor_zones": [
@@ -12289,6 +12773,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -12311,7 +12796,9 @@
         "good_value",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -12322,6 +12809,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -12373,7 +12861,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "静安区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -12389,6 +12879,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -12410,7 +12901,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -12421,6 +12914,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -12474,7 +12968,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -12485,6 +12981,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -12543,7 +13040,9 @@
         "food",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -12554,6 +13053,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -12575,7 +13075,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -12586,6 +13088,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -12607,7 +13110,9 @@
         "food",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -12623,6 +13128,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -12644,7 +13150,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -12655,6 +13163,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -12675,7 +13184,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -12686,6 +13197,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -12840,7 +13352,9 @@
         "food",
         "rain_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "浦东新区",
       "city_zone": "east",
       "neighbor_zones": [
@@ -12853,6 +13367,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -12875,7 +13390,9 @@
         "food_quality",
         "premium_food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -12886,6 +13403,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -12942,7 +13460,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -12953,6 +13473,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -13004,7 +13525,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -13015,6 +13538,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -13037,7 +13561,9 @@
         "good_value",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -13048,6 +13574,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -13102,7 +13629,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -13118,6 +13647,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -13138,7 +13668,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -13149,6 +13681,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -13201,7 +13734,9 @@
         "food",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -13217,6 +13752,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -13237,7 +13773,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -13253,6 +13791,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -13275,7 +13814,9 @@
         "good_value",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -13286,6 +13827,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -13338,7 +13880,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -13354,6 +13898,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -13582,7 +14127,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -13593,6 +14140,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -13613,7 +14161,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -13624,6 +14174,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -13675,7 +14226,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -13686,6 +14239,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -13707,7 +14261,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -13723,6 +14279,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -13775,7 +14332,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -13786,6 +14345,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -13838,7 +14398,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -13850,6 +14412,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -13934,7 +14497,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -13945,6 +14510,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -13967,7 +14533,9 @@
         "food_quality",
         "premium_food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "浦东新区",
       "city_zone": "east",
       "neighbor_zones": [
@@ -13981,6 +14549,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -14033,7 +14602,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -14044,6 +14615,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -14097,7 +14669,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -14108,6 +14682,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -14128,7 +14703,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -14139,6 +14716,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -14159,7 +14737,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -14171,6 +14751,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -14192,7 +14773,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -14204,6 +14787,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -14419,7 +15003,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -14430,6 +15016,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -14450,7 +15037,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -14461,6 +15050,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -14481,7 +15071,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -14497,6 +15089,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -14517,7 +15110,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -14528,6 +15123,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -14611,7 +15207,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -14622,6 +15220,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -14642,7 +15241,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -14653,6 +15254,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -14674,7 +15276,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -14685,6 +15289,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -14706,7 +15311,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -14717,6 +15324,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -14800,7 +15408,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -14811,6 +15421,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -14960,7 +15571,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -14971,6 +15584,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -14991,7 +15605,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -15002,6 +15618,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -15054,7 +15671,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -15065,6 +15684,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -15149,7 +15769,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -15160,6 +15782,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -15180,7 +15803,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -15191,6 +15816,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -15212,7 +15838,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -15223,6 +15851,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -15244,7 +15873,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -15255,6 +15886,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -15275,7 +15907,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -15286,6 +15920,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -15306,7 +15941,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -15317,6 +15954,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -15338,7 +15976,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -15349,6 +15989,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -15401,7 +16042,9 @@
       "planning_tags": [
         "food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -15412,6 +16055,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -15433,7 +16077,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -15444,6 +16090,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -15465,7 +16112,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -15476,6 +16125,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -15688,7 +16338,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -15699,6 +16351,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -15754,7 +16407,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -15765,6 +16420,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -15786,7 +16442,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -15797,6 +16455,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -15819,7 +16478,9 @@
         "good_value",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -15830,6 +16491,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -15884,7 +16546,9 @@
         "food",
         "good_value"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -15895,6 +16559,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -15916,7 +16581,9 @@
         "food",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -15927,6 +16594,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -21397,7 +22065,9 @@
         "food",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "queue_heavy"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -21413,6 +22083,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 90,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -23734,7 +24405,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -23745,6 +24418,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
