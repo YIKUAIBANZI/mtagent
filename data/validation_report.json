@@ -1,0 +1,45 @@
+{
+  "schema_version": "poi_validation:v1",
+  "valid": true,
+  "delivery_cities": [
+    "深圳",
+    "上海",
+    "北京",
+    "西安",
+    "庐山"
+  ],
+  "total_poi_count": 3279,
+  "cities": {
+    "深圳": {
+      "poi_count": 721,
+      "schema_error_count": 0,
+      "attach_rate": 1.0
+    },
+    "上海": {
+      "poi_count": 750,
+      "schema_error_count": 0,
+      "attach_rate": 1.0
+    },
+    "北京": {
+      "poi_count": 736,
+      "schema_error_count": 0,
+      "attach_rate": 1.0
+    },
+    "西安": {
+      "poi_count": 712,
+      "schema_error_count": 0,
+      "attach_rate": 1.0
+    },
+    "庐山": {
+      "poi_count": 360,
+      "schema_error_count": 0,
+      "attach_rate": 1.0
+    }
+  },
+  "decision_signals": {
+    "signal_count": 286,
+    "traceable_count": 286
+  },
+  "errors": [],
+  "warnings": []
+}

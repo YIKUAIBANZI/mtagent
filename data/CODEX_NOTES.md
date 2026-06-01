@@ -77,3 +77,14 @@
   条、attach `360` 条；`plan_three_variants` 三个 variant 均生成 `4` 个停靠点，
   `validate_day` 得分均为 `1.0`。
 - 用户从自然语言进入庐山的完整 API 路径仍依赖上方 Claude 运行时接线事项。
+
+## Task 6 进展
+
+- 新增 `scripts/validate_pois.py`，作为五城交付级离线校验器，覆盖：
+  schema 解析、坐标范围、跨城重复 ID、庐山高德 ID 与地理边界、五城索引、
+  metadata、canonical attach、决策信号 evidence 与 fallback 回溯。
+- 真实数据执行结果：`valid=true`，总计 `3279` 条；深圳 `721`、上海 `750`、
+  北京 `736`、西安 `712`、庐山 `360`。五城 schema error 均为 `0`，
+  attach rate 均为 `1.0`。
+- 上海决策信号 `286/286` 可回溯；报告写入
+  `data/validation_report.json`。严重错误会让脚本退出非零，便于后续接入 CI。
