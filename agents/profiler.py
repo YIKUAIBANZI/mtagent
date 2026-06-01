@@ -107,6 +107,21 @@ def _server_now_iso() -> str:
     return datetime.now().astimezone().isoformat(timespec="seconds")
 
 
+def _apply_profile_to_intent(intent: ParsedIntent, profile) -> None:
+    """把 ctx.profile 的标签信号摊进 intent (走标签层)。profile 为 None 时 no-op。
+
+    v2.0 个性化记忆: loved/rejected 标签 + been_there + 预算, 供 candidate_pool.score_poi 消费。
+    """
+    if profile is None:
+        return
+    intent.profile_loved_tags = list(getattr(profile, "loved_tags", []) or [])
+    intent.profile_rejected_tags = list(getattr(profile, "rejected_tags", []) or [])
+    intent.profile_been_there = list(
+        getattr(profile.user_marked, "been_there", []) or []
+    )
+    intent.profile_budget = int(getattr(profile, "avg_budget_per_day", 0) or 0)
+
+
 class Profiler:
     """Profiler agent. v0 minimal — single LLM call, no clarifying loop."""
 
@@ -313,6 +328,9 @@ class Profiler:
                 for t in tokens:
                     if t not in understood.interests:
                         understood.interests.append(t)
+
+        # v2.0: 把 profile 标签信号摊进 intent (走标签层), 供 score_poi 消费
+        _apply_profile_to_intent(understood, ctx.profile)
 
         ctx.intent = understood
         ctx.log_event(
