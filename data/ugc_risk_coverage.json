@@ -2,9 +2,85 @@
   "schema_version": "ugc_risk_coverage:v1",
   "source": "agent:risk_from_ugc:v1",
   "cities": {
+    "深圳": {
+      "poi_count": 721,
+      "changed_poi_count": 0,
+      "risk_tags": {
+        "crowded_weekend": 155,
+        "queue_heavy": 127,
+        "reservation_recommended": 118,
+        "walk_heavy": 120
+      },
+      "evidence_samples": {
+        "queue_heavy": [
+          {
+            "openshopid": "mock_3fe85f031a8df32f",
+            "evidence": [
+              "reviewTag:排队较长"
+            ]
+          },
+          {
+            "openshopid": "mock_23a968c4126dce21",
+            "evidence": [
+              "reviewTag:排队较长"
+            ]
+          },
+          {
+            "openshopid": "mock_0447022363fc6081",
+            "evidence": [
+              "reviewTag:排队较长"
+            ]
+          },
+          {
+            "openshopid": "mock_cdbb8e999c43d7ae",
+            "evidence": [
+              "reviewTag:排队较长"
+            ]
+          },
+          {
+            "openshopid": "mock_770879e919db8eb2",
+            "evidence": [
+              "reviewTag:排队较长"
+            ]
+          }
+        ],
+        "crowded_weekend": [
+          {
+            "openshopid": "mock_014de6562e8e8143",
+            "evidence": [
+              "reviewTag:周末人多"
+            ]
+          },
+          {
+            "openshopid": "mock_da3d4614d40594c7",
+            "evidence": [
+              "reviewTag:周末人多"
+            ]
+          },
+          {
+            "openshopid": "mock_1ee433db8afda95f",
+            "evidence": [
+              "reviewTag:周末人多"
+            ]
+          },
+          {
+            "openshopid": "mock_582a6e4f43982602",
+            "evidence": [
+              "reviewTag:周末人多"
+            ]
+          },
+          {
+            "openshopid": "mock_c716c88672768faf",
+            "evidence": [
+              "reviewTag:人流较多"
+            ]
+          }
+        ]
+      }
+    },
     "上海": {
       "poi_count": 750,
-      "changed_poi_count": 263,
+      "changed_poi_count": 0,
       "risk_tags": {
         "crowded_weekend": 157,
         "queue_heavy": 149,
@@ -81,9 +157,166 @@
         ]
       }
     },
+    "北京": {
+      "poi_count": 736,
+      "changed_poi_count": 0,
+      "risk_tags": {
+        "crowded_weekend": 165,
+        "queue_heavy": 115,
+        "reservation_recommended": 126,
+        "walk_heavy": 80
+      },
+      "evidence_samples": {
+        "queue_heavy": [
+          {
+            "openshopid": "mock_bcbb4baa9978fe4f",
+            "evidence": [
+              "reviewTag:排队较长"
+            ]
+          },
+          {
+            "openshopid": "mock_78bf745a82d53914",
+            "evidence": [
+              "reviewTag:排队较长"
+            ]
+          },
+          {
+            "openshopid": "mock_d910716785078b10",
+            "evidence": [
+              "reviewTag:排队较长"
+            ]
+          },
+          {
+            "openshopid": "mock_a9a729dc704937a0",
+            "evidence": [
+              "reviewTag:排队较长"
+            ]
+          },
+          {
+            "openshopid": "mock_f907628ca37d7c37",
+            "evidence": [
+              "reviewTag:排队较长"
+            ]
+          }
+        ],
+        "crowded_weekend": [
+          {
+            "openshopid": "mock_e849c4d999d77e07",
+            "evidence": [
+              "ugc:人稍微多了点，但景色真的不错。"
+            ]
+          },
+          {
+            "openshopid": "mock_47dbd6ca1d979d11",
+            "evidence": [
+              "ugc:人稍微多了点，但景色真的不错。"
+            ]
+          },
+          {
+            "openshopid": "mock_6f5c8688f388c0de",
+            "evidence": [
+              "reviewTag:人流较多"
+            ]
+          },
+          {
+            "openshopid": "mock_c451742204e612a6",
+            "evidence": [
+              "reviewTag:周末人多"
+            ]
+          },
+          {
+            "openshopid": "mock_a23f961d337ad2cc",
+            "evidence": [
+              "reviewTag:周末人多"
+            ]
+          }
+        ]
+      }
+    },
+    "西安": {
+      "poi_count": 712,
+      "changed_poi_count": 0,
+      "risk_tags": {
+        "crowded_weekend": 186,
+        "queue_heavy": 126,
+        "reservation_recommended": 105,
+        "walk_heavy": 92
+      },
+      "evidence_samples": {
+        "queue_heavy": [
+          {
+            "openshopid": "mock_01a5a6377abf97de",
+            "evidence": [
+              "reviewTag:排队较长"
+            ]
+          },
+          {
+            "openshopid": "mock_c35c3d9477a98156",
+            "evidence": [
+              "reviewTag:排队较长"
+            ]
+          },
+          {
+            "openshopid": "mock_5d36bb63dc5faaab",
+            "evidence": [
+              "reviewTag:排队较长"
+            ]
+          },
+          {
+            "openshopid": "mock_a416499b7a57a3dc",
+            "evidence": [
+              "reviewTag:排队较长"
+            ]
+          },
+          {
+            "openshopid": "mock_42dba38cad8e97db",
+            "evidence": [
+              "reviewTag:排队较长"
+            ]
+          }
+        ],
+        "crowded_weekend": [
+          {
+            "openshopid": "mock_f14a6336c8bc1b7d",
+            "evidence": [
+              "reviewTag:周末人多"
+            ]
+          },
+          {
+            "openshopid": "mock_80e0b7e86ce82a84",
+            "evidence": [
+              "reviewTag:人流较多",
+              "ugc:人稍微多了点，但景色真的不错。"
+            ]
+          },
+          {
+            "openshopid": "mock_a72264dbade12c7f",
+            "evidence": [
+              "reviewTag:人流较多",
+              "ugc:人稍微多了点，但景色真的不错。",
+              "ugc:人稍微多了点，但景色真的不错。"
+            ]
+          },
+          {
+            "openshopid": "mock_80c573064a5b68f2",
+            "evidence": [
+              "reviewTag:人流较多",
+              "ugc:人稍微多了点，但景色真的不错。"
+            ]
+          },
+          {
+            "openshopid": "mock_d556c5707a886faf",
+            "evidence": [
+              "reviewTag:人流较多",
+              "ugc:人稍微多了点，但景色真的不错。"
+            ]
+          }
+        ]
+      }
+    },
     "庐山": {
       "poi_count": 360,
-      "changed_poi_count": 200,
+      "changed_poi_count": 0,
       "risk_tags": {
         "crowded_weekend": 113,
         "queue_heavy": 141,

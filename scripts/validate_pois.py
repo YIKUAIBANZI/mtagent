@@ -24,6 +24,15 @@ DEFAULT_ENRICHED_PATH = Path("data/poi_enriched_labels.json")
 DEFAULT_SIGNALS_PATH = Path("data/poi_decision_signals.json")
 DEFAULT_REPORT_PATH = Path("data/validation_report.json")
 LUSHAN_BOUNDS = (115.90, 116.10, 29.40, 29.70)
+CITY_BOUNDS = {
+    "深圳": (113.70, 114.70, 22.30, 22.90),
+    "上海": (120.80, 122.10, 30.60, 31.90),
+    "北京": (115.70, 117.10, 39.40, 40.80),
+    "西安": (108.00, 109.70, 33.70, 34.90),
+    "庐山": LUSHAN_BOUNDS,
+}
+_QUEUE_EVIDENCE = re.compile(r"排队|等位")
+_VALUE_TAGS = {"便宜大碗", "性价比高"}
 _REVIEW_TAG_EVIDENCE = re.compile(r"^UGC 摘要：reviewTag「(.+)」$")
 _UGC_EVIDENCE = re.compile(r"^UGC 摘要：评论「(.+)」$")
 
@@ -50,6 +59,16 @@ def _write_json_atomic(path: Path, value: Any) -> None:
 
 def _within_lushan(poi: dict[str, Any]) -> bool:
     min_lng, max_lng, min_lat, max_lat = LUSHAN_BOUNDS
+    longitude = float(poi.get("longitude") or 0)
+    latitude = float(poi.get("latitude") or 0)
+    return min_lng <= longitude <= max_lng and min_lat <= latitude <= max_lat
+
+
+def _within_city(city: str, poi: dict[str, Any]) -> bool:
+    bounds = CITY_BOUNDS.get(city)
+    if not bounds:
+        return True
+    min_lng, max_lng, min_lat, max_lat = bounds
     longitude = float(poi.get("longitude") or 0)
     latitude = float(poi.get("latitude") or 0)
     return min_lng <= longitude <= max_lng and min_lat <= latitude <= max_lat
@@ -123,6 +142,15 @@ def validate_pois(
             longitude = float(poi.get("longitude") or 0)
             if not (-90 <= latitude <= 90 and -180 <= longitude <= 180):
                 errors.append(f"{city}[{index}] invalid coordinates")
+            elif not _within_city(city, poi):
+                errors.append(f"{city}[{index}] outside {city} bounds: {openshopid}")
+            review_tags = {
+                str(item.get("tag") or "")
+                for item in poi.get("reviewTags") or []
+                if isinstance(item, dict)
+            }
+            if int(poi.get("avgprice") or 0) >= 500 and review_tags & _VALUE_TAGS:
+                errors.append(f"{city}[{index}] high price conflicts with value tag: {openshopid}")
             if city == "庐山":
                 if not openshopid.startswith("amap_"):
                     errors.append(f"庐山[{index}] non-Amap openshopid: {openshopid}")
@@ -165,6 +193,18 @@ def validate_pois(
             errors.append(f"{city} missing enriched labels: {missing[:10]}")
         if orphans:
             errors.append(f"{city} orphan enriched labels: {orphans[:10]}")
+        for index, poi in enumerate(pois):
+            openshopid = str(poi.get("openshopid") or "")
+            label = labels.get(openshopid, {})
+            review_tags = [
+                str(item.get("tag") or "")
+                for item in poi.get("reviewTags") or []
+                if isinstance(item, dict)
+            ]
+            if any(_QUEUE_EVIDENCE.search(tag) for tag in review_tags) and "queue_heavy" not in set(
+                label.get("risk_tags") or []
+            ):
+                errors.append(f"{city}[{index}] queue evidence without queue_heavy: {openshopid}")
         city_reports.setdefault(city, {})["attach_rate"] = (
             round(len(poi_ids & label_ids) / len(poi_ids), 4) if poi_ids else 1.0
         )

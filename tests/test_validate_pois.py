@@ -42,7 +42,7 @@ def _write_fixture(tmp_path):
         json.dumps(
             {
                 "上海": {"mock_shanghai": {"risk_tags": ["queue_heavy"]}},
-                "庐山": {"amap_lushan": {"risk_tags": ["walk_heavy"]}},
+                "庐山": {"amap_lushan": {"risk_tags": ["walk_heavy", "queue_heavy"]}},
             },
             ensure_ascii=False,
         )
@@ -113,3 +113,33 @@ def test_validate_pois_rejects_duplicate_ids_and_untraceable_evidence(tmp_path):
     assert report["valid"] is False
     assert any("duplicate openshopid" in error for error in report["errors"])
     assert any("untraceable evidence" in error for error in report["errors"])
+
+
+def test_validate_pois_rejects_city_bounds_queue_and_price_contradictions(tmp_path):
+    mock_dir, enriched_path, signals_path = _write_fixture(tmp_path)
+    shanghai_path = mock_dir / "上海.json"
+    shanghai = json.loads(shanghai_path.read_text())
+    shanghai[0]["latitude"] = 29.0
+    shanghai[0]["avgprice"] = 888
+    shanghai[0]["reviewTags"].append({"tag": "性价比高", "hit": 8})
+    shanghai_path.write_text(json.dumps(shanghai, ensure_ascii=False))
+    index = json.loads((mock_dir / "index.json").read_text())
+    index[0] = shanghai[0]
+    (mock_dir / "index.json").write_text(json.dumps(index, ensure_ascii=False))
+    enriched = json.loads(enriched_path.read_text())
+    enriched["上海"]["mock_shanghai"]["risk_tags"] = []
+    enriched_path.write_text(json.dumps(enriched, ensure_ascii=False))
+
+    report = validate_pois(
+        mock_dir=mock_dir,
+        enriched_path=enriched_path,
+        signals_path=signals_path,
+        report_path=tmp_path / "validation_report.json",
+        cities=["上海", "庐山"],
+        min_lushan_pois=1,
+    )
+
+    assert report["valid"] is False
+    assert any("outside 上海 bounds" in error for error in report["errors"])
+    assert any("queue evidence without queue_heavy" in error for error in report["errors"])
+    assert any("high price conflicts with value tag" in error for error in report["errors"])

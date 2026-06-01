@@ -92,8 +92,12 @@
 ## Task 6 进展
 
 - 新增 `scripts/validate_pois.py`，作为五城交付级离线校验器，覆盖：
-  schema 解析、坐标范围、跨城重复 ID、庐山高德 ID 与地理边界、五城索引、
-  metadata、canonical attach、决策信号 evidence 与 fallback 回溯。
+  schema 解析、逐城坐标范围、跨城重复 ID、庐山高德 ID 与地理边界、五城索引、
+  metadata、canonical attach、排队 UGC 与 `queue_heavy` 一致性、高价格与
+  性价比标签矛盾、决策信号 evidence 与 fallback 回溯。
+- 校验器首次执行发现旧城仍有排队证据未进入 risk 标签；已用同一 UGC 蒸馏器
+  补齐五城。当前 `queue_heavy`：深圳 `127`、上海 `149`、北京 `115`、
+  西安 `126`、庐山 `141`。
 - 真实数据执行结果：`valid=true`，总计 `3279` 条；深圳 `721`、上海 `750`、
   北京 `736`、西安 `712`、庐山 `360`。五城 schema error 均为 `0`，
   attach rate 均为 `1.0`。
