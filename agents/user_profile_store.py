@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import os
+import tempfile
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -42,12 +43,19 @@ def get_profile(cookie_key: str) -> Optional[UserProfile]:
 
 
 def save_profile(profile: UserProfile) -> Path:
-    """写 profile, 更新 updated_at."""
+    """写 profile, 更新 updated_at (原子写: temp + os.replace, 防高频写并发损坏)."""
     profile.updated_at = datetime.now()
     if profile.created_at is None:
         profile.created_at = profile.updated_at
     path = _profiles_dir() / f"{profile.cookie_key}.json"
-    path.write_text(profile.model_dump_json(indent=2), encoding="utf-8")
+    fd, tmp = tempfile.mkstemp(dir=str(path.parent), suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(profile.model_dump_json(indent=2))
+        os.replace(tmp, path)
+    finally:
+        if os.path.exists(tmp):
+            os.remove(tmp)
     return path
 
 
@@ -67,3 +75,31 @@ def upsert_profile(
         existing.interests_text = interests_text
     save_profile(existing)
     return existing
+
+
+def apply_signal(
+    cookie_key: str,
+    action: str,
+    *,
+    poi=None,
+    poi_name: Optional[str] = None,
+) -> UserProfile:
+    """统一信号入口: get-or-new -> record -> save. action: love|reject|dislike|visited.
+
+    被 POST /api/user/signal 与 adjust 捕获接入点共用 (DRY)。
+    """
+    from agents.preference_signals import (
+        record_love,
+        record_rejection,
+        record_visit,
+    )
+
+    p = get_profile(cookie_key) or UserProfile(cookie_key=cookie_key or "")
+    if action == "love" and poi is not None:
+        record_love(p, poi)
+    elif action in ("reject", "dislike") and poi is not None:
+        record_rejection(p, poi)
+    elif action == "visited" and poi_name:
+        record_visit(p, poi_name)
+    save_profile(p)
+    return p
