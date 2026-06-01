@@ -111,3 +111,32 @@ def test_build_canonical_pois_rebuild_refreshes_existing_labels(tmp_path):
     assert enriched["上海"]["mock_food"]["poi_role"] == "meal"
     assert "food" in enriched["上海"]["mock_food"]["planning_tags"]
     assert report["cities"]["上海"]["rebuilt_labels"] == 1
+
+
+def test_build_canonical_pois_can_limit_delivery_cities(tmp_path):
+    mock_dir = tmp_path / "mock_dianping"
+    mock_dir.mkdir()
+    (mock_dir / "上海.json").write_text(
+        json.dumps([_poi("mock_shanghai", "外滩")], ensure_ascii=False),
+        encoding="utf-8",
+    )
+    (mock_dir / "南昌.json").write_text(
+        json.dumps([_poi("mock_nanchang", "滕王阁")], ensure_ascii=False),
+        encoding="utf-8",
+    )
+    enriched_path = tmp_path / "poi_enriched_labels.json"
+    enriched_path.write_text(
+        json.dumps({"南昌": {"mock_nanchang": {}}}, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+    report = build_canonical_pois(
+        mock_dir=mock_dir,
+        enriched_path=enriched_path,
+        report_path=tmp_path / "canonical_coverage.json",
+        cities=["上海"],
+    )
+
+    enriched = json.loads(enriched_path.read_text(encoding="utf-8"))
+    assert list(report["cities"]) == ["上海"]
+    assert list(enriched) == ["上海"]

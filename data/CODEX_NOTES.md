@@ -31,7 +31,7 @@
 
 - 新增 `scripts/distill_ugc_risk_tags.py`，只从 POI 自身 `reviewTags` / `ugcs`
   抽取风险，并在新增标签时写入 `agent:risk_from_ugc:v1` 来源。
-- 上海执行后：`queue_heavy=149`、`crowded_weekend=129`、`walk_heavy=65`；
+- 上海执行后：`queue_heavy=149`、`crowded_weekend=157`、`walk_heavy=65`；
   第二次执行 `changed_poi_count=0`，具备幂等性。
 - 抽查证据写入 `data/ugc_risk_coverage.json`，例如
   `reviewTag:排队较长`、`reviewTag:人流较多`，没有把普通“适合散步”误标为
@@ -60,3 +60,20 @@
   - 如需实时天气，请在 `agents/weather.py::CITY_ADCODE` 增加庐山市 adcode。
 - Codex 不修改上述文件，避免越过 `agents/`、`api/`、`dianping/schemas.py`
   ownership。
+
+## Task 5 进展
+
+- 新增 `scripts/build_lushan_mock.py`：从高德文本检索保存原始快照，
+  POI 名称、地址、坐标使用真实高德记录；点评标签和 UGC 使用固定种子生成的
+  赛题 mock，二者在脚本和报告里明确区分。
+- 原始快照召回 `689` 条，地理范围、路线可用性、去重过滤后候选 `464` 条，
+  最终按景点、索道、观景设施、住宿、餐饮优先级裁剪为 `360` 条。
+- `data/mock_dianping/index.json` 和 `metadata.json` 已切换为五城交付索引：
+  深圳、上海、北京、西安、庐山，共 `3279` 条。`南昌.json` 暂时保留为回滚
+  文件，但不进入交付索引和 canonical 标签产物。
+- canonical 五城重建后，庐山 `360/360` 可 attach；UGC 蒸馏得到
+  `walk_heavy=317`、`queue_heavy=141`、`crowded_weekend=113`。
+- 数据层直接 smoke 已通过：`load_city_pois_from_mock("庐山")` 加载 `360`
+  条、attach `360` 条；`plan_three_variants` 三个 variant 均生成 `4` 个停靠点，
+  `validate_day` 得分均为 `1.0`。
+- 用户从自然语言进入庐山的完整 API 路径仍依赖上方 Claude 运行时接线事项。

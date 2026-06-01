@@ -1,6 +1,7 @@
 """Tests for offline label pipeline rules."""
 
 from scripts.label_pois import (
+    build_enriched_label,
     label_modifiers,
     label_planning_tags,
     label_poi_role,
@@ -63,3 +64,29 @@ def test_label_poi_role_accepts_amap_shopping_categories():
 
     assert label_poi_role(poi) == "connector"
     assert "shopping_friendly" in label_planning_tags(poi, "connector")
+
+
+def test_beijing_landmark_is_city_essential():
+    poi = _poi()
+    poi.update({"city": "北京", "name": "故宫博物院", "categories": ["风景名胜"]})
+
+    assert build_enriched_label(poi)["poi_role"] == "city_essential"
+
+
+def test_lushan_landmark_gets_mountain_route_tags():
+    poi = _poi(review_tags=["风景绝美"])
+    poi.update(
+        {
+            "city": "庐山",
+            "district": "庐山市",
+            "name": "三叠泉",
+            "categories": ["风景名胜"],
+            "ugcs": [{"content": "台阶很多，爬坡比较费体力。"}],
+        }
+    )
+
+    label = build_enriched_label(poi)
+
+    assert label["poi_role"] == "city_essential"
+    assert label["city_zone"] == "mountain"
+    assert "walk_heavy" in label["risk_tags"]

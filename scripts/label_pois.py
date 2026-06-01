@@ -23,7 +23,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-CITIES = ("深圳", "上海", "西安")
+CITIES = ("深圳", "上海", "北京", "西安", "庐山")
 DATA_DIR = Path("data/mock_dianping")
 OUT_PATH = Path("data/poi_labels.json")
 ENRICHED_OUT_PATH = Path("data/poi_enriched_labels.json")
@@ -137,6 +137,34 @@ CITY_ESSENTIAL_KEYWORDS = {
         "小寨赛格",
         "华山",
     ],
+    "北京": [
+        "故宫博物院",
+        "故宫",
+        "天安门广场",
+        "颐和园",
+        "天坛公园",
+        "八达岭长城",
+        "慕田峪长城",
+        "圆明园",
+        "什刹海",
+        "南锣鼓巷",
+        "景山公园",
+        "北海公园",
+    ],
+    "庐山": [
+        "庐山国家级旅游风景名胜区",
+        "三叠泉",
+        "含鄱口",
+        "五老峰",
+        "如琴湖",
+        "花径",
+        "锦绣谷",
+        "仙人洞",
+        "芦林湖",
+        "牯岭街",
+        "庐山索道",
+        "美庐别墅",
+    ],
 }
 
 LANDMARK_FALSE_POSITIVE_TERMS = (
@@ -206,6 +234,9 @@ DISTRICT_ALIASES = {
         "临潼区": ["临潼区", "兵马俑", "华清池"],
         "高新区": ["高新区", "科技路", "科技二路"],
     },
+    "庐山": {
+        "庐山市": ["庐山市", "牯岭镇", "庐山风景名胜区", "庐山景区"],
+    },
 }
 
 ZONE_BY_DISTRICT = {
@@ -242,6 +273,9 @@ ZONE_BY_DISTRICT = {
         "未央区": "north",
         "临潼区": "east",
     },
+    "庐山": {
+        "庐山市": "mountain",
+    },
 }
 
 NEIGHBOR_ZONES = {
@@ -268,6 +302,10 @@ NEIGHBOR_ZONES = {
         "west": ["center", "south"],
         "north": ["center"],
         "east": ["center"],
+        "unknown": [],
+    },
+    "庐山": {
+        "mountain": [],
         "unknown": [],
     },
 }

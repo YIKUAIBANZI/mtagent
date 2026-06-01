@@ -47,7 +47,13 @@ def _write_json_atomic(path: Path, value: Any) -> None:
         raise
 
 
-def _city_files(mock_dir: Path) -> list[Path]:
+def _city_files(mock_dir: Path, cities: list[str] | None = None) -> list[Path]:
+    if cities:
+        paths = [mock_dir / f"{city}.json" for city in cities]
+        missing = [path for path in paths if not path.exists()]
+        if missing:
+            raise FileNotFoundError(f"missing mock city files: {missing}")
+        return paths
     return sorted(
         path
         for path in mock_dir.glob("*.json")
@@ -74,6 +80,7 @@ def build_canonical_pois(
     enriched_path: Path = DEFAULT_ENRICHED_PATH,
     report_path: Path = DEFAULT_REPORT_PATH,
     rebuild: bool = False,
+    cities: list[str] | None = None,
 ) -> dict[str, Any]:
     """Repair enriched labels so every runtime mock POI has one attachable label."""
     enriched_all = _load_json(enriched_path, {})
@@ -82,7 +89,7 @@ def build_canonical_pois(
 
     repaired: dict[str, dict[str, dict[str, Any]]] = {}
     city_reports: dict[str, dict[str, Any]] = {}
-    for city_path in _city_files(mock_dir):
+    for city_path in _city_files(mock_dir, cities):
         city = city_path.stem
         pois = _mock_pois(city_path)
         previous = enriched_all.get(city, {})
@@ -143,6 +150,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--enriched", type=Path, default=DEFAULT_ENRICHED_PATH)
     parser.add_argument("--report", type=Path, default=DEFAULT_REPORT_PATH)
     parser.add_argument("--rebuild", action="store_true")
+    parser.add_argument("--cities", nargs="+")
     return parser.parse_args()
 
 
@@ -153,6 +161,7 @@ def main() -> None:
         enriched_path=args.enriched,
         report_path=args.report,
         rebuild=args.rebuild,
+        cities=args.cities,
     )
     print(json.dumps(report, ensure_ascii=False, indent=2))
 

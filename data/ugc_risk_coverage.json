@@ -4,7 +4,7 @@
   "cities": {
     "上海": {
       "poi_count": 750,
-      "changed_poi_count": 28,
+      "changed_poi_count": 263,
       "risk_tags": {
         "crowded_weekend": 157,
         "queue_heavy": 149,
@@ -76,6 +76,129 @@
               "reviewTag:人流较多",
               "ugc:人稍微多了点，但景色真的不错。",
               "ugc:人稍微多了点，但景色真的不错。"
+            ]
+          }
+        ]
+      }
+    },
+    "庐山": {
+      "poi_count": 360,
+      "changed_poi_count": 200,
+      "risk_tags": {
+        "crowded_weekend": 113,
+        "queue_heavy": 141,
+        "reservation_recommended": 130,
+        "walk_heavy": 317
+      },
+      "evidence_samples": {
+        "queue_heavy": [
+          {
+            "openshopid": "amap_B0I2YMR3S6",
+            "evidence": [
+              "reviewTag:排队较长",
+              "ugc:周末高峰可能排队，建议错峰到达。"
+            ]
+          },
+          {
+            "openshopid": "amap_B0I3FRWU8S",
+            "evidence": [
+              "reviewTag:排队较长",
+              "ugc:周末高峰可能排队，建议错峰到达。"
+            ]
+          },
+          {
+            "openshopid": "amap_B0G2NU3NNB",
+            "evidence": [
+              "reviewTag:排队较长",
+              "ugc:周末高峰可能排队，建议错峰到达。"
+            ]
+          },
+          {
+            "openshopid": "amap_B0GU15Y7VH",
+            "evidence": [
+              "reviewTag:排队较长",
+              "ugc:周末高峰可能排队，建议错峰到达。"
+            ]
+          },
+          {
+            "openshopid": "amap_B0K1BDS4W5",
+            "evidence": [
+              "reviewTag:排队较长",
+              "ugc:周末高峰可能排队，建议错峰到达。"
+            ]
+          }
+        ],
+        "crowded_weekend": [
+          {
+            "openshopid": "amap_B0318029NT",
+            "evidence": [
+              "reviewTag:周末人多",
+              "ugc:节假日人流较多，早点到体验更从容。"
+            ]
+          },
+          {
+            "openshopid": "amap_B0L26CFB4Q",
+            "evidence": [
+              "reviewTag:周末人多",
+              "ugc:节假日人流较多，早点到体验更从容。"
+            ]
+          },
+          {
+            "openshopid": "amap_B0LRUSBQPD",
+            "evidence": [
+              "reviewTag:周末人多",
+              "ugc:节假日人流较多，早点到体验更从容。"
+            ]
+          },
+          {
+            "openshopid": "amap_B0FFG1WNBG",
+            "evidence": [
+              "reviewTag:周末人多",
+              "ugc:节假日人流较多，早点到体验更从容。"
+            ]
+          },
+          {
+            "openshopid": "amap_B031803R9X",
+            "evidence": [
+              "reviewTag:周末人多",
+              "ugc:节假日人流较多，早点到体验更从容。"
+            ]
+          }
+        ],
+        "walk_heavy": [
+          {
+            "openshopid": "amap_B0FFH48J1Q",
+            "evidence": [
+              "reviewTag:爬坡较多",
+              "ugc:台阶和爬坡路段不少，建议预留体力并穿舒适的鞋。"
+            ]
+          },
+          {
+            "openshopid": "amap_B0I2YMR3S6",
+            "evidence": [
+              "reviewTag:爬坡较多",
+              "ugc:台阶和爬坡路段不少，建议预留体力并穿舒适的鞋。"
+            ]
+          },
+          {
+            "openshopid": "amap_B031802DBG",
+            "evidence": [
+              "reviewTag:爬坡较多",
+              "ugc:台阶和爬坡路段不少，建议预留体力并穿舒适的鞋。"
+            ]
+          },
+          {
+            "openshopid": "amap_B0318029NT",
+            "evidence": [
+              "reviewTag:爬坡较多",
+              "ugc:台阶和爬坡路段不少，建议预留体力并穿舒适的鞋。"
+            ]
+          },
+          {
+            "openshopid": "amap_B0I3FRWU8S",
+            "evidence": [
+              "reviewTag:爬坡较多",
+              "ugc:台阶和爬坡路段不少，建议预留体力并穿舒适的鞋。"
             ]
           }
         ]

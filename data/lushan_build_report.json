@@ -1,0 +1,18 @@
+{
+  "schema_version": "lushan_mock_build:v1",
+  "source": "Amap POI snapshot for locations; deterministic mock reviews",
+  "raw_poi_count": 689,
+  "eligible_poi_count": 464,
+  "accepted_poi_count": 360,
+  "rejected_poi_count": 117,
+  "duplicate_poi_count": 108,
+  "capped_poi_count": 104,
+  "delivery_cities": [
+    "深圳",
+    "上海",
+    "北京",
+    "西安",
+    "庐山"
+  ],
+  "index_poi_count": 3279
+}
