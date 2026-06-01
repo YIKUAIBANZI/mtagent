@@ -174,6 +174,18 @@ def score_poi(poi: POI, intent: ParsedIntent, variant: Variant = "main") -> floa
             if any(k in blob for k in ("总店", "分店", "连锁", "(", "（")):
                 score -= 6.0
 
+    # ── v2.0 个性化记忆加权 (标签层; loved/rejected 由 profiler 从 profile 摊入 intent) ──
+    if enriched is not None:
+        for t in enriched.planning_tags:
+            if t in intent.profile_loved_tags:
+                score += 18.0
+        for t in enriched.planning_tags + enriched.risk_tags:
+            if t in intent.profile_rejected_tags:
+                score -= 35.0
+    if intent.profile_budget:
+        gap = abs((poi.avgprice or intent.profile_budget) - intent.profile_budget)
+        score -= min(gap / max(intent.profile_budget, 1) * 20.0, 20.0)
+
     return score
 
 
@@ -267,6 +279,22 @@ def _bucket_of(poi: POI) -> Optional[str]:
     return role if role != "fallback" else None
 
 
+def _exclude_been_there(
+    pois: list[POI], been_there: list[str], must_visit: list[str]
+) -> list[POI]:
+    """过滤掉用户标记去过的 POI (按名字子串匹配); must_visit 命中的豁免。"""
+    if not been_there:
+        return pois
+    keep = []
+    for p in pois:
+        hit = any(n and n in (p.name or "") for n in been_there)
+        is_must = _match_must_visit_name(p.name, must_visit) is not None
+        if hit and not is_must:
+            continue
+        keep.append(p)
+    return keep
+
+
 def build_candidate_pool(
     *,
     pois: list[POI],
@@ -293,6 +321,10 @@ def build_candidate_pool(
         "connector": [],
     }
     must_visit_list = list(intent.must_visit or [])
+    # v2.0: 排除用户标记"去过"的 POI (must_visit 豁免)
+    pois = _exclude_been_there(
+        pois, list(intent.profile_been_there or []), must_visit_list
+    )
     for poi in pois:
         if poi.city != intent.city:
             continue
