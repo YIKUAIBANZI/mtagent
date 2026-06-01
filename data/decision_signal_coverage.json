@@ -1,0 +1,22 @@
+{
+  "schema_version": "decision_signal_coverage:v1",
+  "cities": {
+    "上海": {
+      "mock_poi_count": 750,
+      "signal_count": 286,
+      "traceable_evidence_count": 286,
+      "sample_openshopids": [
+        "mock_81b70b8decc344f6",
+        "mock_1a3594a3aab73cb4",
+        "mock_ddf7c5f251821ad3",
+        "mock_8d83f77facd50368",
+        "mock_3fb302c42612f068",
+        "mock_c5c648de3f644225",
+        "mock_9a6e895655f17ce0",
+        "mock_1d98cce054243726",
+        "mock_0689aca849bc7e62",
+        "mock_9b86a0603d95c2e4"
+      ]
+    }
+  }
+}

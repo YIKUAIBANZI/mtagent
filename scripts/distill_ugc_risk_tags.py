@@ -23,7 +23,7 @@ RISK_ORDER = ("queue_heavy", "crowded_weekend", "walk_heavy")
 RISK_PATTERNS = {
     "queue_heavy": re.compile(r"排队|等位|队伍.{0,4}长|翻台慢|上菜慢"),
     "crowded_weekend": re.compile(
-        r"周末.{0,6}(人多|爆满|拥挤)|节假日.{0,6}(人多|爆满|拥挤)|人流较多"
+        r"周末.{0,6}(人多|爆满|拥挤)|节假日.{0,6}(人多|爆满|拥挤)|人流较多|人稍微多"
     ),
     "walk_heavy": re.compile(r"暴走|爬山|爬坡|步行多|走路多|逛完.{0,6}累|地方.{0,4}大"),
 }

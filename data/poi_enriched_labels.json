@@ -20,7 +20,9 @@
         "landmark",
         "premium_food"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -36,6 +38,7 @@
       "min_stay_minutes": 90,
       "max_stay_minutes": 180,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -54,7 +57,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -70,6 +75,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -527,7 +533,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -538,6 +546,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -598,7 +607,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -609,6 +620,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -1139,7 +1151,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "浦东新区",
       "city_zone": "east",
       "neighbor_zones": [
@@ -1152,6 +1166,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -1310,7 +1325,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "浦东新区",
       "city_zone": "east",
       "neighbor_zones": [
@@ -1323,6 +1340,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -1341,7 +1359,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -1352,6 +1372,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -1717,6 +1738,7 @@
       "manual_priority": 70,
       "planning_tags": [],
       "risk_tags": [
+        "crowded_weekend",
         "walk_heavy"
       ],
       "district": "静安区",
@@ -1734,6 +1756,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -2018,7 +2041,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "静安区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -2034,6 +2059,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -2052,7 +2078,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -2063,6 +2091,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -2289,7 +2318,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -2300,6 +2331,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -2497,7 +2529,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "徐汇区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -2513,6 +2547,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -2562,7 +2597,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "徐汇区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -2578,6 +2615,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -2907,7 +2945,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -2918,6 +2958,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -2968,7 +3009,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -2979,6 +3022,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -3277,7 +3321,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -3288,6 +3334,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -3406,7 +3453,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -3417,6 +3466,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -3662,7 +3712,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -3673,6 +3725,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -3870,7 +3923,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -3886,6 +3941,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -3906,7 +3962,9 @@
       "planning_tags": [
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -3917,6 +3975,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -4329,7 +4388,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -4340,6 +4401,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -4919,7 +4981,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "黄浦区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -4935,6 +4999,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -5123,7 +5188,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "静安区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -5139,6 +5206,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -5619,7 +5687,9 @@
       "must_consider": false,
       "manual_priority": 50,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -5630,6 +5700,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -6030,7 +6101,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -6041,6 +6114,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -6266,7 +6340,9 @@
         "premium_food",
         "transit_friendly"
       ],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "静安区",
       "city_zone": "center",
       "neighbor_zones": [
@@ -6282,6 +6358,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -6372,7 +6449,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "",
       "city_zone": "unknown",
       "neighbor_zones": [],
@@ -6383,6 +6462,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },
@@ -25576,7 +25656,9 @@
       "must_consider": false,
       "manual_priority": 70,
       "planning_tags": [],
-      "risk_tags": [],
+      "risk_tags": [
+        "crowded_weekend"
+      ],
       "district": "浦东新区",
       "city_zone": "east",
       "neighbor_zones": [
@@ -25589,6 +25671,7 @@
       "min_stay_minutes": 60,
       "max_stay_minutes": 120,
       "label_sources": [
+        "agent:risk_from_ugc:v1",
         "rules:v1"
       ]
     },

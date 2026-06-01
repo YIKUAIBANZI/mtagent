@@ -4,9 +4,9 @@
   "cities": {
     "上海": {
       "poi_count": 750,
-      "changed_poi_count": 0,
+      "changed_poi_count": 28,
       "risk_tags": {
-        "crowded_weekend": 129,
+        "crowded_weekend": 157,
         "queue_heavy": 149,
         "reservation_recommended": 140,
         "walk_heavy": 65
@@ -46,9 +46,22 @@
         ],
         "crowded_weekend": [
           {
+            "openshopid": "mock_be2203153436f232",
+            "evidence": [
+              "ugc:人稍微多了点，但景色真的不错。"
+            ]
+          },
+          {
+            "openshopid": "mock_56287a1b0faefcd4",
+            "evidence": [
+              "ugc:人稍微多了点，但景色真的不错。"
+            ]
+          },
+          {
             "openshopid": "mock_b2b60efa8bab0b04",
             "evidence": [
-              "reviewTag:人流较多"
+              "reviewTag:人流较多",
+              "ugc:人稍微多了点，但景色真的不错。"
             ]
           },
           {
@@ -60,19 +73,9 @@
           {
             "openshopid": "mock_360eaed7bc817fd3",
             "evidence": [
-              "reviewTag:人流较多"
-            ]
-          },
-          {
-            "openshopid": "mock_2125230fc7662744",
-            "evidence": [
-              "reviewTag:周末人多"
-            ]
-          },
-          {
-            "openshopid": "mock_19cd89dd5834b827",
-            "evidence": [
-              "reviewTag:人流较多"
+              "reviewTag:人流较多",
+              "ugc:人稍微多了点，但景色真的不错。",
+              "ugc:人稍微多了点，但景色真的不错。"
             ]
           }
         ]

@@ -37,6 +37,18 @@
   `reviewTag:排队较长`、`reviewTag:人流较多`，没有把普通“适合散步”误标为
   `walk_heavy`。
 
+## Task 4 进展
+
+- 新增 `scripts/build_decision_signals.py`，重建上海
+  `data/poi_decision_signals.json`。旧 5 条不可回溯手写摘要已替换。
+- 当前上海 signal `286` 条，`286/286` 均有可回溯 evidence；自动检查
+  `trace_errors=0`。
+- evidence 明确区分结构化点评聚合标签与评论文本，例如
+  `UGC 摘要：reviewTag「排队较长」`、
+  `UGC 摘要：评论「人稍微多了点，但景色真的不错。」`。
+- 数据仍是赛题 mock UGC，不应对外表述为抓取到的真实大众点评原文；可准确描述为
+  “从 POI 自身 mock UGC 与结构化点评标签离线蒸馏决策信号”。
+
 ## 给 Claude 的运行时接线事项
 
 - 庐山数据落盘后，请把 `庐山` 接入以下运行时文件：

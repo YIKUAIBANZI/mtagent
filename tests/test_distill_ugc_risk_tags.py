@@ -36,6 +36,12 @@ def test_infer_ugc_risks_does_not_treat_normal_walk_as_walk_heavy():
     assert infer_ugc_risks(_poi("mock_1", ugcs=["适合周末来散步放松。"])) == {}
 
 
+def test_infer_ugc_risks_accepts_colloquial_crowd_comment():
+    assert infer_ugc_risks(_poi("mock_1", ugcs=["人稍微多了点，但景色真的不错。"])) == {
+        "crowded_weekend": ["ugc:人稍微多了点，但景色真的不错。"]
+    }
+
+
 def test_distill_ugc_risk_tags_updates_labels_and_writes_report(tmp_path):
     mock_dir = tmp_path / "mock_dianping"
     mock_dir.mkdir()
