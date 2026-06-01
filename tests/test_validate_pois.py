@@ -113,4 +113,3 @@ def test_validate_pois_rejects_duplicate_ids_and_untraceable_evidence(tmp_path):
     assert report["valid"] is False
     assert any("duplicate openshopid" in error for error in report["errors"])
     assert any("untraceable evidence" in error for error in report["errors"])
-
