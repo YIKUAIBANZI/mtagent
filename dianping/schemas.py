@@ -322,6 +322,11 @@ class ParsedIntent(BaseModel):
     avoid: list[str] = Field(default_factory=list)
     start_date: Optional[date] = None
     modifiers: dict[ModifierName, bool] = Field(default_factory=dict)
+    # v2.0 个性化记忆 (由 profiler 从 ctx.profile 摊入; 走标签层)
+    profile_loved_tags: list[str] = Field(default_factory=list)
+    profile_rejected_tags: list[str] = Field(default_factory=list)
+    profile_been_there: list[str] = Field(default_factory=list)
+    profile_budget: int = 0
     # v1.7 即时出发扩展 (全部 optional, 多日路径不依赖, 不破坏 v0/v1/v2.5 测试)
     time_window: Optional[TimeWindow] = None
     interests: list[str] = Field(default_factory=list)
@@ -480,8 +485,15 @@ class UserProfile(BaseModel):
     interests_text: str = ""  # 自由文本兴趣, 拼到 user_input 前
     # 老字段保留 (后续 Stage 4 用)
     user_marked: UserMarked = Field(default_factory=UserMarked)
-    loved_categories: list[str] = Field(default_factory=list)
-    rejected_categories: list[str] = Field(default_factory=list)
+    # v2.0 个性化记忆: 走标签层 (planning_tags/risk_tags), 不按高德粗类目
+    loved_tags: list[str] = Field(
+        default_factory=list
+    )  # 偏爱的 planning_tags, 如 photo_friendly
+    rejected_tags: list[str] = Field(
+        default_factory=list
+    )  # 雷区 risk_tags, 如 queue_heavy
+    persona_label: str = ""  # 人格切换器选中标签; 空=匿名真实用户
+    taste_summary: str = ""  # LLM 蒸馏的一句话人设 (口味卡顶部展示)
     avg_budget_per_day: int = 0
     history: list[dict] = Field(default_factory=list)
     created_at: Optional[datetime] = None
