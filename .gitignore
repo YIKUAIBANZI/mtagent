@@ -1,0 +1,29 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+
+# Runtime data
+data/trips/
+data/user_profiles/*
+!data/user_profiles/seed_*.json
+data/poi_cache.json
+
+# Env / secrets
+.env
+.env.local
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+.superpowers/
+
+# External agent harness artifacts
+AGENTS.md
+.superpowers/

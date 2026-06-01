@@ -1,0 +1,136 @@
+{
+  "深圳": {
+    "main": {
+      "stops": 4,
+      "score": 1.0,
+      "passed": 6,
+      "total": 6,
+      "failed_rules": [],
+      "details": {}
+    },
+    "low_queue": {
+      "stops": 4,
+      "score": 1.0,
+      "passed": 6,
+      "total": 6,
+      "failed_rules": [],
+      "details": {}
+    },
+    "interest_first": {
+      "stops": 4,
+      "score": 1.0,
+      "passed": 6,
+      "total": 6,
+      "failed_rules": [],
+      "details": {}
+    }
+  },
+  "上海": {
+    "main": {
+      "stops": 4,
+      "score": 1.0,
+      "passed": 6,
+      "total": 6,
+      "failed_rules": [],
+      "details": {}
+    },
+    "low_queue": {
+      "stops": 4,
+      "score": 1.0,
+      "passed": 6,
+      "total": 6,
+      "failed_rules": [],
+      "details": {}
+    },
+    "interest_first": {
+      "stops": 4,
+      "score": 1.0,
+      "passed": 6,
+      "total": 6,
+      "failed_rules": [],
+      "details": {}
+    }
+  },
+  "西安": {
+    "main": {
+      "stops": 4,
+      "score": 1.0,
+      "passed": 6,
+      "total": 6,
+      "failed_rules": [],
+      "details": {}
+    },
+    "low_queue": {
+      "stops": 4,
+      "score": 0.8333333333333334,
+      "passed": 5,
+      "total": 6,
+      "failed_rules": [
+        "type_diversity"
+      ],
+      "details": {
+        "type_diversity": "role over cap: meal=3"
+      }
+    },
+    "interest_first": {
+      "stops": 4,
+      "score": 1.0,
+      "passed": 6,
+      "total": 6,
+      "failed_rules": [],
+      "details": {}
+    }
+  },
+  "南昌": {
+    "main": {
+      "stops": 4,
+      "score": 1.0,
+      "passed": 6,
+      "total": 6,
+      "failed_rules": [],
+      "details": {}
+    },
+    "low_queue": {
+      "stops": 4,
+      "score": 1.0,
+      "passed": 6,
+      "total": 6,
+      "failed_rules": [],
+      "details": {}
+    },
+    "interest_first": {
+      "stops": 4,
+      "score": 1.0,
+      "passed": 6,
+      "total": 6,
+      "failed_rules": [],
+      "details": {}
+    }
+  },
+  "北京": {
+    "main": {
+      "stops": 4,
+      "score": 1.0,
+      "passed": 6,
+      "total": 6,
+      "failed_rules": [],
+      "details": {}
+    },
+    "low_queue": {
+      "stops": 4,
+      "score": 1.0,
+      "passed": 6,
+      "total": 6,
+      "failed_rules": [],
+      "details": {}
+    },
+    "interest_first": {
+      "stops": 4,
+      "score": 1.0,
+      "passed": 6,
+      "total": 6,
+      "failed_rules": [],
+      "details": {}
+    }
+  }
+}
